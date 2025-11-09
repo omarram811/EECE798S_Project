@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Course TA Agent Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <div class="max-w-4xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-2">Course TA Agent Studio</h1>
+    <p class="text-gray-600 mb-6">Create and host course‑specific TA agents powered by your Google Drive.</p>
+
+    {% if not user_id %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form action="/login" method="post" class="bg-white shadow rounded p-4">
+        <h2 class="font-semibold mb-3">Login</h2>
+        <input class="border p-2 w-full mb-2" type="email" name="email" placeholder="Email" required />
+        <input class="border p-2 w-full mb-4" type="password" name="password" placeholder="Password" required />
+        <button class="px-4 py-2 rounded bg-black text-white w-full">Login</button>
+      </form>
+      <form action="/register" method="post" class="bg-white shadow rounded p-4">
+        <h2 class="font-semibold mb-3">Register</h2>
+        <input class="border p-2 w-full mb-2" type="email" name="email" placeholder="Email" required />
+        <input class="border p-2 w-full mb-4" type="password" name="password" placeholder="Password" required />
+        <button class="px-4 py-2 rounded bg-indigo-600 text-white w-full">Create Account</button>
+      </form>
+    </div>
+    {% else %}
+      <div class="bg-white p-4 rounded shadow">
+        <p>You're logged in. Go to your <a class="text-indigo-600 underline" href="/dashboard">dashboard</a>.</p>
+      </div>
+    {% endif %}
+
+    <footer class="text-xs text-gray-400 mt-12">
+      <p>Docs inspiration: LangChain Google Drive Loader; LlamaIndex Google Readers (incl. live ingestion); Flowise/ Langflow; FastAPI SSE; APScheduler.</p>
+    </footer>
+  </div>
+</body>
+</html>

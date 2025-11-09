@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Dashboard - Course TA Agent Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+  <div class="max-w-5xl mx-auto p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Dashboard</h1>
+      <a href="/logout" class="text-gray-600 underline">Logout</a>
+    </div>
+
+    <div class="bg-white p-4 rounded shadow mb-6">
+      <h2 class="font-semibold mb-2">Connect Google Drive</h2>
+      {% if google_connected %}
+        <p class="text-green-700">Connected. You can add Drive folders to your agents.</p>
+      {% else %}
+        <a class="px-4 py-2 bg-emerald-600 text-white rounded" href="/google/auth">Authorize Drive</a>
+      {% endif %}
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 items-start">
+      <form action="/agents/create" method="post" class="bg-white p-4 rounded shadow">
+        <h2 class="font-semibold mb-3">Create a TA Agent</h2>
+        <label class="text-sm">Model Name</label>
+        <input class="border p-2 w-full mb-3" placeholder="e.g. EECE 490 TA" name="name" required />
+
+        <label class="text-sm">Google Drive Folder URL or ID</label>
+        <input class="border p-2 w-full mb-3" placeholder="https://drive.google.com/drive/folders/..." name="drive_folder"/>
+
+        <label class="text-sm">Persona / Description</label>
+        <textarea class="border p-2 w-full mb-3" name="persona" placeholder="Tone, duties, course scope..."></textarea>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-sm">Provider</label>
+            <select class="border p-2 w-full mb-3" name="provider">
+              <option value="openai">OpenAI</option>
+              <option value="gemini">Gemini</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm">Chat Model</label>
+            <input class="border p-2 w-full mb-3" name="model" placeholder="gpt-4o-mini or gemini-2.0-flash"/>
+          </div>
+        </div>
+
+        <label class="text-sm">Embedding Model</label>
+        <input class="border p-2 w-full mb-4" name="embed_model" value="openai:text-embedding-3-small" />
+
+        <button class="px-4 py-2 bg-indigo-600 text-white rounded w-full">Create Agent</button>
+      </form>
+
+      <div class="bg-white p-4 rounded shadow">
+        <h2 class="font-semibold mb-3">Your Agents</h2>
+        <ul class="space-y-2">
+        {% for a in agents %}
+          <li class="flex justify-between items-center border rounded p-3">
+            <div>
+              <div class="font-medium">{{ a.name }}</div>
+              <div class="text-xs text-gray-500">Provider: {{ a.provider }} | Model: {{ a.model }}</div>
+            </div>
+            <div class="flex gap-2">
+              <a class="px-3 py-1 text-sm bg-black text-white rounded" href="/a/{{a.slug}}">Open</a>
+            </div>
+          </li>
+        {% else %}
+          <li class="text-gray-500">No agents yet.</li>
+        {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
