@@ -24,14 +24,14 @@ and conversation history. Responses stream token‑by‑token.
 
 Create `.env` at repo root (or set env vars):
 ```
-SECRET_KEY=change-me
-OPENAI_API_KEY=sk-...            # if using OpenAI
-GOOGLE_API_CLIENT_ID=...         # OAuth client for Installed app or Web
-GOOGLE_API_CLIENT_SECRET=...
-GEMINI_API_KEY=...               # if using Gemini
-EMBED_MODEL=openai:text-embedding-3-small   # or gemini:text-embedding-004 or local:all-MiniLM-L6-v2
+SECRET_KEY=change-me # generate one using: python -c "import secrets; print(secrets.token_hex(32))"
+OPENAI_API_KEY=sk-...            # if using OpenAI (not used for now, can be kept empty)
+GOOGLE_API_CLIENT_ID=...         # OAuth client for Installed app or Web (get from Google Cloud Console)
+GOOGLE_API_CLIENT_SECRET=...     # Also get from Google Cloud Console, usually comes with GOOGLE_API_CLIENT_ID in a uniform .json file)
+GEMINI_API_KEY=...               # if using Gemini (needed for now)
+EMBED_MODEL=gemini:text-embedding-004 #openai:text-embedding-3-small
 SCHED_CRON=0 3 * * *            # 03:00 daily refresh (server timezone)
-BASE_URL=http://localhost:8000
+BASE_URL=http://127.0.0.1:8000
 ```
 
 2) **Python**
