@@ -48,7 +48,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Visit `http://localhost:8000`
+Visit `http://127.0.0.1:8000`
 
 ## Google Drive Setup
 
