@@ -1,5 +1,6 @@
 from typing import Iterable, Dict, Any, List
 from .settings import get_settings
+import time
 
 # OpenAI
 from openai import OpenAI
@@ -51,10 +52,18 @@ class GeminiProvider(ProviderBase):
             content = m.get("content", "")
             parts.append(f"{role.upper()}: {content}")
         prompt = "\n\n".join(parts)
+        # stream = self.gen_model.generate_content(prompt, stream=True)
+        # for chunk in stream:
+        #     if getattr(chunk, "text", None):
+        #         yield chunk.text
+        #         time.sleep(0.2)
         stream = self.gen_model.generate_content(prompt, stream=True)
         for chunk in stream:
-            if getattr(chunk, "text", None):
-                yield chunk.text
+            text = getattr(chunk, "text", None)
+            if text:
+                for char in text:
+                    yield char  # yield character by character
+                    time.sleep(0.000005)
 
     def embed(self, texts: List[str]):
         out = genai.embed_content(model=self.embed_model, content=texts)

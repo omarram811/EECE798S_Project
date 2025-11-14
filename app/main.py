@@ -21,7 +21,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Course TA Agent Studio")
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY","dev"))
-app.mount("/static", StaticFiles(directory="static"), name="static")
+#app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 app.include_router(auth_router)
