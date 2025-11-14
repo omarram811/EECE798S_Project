@@ -43,6 +43,10 @@
     </div>
 
     <form id="promptForm" action="/chat/{{agent.id}}" method="post" class="mt-3 flex gap-2">
+      <!-- ADDED-->
+      <button type="button" id="start-record" class="px-4 py-2 rounded bg-green-600 text-white">🎤 Start</button>
+      <button type="button" id="stop-record" class="px-4 py-2 rounded bg-red-600 text-white">⏹ Stop</button>
+      <!-- ENDED-->
       <input id="prompt" class="flex-1 border p-2 rounded" name="prompt" placeholder="Ask something about the course..." />
       <button class="px-4 py-2 rounded bg-indigo-600 text-white">Send</button>
     </form>
@@ -107,6 +111,50 @@
     // You can also optimistically append the user message here if you want.
     closeStream(); // stop the current stream before POST + redirect
   });
+
+
+  /////////////////////////SPEECH-TEXT-ADDED///////////////////////////////////////////////////
+
+  let recognition = null;
+
+  const promptInput = document.getElementById('prompt');
+  const startBtn = document.getElementById('start-record');
+  const stopBtn = document.getElementById('stop-record');
+
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.continuous = true; // keep listening
+    recognition.interimResults = true; // get live transcription
+    recognition.lang = 'en-US'; // or your language
+
+    recognition.onresult = (event) => {
+      let transcript = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        transcript += event.results[i][0].transcript;
+      }
+      promptInput.value = transcript; // update input live
+    };
+
+    recognition.onerror = (e) => {
+      console.error("SpeechRecognition error:", e.error);
+    };
+
+    recognition.onend = () => {
+      console.log("Recognition ended");
+    };
+  }
+
+  startBtn.addEventListener('click', () => {
+    if (recognition) recognition.start();
+  });
+
+  stopBtn.addEventListener('click', () => {
+    if (recognition) recognition.stop();
+  });
+
+  ///////////////////////////////////SPEECH-TEXT-ENDED//////////////////////////////////////////////
+
   </script>
 
 </body>

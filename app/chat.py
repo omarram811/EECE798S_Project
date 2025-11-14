@@ -205,7 +205,7 @@ def stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
             for token in stream:
                 acc += token
                 yield {"event":"message", "data": token}
-                time.sleep(0.1)
+                time.sleep(0.1) ##added here for streaming
             # save assistant message
             if acc.strip():
                 db.add(Message(conversation_id=conv.id, user_id=uid, role="assistant", content=acc))
