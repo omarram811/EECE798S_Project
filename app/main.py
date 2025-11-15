@@ -19,19 +19,46 @@ from .scheduler import start_scheduler
 load_dotenv()
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Course TA Agent Studio")
-app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY","dev"))
+#app = FastAPI(title="Course TA Agent Studio")
+#app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY","dev"))
 #app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# app.include_router(auth_router)
+# app.include_router(agents_router)
+# app.include_router(chat_router)
+# app.include_router(google_router)
+
+# @app.on_event("startup")
+# def _startup():
+#     start_scheduler()
+
+from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from .scheduler import start_scheduler
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # STARTUP
+    print("[lifespan] Starting scheduler...")
+    start_scheduler()
+    yield
+    # SHUTDOWN
+    print("[lifespan] Shutting down scheduler...")
+    # optional: scheduler.shutdown() if you want graceful shutdown
+
+# Create a single app with lifespan
+app = FastAPI(title="Course TA Agent Studio", lifespan=lifespan)
+
+# Middleware
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY","dev"))
+
+# Routers
 app.include_router(auth_router)
 app.include_router(agents_router)
 app.include_router(chat_router)
 app.include_router(google_router)
 
-@app.on_event("startup")
-def _startup():
-    start_scheduler()
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):

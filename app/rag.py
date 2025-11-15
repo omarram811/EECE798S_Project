@@ -448,6 +448,7 @@
 from typing import List, Tuple, Dict
 import os, json, shutil, logging
 from pathlib import Path
+import numpy as np
 
 from chromadb import Client
 from chromadb.config import Settings as ChromaSettings
@@ -464,6 +465,33 @@ from .providers import OpenAIProvider, GeminiProvider, ProviderBase
 from .settings import get_settings
 
 log = logging.getLogger(__name__)
+
+def _as_2d_floats(embs):
+    """
+    Convert embeddings to 2D list of floats.
+    Handles single vectors, nested vectors, or irregular structures.
+    """
+    def flatten_vec(vec):
+        """Flatten nested lists/tuples into a flat list of floats."""
+        out = []
+        for x in vec:
+            if isinstance(x, (list, tuple)):
+                out.extend(flatten_vec(x))
+            else:
+                out.append(float(x))
+        return out
+
+    if not embs:
+        return []
+
+    # If top-level is a single vector (numbers), wrap in list
+    if all(isinstance(x, (int, float)) for x in embs):
+        return [list(map(float, embs))]
+
+    # Otherwise, flatten each embedding
+    return [flatten_vec(v) for v in embs]
+
+
 
 # add this helper near the top (after imports)
 def _sanitize_meta(meta: dict) -> dict:
@@ -529,9 +557,32 @@ class ProviderEmbeddingFunction:
         self._p = provider
 
     def __call__(self, input: Documents) -> Embeddings:
-        texts = list(input) if not isinstance(input, list) else input
-        # Normalize to List[List[float]] so Chroma sees the correct dimensionality
-        return _as_2d_floats(self._p.embed(texts))
+            texts = list(input) if not isinstance(input, list) else input
+            emb = self._p.embed(texts)
+
+            # ---- Normalize all shapes to 2D float list ----
+
+            # Case 1: numpy array -> convert to list
+            if isinstance(emb, np.ndarray):
+                emb = emb.tolist()
+
+            # Case 2: single vector: [0.1, 0.2, ...]
+            if isinstance(emb, list) and len(emb) > 0 and isinstance(emb[0], (float, int)):
+                return [[float(x) for x in emb]]
+
+            # Case 3: triple nested: [[[0.1, 0.2, ...]]]
+            if (
+                isinstance(emb, list)
+                and len(emb) == 1
+                and isinstance(emb[0], list)
+                and len(emb[0]) == 1
+                and isinstance(emb[0][0], list)
+            ):
+                emb = emb[0]   # remove first nesting
+
+            # Case 4: normal 2D list → convert values to floats
+            return [[float(x) for x in vec] for vec in emb]
+
 
 
 
@@ -732,33 +783,57 @@ def _make_doc_id(agent_id: int, md: dict, idx: int) -> str:
 
 
 def load_drive_docs(agent) -> List[dict]:
-    """Load Google Drive docs (recursive) and normalize."""
+    """
+    Load Google Drive docs (recursive) and return ONLY new/updated docs.
+    Uses agent.index_state to remember last indexed timestamps.
+    """
+
+    # 1. Previous state (store last modified timestamps)
+    indexed = getattr(agent, "index_state", {}) or {}
+
     folder_id = file_id_from_url_or_id(agent.drive_folder_id or "")
     auth_kwargs = _build_drive_auth_kwargs(agent.owner_id)
+
+    # 2. Load everything from Drive
     docs_raw = _load_drive_docs_raw(folder_id, auth_kwargs)
 
     results = []
     seen_ids = set()
+
     for i, d in enumerate(docs_raw):
         md = getattr(d, "metadata", {}) or {}
         text = getattr(d, "page_content", "") or ""
 
         doc_id = _make_doc_id(agent.id, md, i)
-        # Guard against any accidental dup even after suffixing
         if doc_id in seen_ids:
             doc_id = f"{doc_id}#dup{i}"
         seen_ids.add(doc_id)
 
+        last_modified = md.get("last_modified_time", "") or md.get("modified_time", "")
+
+        # 3. SKIP if unchanged
+        if doc_id in indexed and indexed[doc_id] == last_modified:
+            continue
+
+        # 4. Otherwise → new or updated
         results.append({
             "id": doc_id,
             "source": md.get("source", ""),
             "title": md.get("title", ""),
             "page": md.get("page"),
             "slide": md.get("slide"),
-            "last_modified": md.get("last_modified_time", "") or md.get("modified_time", ""),
+            "last_modified": last_modified,
             "text": text,
         })
+
+        # 5. Update state for this file
+        indexed[doc_id] = last_modified
+
+    # Save updated state
+    agent.index_state = indexed
+
     return results
+
 
 
 # -------- Indexing & Retrieval --------
@@ -903,42 +978,189 @@ def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
 
     return (added, 0, added)
 
-
-def _flatten_once(x):
-    # If x == [[...]] (extra wrapper), unwrap one level.
-    if isinstance(x, (list, tuple)) and len(x) == 1 and isinstance(x[0], (list, tuple)):
-        return x[0]
-    return x
-
-def _as_2d_floats(embs):
+def reindex_agent(agent, _creds_path_ignored: str = ""):
     """
-    Normalize provider output to List[List[float]].
-    Handles numpy arrays, dicts with 'embedding', extra nesting, etc.
+    Incremental reindex:
+      - Only embed new or updated docs (by last_modified)
+      - Remove DB/vector entries for files removed from Drive
+      - Return (added, updated_count_placeholder, total_changed)
     """
-    # Provider may return dict: {"data":[{"embedding":[...]} , ...]}
-    if isinstance(embs, dict) and "data" in embs:
-        embs = [d.get("embedding") for d in embs["data"]]
+    docs = load_drive_docs(agent)
+    client = get_vector_client()
+    col = ensure_collection(agent, client)
+    provider = provider_from(agent)
+    db = SessionLocal()
 
-    if not isinstance(embs, (list, tuple)):
-        raise TypeError(f"Embeddings must be a list, got {type(embs)}")
+    # -------------------------
+    # Load existing indexed files from DB
+    # -------------------------
+    existing = {}  # file_id -> last_modified
+    for f in db.query(AgentFile).filter_by(agent_id=agent.id):
+        existing[f.file_id] = f.last_modified or ""
+    print(f"[DEBUG] Existing files in DB ({len(existing)}): {list(existing.keys())}")
 
-    out = []
-    for e in embs:
-        # Some SDKs return {"embedding":[...]} per item
-        if isinstance(e, dict) and "embedding" in e:
-            e = e["embedding"]
-        # numpy -> list
-        if hasattr(e, "tolist"):
-            e = e.tolist()
-        # If extra wrapper (e == [[floats]]), unwrap once
-        e = _flatten_once(e)
-        # If somehow it's still nested (ragged), flatten one level
-        if len(e) > 0 and isinstance(e[0], (list, tuple)):
-            e = [float(v) for sub in e for v in (sub.tolist() if hasattr(sub, "tolist") else sub)]
+    # -------------------------
+    # Build mapping of current drive docs
+    # -------------------------
+    current_ids = []
+    docs_by_id = {}
+    for i, d in enumerate(docs):
+        fid = d["id"]
+        current_ids.append(fid)
+        docs_by_id[fid] = d
+    print(f"[DEBUG] Current files on Drive ({len(current_ids)}): {current_ids}")
+
+    # -------------------------
+    # Detect deletions: files that existed but are missing from Drive results
+    # -------------------------
+    to_delete = [fid for fid in existing.keys() if fid not in current_ids]
+    if to_delete:
+        try:
+            print(f"[reindex_agent] Deleting {len(to_delete)} removed files: {to_delete}")
+            # Delete metadata rows
+            db.query(AgentFile).filter(AgentFile.agent_id == agent.id, AgentFile.file_id.in_(to_delete)).delete(synchronize_session=False)
+            db.commit()
+        except Exception as e:
+            print(f"[reindex_agent] Error deleting metadata for removed files: {e}")
+        # Attempt to delete from vector store (some Chroma clients support delete)
+        try:
+            col.delete(ids=to_delete)
+        except Exception as e:
+            # not fatal; collection may not support delete() or different API
+            print(f"[reindex_agent] Warning: could not delete ids from collection: {e}")
+
+    # -------------------------
+    # Decide which docs need embedding (new or updated)
+    # -------------------------
+    to_embed = []     # tuples (file_id, meta, text)
+    to_upsert_meta = []  # list of docs for DB merge
+    dropped_empty = 0
+
+    for fid in current_ids:
+        d = docs_by_id[fid]
+        text = _trim_for_embedding(d.get("text") or "")
+        if not text:
+            dropped_empty += 1
+            continue
+
+        drive_last_modified = d.get("last_modified") or ""
+
+        # If exists and not changed -> skip
+        if fid in existing and drive_last_modified <= (existing.get(fid) or ""):
+            continue
+
+        # Else: new or updated -> prepare to embed and update DB metadata
+        meta = _sanitize_meta({
+            "title": d.get("title") or "",
+            "source": d.get("source") or "",
+            "page": d.get("page"),
+            "slide": d.get("slide"),
+            "last_modified": drive_last_modified,
+        })
+
+        to_embed.append((fid, meta, text))
+        to_upsert_meta.append(d)
+
+    if dropped_empty:
+        print(f"[reindex_agent] Skipped {dropped_empty} empty chunks out of {len(docs)}")
+
+    if not to_embed and not to_delete:
+        print("[reindex_agent] Nothing new, updated, or deleted.")
+        return (0, 0, 0)
+
+    # -------------------------
+    # Upsert metadata for new/updated files
+    # -------------------------
+    for d in to_upsert_meta:
+        try:
+            db.merge(AgentFile(
+                agent_id=agent.id,
+                file_id=d["id"],
+                title=d.get("title") or "(Untitled)",
+                source=d.get("source") or "",
+                last_modified=d.get("last_modified") or "",
+                page=d.get("page"),
+                slide=d.get("slide"),
+            ))
+        except Exception as e:
+            print(f"[reindex_agent] Warning: failed to merge metadata for {d.get('id')}: {e}")
+    db.commit()
+
+    # -------------------------
+    # Embed & upsert only changed docs (batch + per-item fallback)
+    # -------------------------
+    BATCH = 64
+    added = 0
+    salvaged_total = 0
+    dims = None
+
+    for i in range(0, len(to_embed), BATCH):
+        batch = to_embed[i:i+BATCH]
+        ids_batch   = [t[0] for t in batch]
+        metas_batch = [t[1] for t in batch]
+        docs_batch  = [t[2] for t in batch]
+
+        embs_batch = None
+        try:
+            embs_batch = _as_2d_floats(provider.embed(docs_batch))
+        except Exception as e:
+            print(f"[reindex_agent] Batch embed error at [{i}:{i+len(batch)}]: {e}")
+            return (0, 0, 0) 
+
+        # Salvage per item if needed
+        need_salvage = (
+            embs_batch is None or
+            not isinstance(embs_batch, (list, tuple)) or
+            len(embs_batch) != len(docs_batch)
+        )
+        if not need_salvage and embs_batch:
+            d0 = len(embs_batch[0])
+            if any(len(v) != d0 for v in embs_batch):
+                need_salvage = True
+
+        if need_salvage:
+            keep_idx, fixed_embs = [], []
+            for j, txt in enumerate(docs_batch):
+                try:
+                    one = provider.embed([txt])
+                    one = _as_2d_floats(one)[0]
+                    if dims is None:
+                        dims = len(one)
+                    if len(one) != dims:
+                        print(f"[reindex_agent] Dropped item {i+j}: dim {len(one)} != {dims}")
+                        continue
+                    fixed_embs.append(one)
+                    keep_idx.append(j)
+                except Exception as ee:
+                    print(f"[reindex_agent] Dropped item {i+j}: {ee}")
+            if not keep_idx:
+                continue
+            ids_batch   = [ids_batch[j] for j in keep_idx]
+            metas_batch = [metas_batch[j] for j in keep_idx]
+            docs_batch  = [docs_batch[j] for j in keep_idx]
+            embs_batch  = fixed_embs
+            salvaged_total += (len(batch) - len(keep_idx))
         else:
-            e = [float(v) for v in e]
-        out.append(e)
-    return out
+            dims = dims or len(embs_batch[0])
+
+        # Upsert in collection
+        try:
+            col.upsert(ids=ids_batch, documents=docs_batch, metadatas=metas_batch, embeddings=embs_batch)
+            added += len(ids_batch)
+        except Exception as e:
+            print(f"[reindex_agent] Error upserting batch [{i}:{i+len(batch)}]: {e}")
+
+    if salvaged_total:
+        print(f"[reindex_agent] Salvaged {salvaged_total} items via per-item embedding fallback")
+
+    total_changed = added + (len(to_delete) if to_delete else 0)
+    print(f"[reindex_agent] Done. Added/Updated embeddings: {added}; Deleted: {len(to_delete)}; Total changed: {total_changed}")
+    return (added, 0, total_changed)
+
+
+
+
+
 
 
 

@@ -28,23 +28,38 @@ def _creds_path_for_user(user_id: int) -> str:
     return path
 
 def daily_refresh_job():
+    print("[refresh] Job started")
     with session_scope() as db:
         agents = db.query(Agent).all()
+        print(f"[refresh] Found {len(agents)} agents")
         for a in agents:
             if not a.drive_folder_id:
+                print(f"[refresh] Skipping agent {a.id}, no drive_folder_id")
                 continue
             creds_path = _creds_path_for_user(a.owner_id)
             try:
                 reindex_agent(a, creds_path)
+                print(f"[refresh] refresh job finished for agent {a.id}")
             except Exception as e:
                 print(f"[refresh] agent {a.id} failed: {e}")
+    print("[refresh] Job finished")
+    
 
 scheduler = BackgroundScheduler()
 
+# def start_scheduler():
+#     cron = get_settings().SCHED_CRON
+#     parts = cron.split()
+#     trig = CronTrigger.from_crontab(cron)
+#     scheduler.add_job(daily_refresh_job, trig, id="daily_refresh", replace_existing=True)
+#     scheduler.start()
+
+
+from apscheduler.triggers.interval import IntervalTrigger
+
 def start_scheduler():
-    cron = get_settings().SCHED_CRON
-    # default 3am daily
-    parts = cron.split()
-    trig = CronTrigger.from_crontab(cron)
-    scheduler.add_job(daily_refresh_job, trig, id="daily_refresh", replace_existing=True)
+    trigger = IntervalTrigger(minutes=2)  # every 2 minutes from now
+    scheduler.add_job(daily_refresh_job, trigger, id="daily_refresh", replace_existing=True)
+    print("[scheduler] Jobs added:", scheduler.get_jobs())
     scheduler.start()
+

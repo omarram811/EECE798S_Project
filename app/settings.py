@@ -18,7 +18,7 @@ class Settings(BaseSettings):
 
     # RAG
     EMBED_MODEL: str = "openai:text-embedding-3-small"
-    SCHED_CRON: str = "0 3 * * *"
+    SCHED_CRON: str = "*/2 * * * *"  #"0 3 * * *" 
 
     # Storage root for DB / vector stores / tokens; relative to project root if not absolute
     DATA_DIR: str = os.path.join(os.path.dirname(__file__), "..", "data")
