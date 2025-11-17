@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Agent Logs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-6">
+
+<h2 class="text-xl font-bold mb-4"> Query Logs for Agent: {{ agent.name }}</h2>
+
+<a href="/dashboard" class="bg-gray-700 text-white px-3 py-1 rounded mb-4 inline-block">
+  ← Back to Dashboard
+</a>
+
+<a href="/agents/{{ agent.id }}/logs/download"
+   class="bg-gray-700 text-white px-3 py-1 rounded mb-4 inline-block">
+   Download Logs (JSON)
+</a>
+
+
+
+{% if logs|length == 0 %}
+  <p class="text-gray-600">No logs available yet.</p>
+{% else %}
+  <table class="min-w-full bg-white shadow rounded overflow-hidden">
+    <thead>
+      <tr class="bg-gray-200 text-left">
+        <th class="p-3">Timestamp</th>
+        <th class="p-3">Query</th>
+        <th class="p-3">Response</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in logs %}
+      <tr class="border-t">
+        <td class="p-3 text-gray-700">
+            {{ entry.timestamp.strftime("%b %d, %Y – %I:%M %p") }}
+        </td>
+        <td class="p-3">{{ entry.query }}</td>
+        <td class="p-3">{{ entry.response }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+</body>
+</html>

@@ -104,6 +104,7 @@ from .models import Agent, Conversation, Message, AgentFile
 from .security import get_current_user_id
 from .rag import retrieve, provider_from
 import json, time, threading
+from .models import QueryLog
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 _ACTIVE_STREAMS: set[int] = set()
@@ -210,6 +211,17 @@ def stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
             if acc.strip():
                 db.add(Message(conversation_id=conv.id, user_id=uid, role="assistant", content=acc))
                 db.commit()
+                 # ------------------------------------------
+                # LOG THE QUERY & RESPONSE
+                # ------------------------------------------
+                user_question = history[-1]["content"] if history else ""
+                db.add(QueryLog(
+                    agent_id=agent.id,
+                    query=user_question,
+                    response=acc
+                ))
+                db.commit()
+
             yield {"event":"done", "data":"[END]"}
         except Exception as e:
             yield {"event":"error", "data": str(e)}

@@ -7,8 +7,16 @@ from .models import Agent, Conversation, GoogleToken
 from .security import get_current_user_id
 from .rag import reindex_agent
 from .scheduler import _creds_path_for_user
+from fastapi.templating import Jinja2Templates
+from .models import QueryLog  # Make sure this exists in models.py
+from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse
+import json
+import tempfile
 
 router = APIRouter(prefix="/agents", tags=["agents"])
+from fastapi.templating import Jinja2Templates
+templates = Jinja2Templates(directory="templates")
 
 @router.post("/create")
 def create_agent(request: Request,
@@ -53,3 +61,72 @@ def update_agent(request: Request, agent_id: int,
     a.provider, a.model, a.embed_model = provider, model, embed_model
     db.commit()
     return RedirectResponse(f"/a/{a.slug}", status_code=302)
+
+
+@router.get("/{agent_id}/logs")
+def view_logs(request: Request, agent_id: int, db: Session = Depends(get_db)):
+    uid = get_current_user_id(request)
+    agent = db.get(Agent, agent_id)
+
+    if not agent:
+        raise HTTPException(status_code=404, detail="Agent not found")
+
+    # Security: Only the professor who owns this agent
+    if agent.owner_id != uid:
+        raise HTTPException(status_code=403, detail="Not allowed")
+
+    logs = (
+        db.query(QueryLog)
+        .filter_by(agent_id=agent_id)
+        .order_by(QueryLog.timestamp.desc())
+        .all()
+    )
+
+    return templates.TemplateResponse(
+        "agent_logs.html",
+        {
+            "request": request,
+            "agent": agent,
+            "logs": logs
+        }
+    )
+
+
+
+
+@router.get("/{agent_id}/logs/download")
+def download_logs(agent_id: int, request: Request, db: Session = Depends(get_db)):
+    uid = get_current_user_id(request)
+    agent = db.get(Agent, agent_id)
+
+    if not agent or agent.owner_id != uid:
+        raise HTTPException(status_code=404)
+
+    logs = (
+        db.query(QueryLog)
+        .filter_by(agent_id=agent_id)
+        .order_by(QueryLog.timestamp.asc())
+        .all()
+    )
+
+    # Convert logs to list of dicts
+    data = [
+        {
+            "timestamp": log.timestamp.isoformat(),
+            "query": log.query,
+            "response": log.response,
+        }
+        for log in logs
+    ]
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w", encoding="utf-8") as tmp:
+        json.dump(data, tmp, indent=2)
+        temp_path = tmp.name
+
+
+    # Return file for download
+    return FileResponse(
+        tmp.name,
+        media_type="application/json",
+        filename=f"{agent.name}_logs.json"
+    )
