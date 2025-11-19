@@ -44,6 +44,27 @@ def create_agent(request: Request,
             print("Initial reindex failed:", e)
     return RedirectResponse(f"/a/{slug}", status_code=302)
 
+
+@router.post("/{agent_id}/delete")
+def delete_agent(request: Request, agent_id: int, db: Session = Depends(get_db)):
+    uid = get_current_user_id(request)
+    agent = db.get(Agent, agent_id)
+
+    if not agent or agent.owner_id != uid:
+        raise HTTPException(status_code=404, detail="Agent not found")
+
+    # OPTIONAL: delete conversations and logs tied to the agent
+    db.query(Conversation).filter_by(agent_id=agent_id).delete()
+    db.query(QueryLog).filter_by(agent_id=agent_id).delete()
+
+    # Delete the agent itself
+    db.delete(agent)
+    db.commit()
+
+    # Redirect to dashboard or agent list
+    return RedirectResponse("/dashboard", status_code=302)
+
+
 @router.post("/{agent_id}/update")
 def update_agent(request: Request, agent_id: int,
                  name: str = Form(...),
