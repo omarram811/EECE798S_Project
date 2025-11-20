@@ -1,48 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Agent Logs</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Logs — {{ agent.name }}</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .btn-aub {
+      background-color: #840032;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .btn-aub:hover {
+      background-color: #a5004c;
+    }
+    .aub-header {
+      background-color: #840032;
+      color: white;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 p-6">
 
-<h2 class="text-xl font-bold mb-4"> Query Logs for Agent: {{ agent.name }}</h2>
+<body class="bg-gray-50 font-sans">
 
-<a href="/dashboard" class="bg-gray-700 text-white px-3 py-1 rounded mb-4 inline-block">
-  ← Back to Dashboard
-</a>
+<header class="flex justify-between items-center p-6 bg-white shadow-md">
 
-<a href="/agents/{{ agent.id }}/logs/download"
-   class="bg-gray-700 text-white px-3 py-1 rounded mb-4 inline-block">
-   Download Logs (JSON)
-</a>
+  <!-- Back Arrow -->
+  <a href="/dashboard"
+     class="text-4xl font-bold text-gray-600 hover:text-[#840032] transition mr-6">
+    ←
+  </a>
+
+  <h1 class="text-3xl font-bold text-gray-800 flex-1">
+    Agent Logs
+  </h1>
 
 
+  <img src="/static/logos.png" class="h-20 w-auto" alt="AUB Logo">
+</header>
 
-{% if logs|length == 0 %}
-  <p class="text-gray-600">No logs available yet.</p>
-{% else %}
-  <table class="min-w-full bg-white shadow rounded overflow-hidden">
-    <thead>
-      <tr class="bg-gray-200 text-left">
-        <th class="p-3">Timestamp</th>
-        <th class="p-3">Query</th>
-        <th class="p-3">Response</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for entry in logs %}
-      <tr class="border-t">
-        <td class="p-3 text-gray-700">
-            {{ entry.timestamp.strftime("%b %d, %Y – %I:%M %p") }}
-        </td>
-        <td class="p-3">{{ entry.query }}</td>
-        <td class="p-3">{{ entry.response }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-{% endif %}
+
+  <main class="max-w-5xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-xl space-y-6">
+  <!-- Download Logs Icon (Top Right) -->
+    <div class="flex justify-end">
+      <a href="/agents/{{ agent.id }}/logs/download"
+        title="Download Logs (JSON)"
+        class="text-3xl text-gray-600 hover:text-[#840032] transition">
+        ⤓
+      </a>
+    </div>
+
+
+    <!-- Removed back button here -->
+
+    <!-- Log Table -->
+    {% if logs|length == 0 %}
+      <p class="text-gray-600 text-lg">No logs available yet.</p>
+
+    {% else %}
+      <div class="overflow-hidden rounded-xl shadow-md border border-[#840032]">
+        <table class="min-w-full bg-white">
+          <thead class="aub-header">
+            <tr>
+              <th class="p-3 text-left font-semibold">Timestamp</th>
+              <th class="p-3 text-left font-semibold">Query</th>
+              <th class="p-3 text-left font-semibold">Response</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for entry in logs %}
+            <tr class="border-t border-[#840032]/40 hover:bg-[#840032]/5 transition">
+              <td class="p-3 text-gray-700 whitespace-nowrap">
+                {{ entry.timestamp.strftime("%b %d, %Y – %I:%M %p") }}
+              </td>
+              <td class="p-3 text-gray-800 max-w-xs break-words">
+                {{ entry.query }}
+              </td>
+              <td class="p-3 text-gray-800 max-w-lg break-words">
+                {{ entry.response }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </main>
 
 </body>
 </html>

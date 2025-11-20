@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from slugify import slugify
 from .db import get_db
-from .models import Agent, Conversation, GoogleToken
+from .models import Agent, Conversation, GoogleToken, AgentFile
 from .security import get_current_user_id
 from .rag import reindex_agent
 from .scheduler import _creds_path_for_user
@@ -53,16 +53,37 @@ def delete_agent(request: Request, agent_id: int, db: Session = Depends(get_db))
     if not agent or agent.owner_id != uid:
         raise HTTPException(status_code=404, detail="Agent not found")
 
-    # OPTIONAL: delete conversations and logs tied to the agent
-    db.query(Conversation).filter_by(agent_id=agent_id).delete()
-    db.query(QueryLog).filter_by(agent_id=agent_id).delete()
+    # 1. Delete conversations (cascade deletes messages)
+    for conv in agent.conversations:
+        db.delete(conv)
 
-    # Delete the agent itself
+    # 2. Delete query logs
+    for log in agent.query_logs:
+        db.delete(log)
+
+    # 3. AgentFiles will delete automatically via cascade now
+
+    # 4. Delete vector embeddings
+    try:
+        from .rag import ensure_collection, get_vector_client
+        client = get_vector_client()
+        col = ensure_collection(agent, client)
+        col.delete(where={"agent_id": agent_id})
+    except Exception as e:
+        print("[delete_agent] Warning:", e)
+
+    # 5. Delete the agent itself
     db.delete(agent)
     db.commit()
 
-    # Redirect to dashboard or agent list
+    db.query(Agent).all()
+    db.query(Conversation).all()
+    db.query(QueryLog).all()
+    db.query(AgentFile).all()
+
     return RedirectResponse("/dashboard", status_code=302)
+
+
 
 
 @router.post("/{agent_id}/update")

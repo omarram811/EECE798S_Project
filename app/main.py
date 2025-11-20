@@ -18,24 +18,14 @@ from .scheduler import start_scheduler
 
 load_dotenv()
 Base.metadata.create_all(bind=engine)
-
-#app = FastAPI(title="Course TA Agent Studio")
-#app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY","dev"))
-#app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# app.include_router(auth_router)
-# app.include_router(agents_router)
-# app.include_router(chat_router)
-# app.include_router(google_router)
-
-# @app.on_event("startup")
-# def _startup():
-#     start_scheduler()
 
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from .scheduler import start_scheduler
+
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -50,6 +40,8 @@ async def lifespan(app: FastAPI):
 # Create a single app with lifespan
 app = FastAPI(title="Course TA Agent Studio", lifespan=lifespan)
 
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
 # Middleware
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY","dev"))
 
@@ -63,7 +55,17 @@ app.include_router(google_router)
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     uid = get_current_user_id(request)
-    return templates.TemplateResponse("home.html", {"request": request, "user_id": uid})
+
+
+    if uid:
+        return RedirectResponse("/dashboard")
+
+    # Else show login/register page
+    return templates.TemplateResponse("home.html", {
+        "request": request,
+        "user_id": None
+    })
+
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request, db: Session = Depends(get_db)):

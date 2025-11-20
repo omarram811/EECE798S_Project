@@ -6,9 +6,8 @@ import os
 
 Base = declarative_base()
 
-# Base dir = project root (…/course-ta-agent-studio)
 BASE_DIR = Path(__file__).resolve().parent.parent
-# Allow override via env var DATA_DIR, default to <project>/data
+
 DATA_DIR = Path(os.getenv("DATA_DIR", BASE_DIR / "data"))
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -1,160 +1,194 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ agent.name }} — Chat</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            aub: "#840032",
+            aubLight: "#f7e6eb"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .user-msg {
+      background: #840032;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 14px;
+      max-width: 80%;
+      margin-left: auto;
+    }
+    .assistant-msg {
+      background: #f3f3f3;
+      color: #333;
+      padding: 10px 14px;
+      border-radius: 14px;
+      max-width: 80%;
+      margin-right: auto;
+      border: 1px solid #ddd;
+    }
+    .btn-round {
+      width: 50px;
+      height: 50px;
+      background-color: #840032;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
+      transition: 0.2s;
+    }
+    .btn-round:hover {
+      background-color: #5a0024;
+    }
+  </style>
 </head>
-<body class="bg-gray-50">
-  <span class="text-xs text-gray-500">ID: {{ agent.id }}</span>
 
-  <div class="max-w-4xl mx-auto p-6">
-    <div class="flex items-center justify-between mb-3">
-      <h1 class="text-xl font-semibold">{{ agent.name }}</h1>
-      <a class="text-sm text-gray-600 underline" href="/dashboard">Back</a>
-    </div>
+<body class="bg-gray-50 font-sans min-h-screen">
 
-    <form action="/agents/{{agent.id}}/update" method="post" class="bg-white rounded shadow p-4 mb-4">
-      <h2 class="font-semibold mb-2">Agent Settings</h2>
-      <div class="grid md:grid-cols-3 gap-3">
-        <input class="border p-2" name="name" value="{{agent.name}}"/>
-        <input class="border p-2" name="drive_folder" value="{{agent.drive_folder_id or ''}}" placeholder="Drive folder URL or ID"/>
-        <input class="border p-2" name="persona" value="{{agent.persona}}"/>
-        <select class="border p-2" name="provider">
+<header class="flex justify-between items-center p-6 bg-white shadow-md">
+
+  <a href="/dashboard"
+    class="flex items-center text-gray-600 hover:text-aub transition text-4xl font-bold mr-4">
+    ←
+  </a>
+
+
+  <h1 class="text-3xl font-bold text-gray-800">{{ agent.name }}</h1>
+
+  <img src="/static/logos.png" alt="Logo" class="h-20 w-auto">
+</header>
+
+
+  <main class="max-w-4xl mx-auto p-6 space-y-6">
+
+
+    <!-- Agent Settings -->
+    <form action="/agents/{{agent.id}}/update" method="post" class="bg-white rounded-xl shadow-md p-6 space-y-4 border border-aub/30">
+      <h2 class="text-xl font-semibold text-aub">Agent Settings</h2>
+      <div class="grid md:grid-cols-3 gap-4">
+        <input class="border rounded p-3 text-lg" name="name" value="{{agent.name}}" />
+        <input class="border rounded p-3 text-lg" name="drive_folder" value="{{agent.drive_folder_id or ''}}" placeholder="Drive folder URL or ID"/>
+        <input class="border rounded p-3 text-lg" name="persona" value="{{agent.persona}}" placeholder="Persona / Description"/>
+        <select class="border rounded p-3 text-lg" name="provider">
           <option {% if agent.provider=='openai' %}selected{% endif %} value="openai">OpenAI</option>
           <option {% if agent.provider=='gemini' %}selected{% endif %} value="gemini">Gemini</option>
         </select>
-        <input class="border p-2" name="model" value="{{agent.model}}"/>
-        <input class="border p-2" name="embed_model" value="{{agent.embed_model}}"/>
+        <input class="border rounded p-3 text-lg" name="model" value="{{agent.model}}" placeholder="Model"/>
+        <input class="border rounded p-3 text-lg" name="embed_model" value="{{agent.embed_model}}" placeholder="Embedding Model"/>
       </div>
-      <div class="text-right mt-2">
-        <button class="px-3 py-1 bg-gray-800 text-white rounded">Save</button>
+      <div class="text-right">
+        <button class="bg-aub text-white px-6 py-2 rounded-xl hover:bg-aub/80">Save</button>
       </div>
     </form>
 
-    <div id="messages" class="bg-white rounded shadow p-4 min-h-[300px] space-y-3">
+    <!-- Chat Messages -->
+    <div id="messages" class="bg-white rounded-xl shadow-md p-6 min-h-[300px] space-y-3 overflow-y-auto border border-aub/20">
       {% for m in messages %}
-        <div class="whitespace-pre-wrap">
-          <span class="text-xs uppercase text-gray-400">{{m.role}}</span><br/>
+        <div class="{% if m.role=='user' %}user-msg{% else %}assistant-msg{% endif %}">
           {{ m.content }}
         </div>
       {% endfor %}
     </div>
 
-    <form id="promptForm" action="/chat/{{agent.id}}" method="post" class="mt-3 flex gap-2">
-      <!-- ADDED-->
-      <button type="button" id="start-record" class="px-4 py-2 rounded bg-green-600 text-white">🎤 Start</button>
-      <button type="button" id="stop-record" class="px-4 py-2 rounded bg-red-600 text-white">⏹ Stop</button>
-      <!-- ENDED-->
-      <input id="prompt" class="flex-1 border p-2 rounded" name="prompt" placeholder="Ask something about the course..." />
-      <button class="px-4 py-2 rounded bg-indigo-600 text-white">Send</button>
-    </form>
+    <!-- Chat Input -->
+    <form id="promptForm" action="/chat/{{agent.id}}" method="post" class="mt-3 flex gap-3 items-center">
 
-  </div>
+      <!-- Mic Button (Start Recording Only) -->
+      <button type="button" id="voice-btn" class="btn-round">🎤</button>
+
+      <!-- Input -->
+      <input id="prompt" class="flex-1 border rounded-xl p-3 text-lg" name="prompt" placeholder="Type your message..." />
+
+      <!-- Send Button -->
+      <button class="btn-round" type="submit">➤</button>
+
+    </form>
+  </main>
 
   <script>
-  const messages = document.getElementById('messages');
-  const form = document.getElementById('promptForm');
-  let es = null;            // the single EventSource
-  let streamingEl = null;   // <span id="streaming"> for the current answer
+    // Streaming logic
+    const messages = document.getElementById('messages');
+    const form = document.getElementById('promptForm');
+    let es = null;
+    let streamingEl = null;
 
-  function closeStream() {
-    if (es) {
-      es.close();
-      es = null;
+    function closeStream() { if (es) { es.close(); es = null; } }
+
+    function startStream() {
+      closeStream();
+      es = new EventSource('/chat/{{agent.id}}/stream');
+
+      es.addEventListener('message', (e) => {
+        if (!streamingEl) {
+          const div = document.createElement('div');
+          div.className = 'assistant-msg';
+          div.innerHTML = '<span id="streaming"></span>';
+          messages.appendChild(div);
+          streamingEl = div.querySelector('#streaming');
+        }
+        streamingEl.textContent += e.data;
+        messages.scrollTop = messages.scrollHeight;
+      });
+
+      es.addEventListener('done', () => {
+        if (streamingEl) streamingEl.removeAttribute('id');
+        streamingEl = null;
+        closeStream();
+      });
     }
-  }
 
-  function startStream() {
-    // always close any previous stream first
-    closeStream();
+    startStream();
+    form.addEventListener('submit', closeStream);
 
-    es = new EventSource('/chat/{{agent.id}}/stream');
+    // Speech Recognition (Mic Button)
+    let recognition = null;
+    const promptInput = document.getElementById('prompt');
+    const voiceBtn = document.getElementById('voice-btn');
+    let recognizing = false;
 
-    es.addEventListener('message', (e) => {
-      // lazily create the streaming bubble once
-      if (!streamingEl) {
-        const div = document.createElement('div');
-        div.className = 'whitespace-pre-wrap';
-        div.innerHTML = '<span class="text-xs uppercase text-gray-400">assistant</span><br/><span id="streaming"></span>';
-        messages.appendChild(div);
-        streamingEl = div.querySelector('#streaming');
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+
+      recognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          transcript += event.results[i][0].transcript;
+        }
+        promptInput.value = transcript;
+      };
+
+      recognition.onerror = (e) => console.error("SpeechRecognition error:", e.error);
+    }
+
+    voiceBtn.addEventListener('click', () => {
+      if (!recognition) return;
+      if (!recognizing) {
+        recognition.start();
+        recognizing = true;
+        voiceBtn.classList.add('ring-4', 'ring-aub');
+      } else {
+        recognition.stop();
+        recognizing = false;
+        voiceBtn.classList.remove('ring-4', 'ring-aub');
       }
-      streamingEl.textContent += e.data;
-      messages.scrollTop = messages.scrollHeight;
     });
-
-    es.addEventListener('done', () => {
-      // finalize the bubble and STOP auto-reconnect loops
-      if (streamingEl) streamingEl.removeAttribute('id');
-      streamingEl = null;
-      closeStream();
-    });
-
-    // Optional: server may emit [BUSY] (from backend debounce). Just close.
-    es.addEventListener('info', () => {
-      closeStream();
-    });
-
-    // Network/server restarts, etc. Don’t auto-retry here; wait for user action.
-    es.addEventListener('error', () => {
-      closeStream();
-    });
-  }
-
-  // Start one stream on page load. Backend will send [IDLE] if there’s nothing to answer.
-  startStream();
-
-  // Prevent overlapping streams during navigation / form submit
-  form.addEventListener('submit', () => {
-    // You can also optimistically append the user message here if you want.
-    closeStream(); // stop the current stream before POST + redirect
-  });
-
-
-  /////////////////////////SPEECH-TEXT-ADDED///////////////////////////////////////////////////
-
-  let recognition = null;
-
-  const promptInput = document.getElementById('prompt');
-  const startBtn = document.getElementById('start-record');
-  const stopBtn = document.getElementById('stop-record');
-
-  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRecognition();
-    recognition.continuous = true; // keep listening
-    recognition.interimResults = true; // get live transcription
-    recognition.lang = 'en-US'; // or your language
-
-    recognition.onresult = (event) => {
-      let transcript = '';
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
-        transcript += event.results[i][0].transcript;
-      }
-      promptInput.value = transcript; // update input live
-    };
-
-    recognition.onerror = (e) => {
-      console.error("SpeechRecognition error:", e.error);
-    };
-
-    recognition.onend = () => {
-      console.log("Recognition ended");
-    };
-  }
-
-  startBtn.addEventListener('click', () => {
-    if (recognition) recognition.start();
-  });
-
-  stopBtn.addEventListener('click', () => {
-    if (recognition) recognition.stop();
-  });
-
-  ///////////////////////////////////SPEECH-TEXT-ENDED//////////////////////////////////////////////
-
   </script>
 
 </body>

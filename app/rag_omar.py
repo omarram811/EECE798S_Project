@@ -15,227 +15,8 @@ except ImportError:
 
 from .providers import OpenAIProvider, GeminiProvider, ProviderBase
 from .settings import get_settings
-import pdfplumber
-import requests
-import tempfile
-from pdf2image import convert_from_path
-import pytesseract
-from PIL import Image
-import mimetypes
-from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
-import google.oauth2.credentials
-import googleapiclient.discovery
-import io
-from googleapiclient.http import MediaIoBaseDownload
-from .db import get_db
-from .models import Agent, Conversation, Message, AgentFile
-from .security import get_current_user_id
-import json, time, threading
-from .models import QueryLog
-import uuid
-from fastapi import APIRouter, Request, Depends, HTTPException, Form
-from .db import SessionLocal
 
 log = logging.getLogger(__name__)
-
-############################### ADDED ######################
-db= SessionLocal()
-
-def _ocr_image(img: Image.Image) -> str:
-    try:
-        return pytesseract.image_to_string(img)
-    except Exception as e:
-        print(f"[OCR] Tesseract error: {e}")
-        return ""
-    
-
-def _list_all_images(folder_id: str, user_id: int):
-    """
-    List ONLY image files inside the given Google Drive folder.
-    Uses a Drive API query that restricts results to image/* MIME types.
-    """
-    token_file = _user_token_path(user_id)
-
-    creds = Credentials.from_authorized_user_file(
-        str(token_file),
-        ["https://www.googleapis.com/auth/drive.readonly"]
-    )
-
-    service = build("drive", "v3", credentials=creds)
-
-    results = []
-    page_token = None
-
-    # Query ONLY images using mimeType contains 'image/'
-    q = (
-        f"'{folder_id}' in parents "
-        f"and trashed = false "
-        f"and mimeType contains 'image/'"
-    )
-
-    while True:
-        response = service.files().list(
-            q=q,
-            fields="nextPageToken, files(id, name, mimeType, webContentLink, modifiedTime)",
-            pageToken=page_token,
-            includeItemsFromAllDrives=False,
-            supportsAllDrives=True
-        ).execute()
-
-        results.extend(response.get("files", []))
-
-        page_token = response.get("nextPageToken")
-        if not page_token:
-            break
-
-    return results
-
-def load_drive_images(agent) -> List[dict]:
-    """
-    Load ONLY image files from the folder using raw Drive API.
-    PDF or other files are ignored by construction.
-    """
-    folder_id = file_id_from_url_or_id(agent.drive_folder_id or "")
-    if not folder_id:
-        return []
-
-    # Raw API call that returns only images
-    files = _list_all_images(folder_id, agent.owner_id)
-
-    results = []
-    seen_ids = set()
-
-    for f in files:
-        fid = f.get("id")
-        if not fid or fid in seen_ids:
-            continue
-        seen_ids.add(fid)
-
-        results.append({
-            "id": fid,
-            "source": f.get("webContentLink", "") or "",
-            "title": f.get("name", ""),
-            "mime": f.get("mimeType", "") or "",
-            "is_image": True,       # always true
-            "is_pdf": False,        # always false now
-            "page": None,
-            "slide": None,
-            "last_modified": f.get("modifiedTime", "") or "",
-            "text": "",             # text extracted later
-        })
-
-    # print("--- LOADED IMAGES FROM DRIVE ---")
-    # for r in results:
-    #     print(f"ID: {r['id']}")
-    #     print(f"TITLE: {r['title']}")
-    #     print(f"MIME: {r['mime']}")
-    #     print("------------------------------")
-
-    for img in results:
-        if db.query(AgentFile).filter_by(agent_id=agent.id,  file_id=img["id"]).first():
-            continue
-
-        db.add(AgentFile(
-            agent_id=agent.id,
-            #file_id=str(uuid.uuid4()),
-            file_id=img["id"],
-            title=img["title"],
-            page=None,
-            #text=img["text"],
-            last_modified=img["last_modified"]
-        ))
-
-    db.commit()
-
-    return results
-
-
-
-def download_drive_file(file_id: str, token_path: str) -> bytes:
-    """
-    Downloads a real file (PNG/JPG/PDF/etc) from Google Drive using OAuth token.
-    Returns raw bytes.
-    """
-    # Load OAuth credentials
-    creds_json = json.load(open(token_path, "r"))
-    creds = google.oauth2.credentials.Credentials.from_authorized_user_info(
-        creds_json,
-        scopes=["https://www.googleapis.com/auth/drive.readonly"]
-    )
-
-    # Build Drive API client
-    service = googleapiclient.discovery.build("drive", "v3", credentials=creds)
-
-    # Request media
-    request = service.files().get_media(fileId=file_id)
-
-    # Download into memory
-    buffer = io.BytesIO()
-    downloader = MediaIoBaseDownload(buffer, request)
-
-    done = False
-    while not done:
-        status, done = downloader.next_chunk()
-
-    return buffer.getvalue()
-
-
-########## 
-def _extract_text_for_images(images: List[dict], owner_id: int) -> List[dict]:
-    """
-    Process a LIST of image documents and extract text via OCR.
-    Each dict in the list is mutated in-place to include d["text"].
-    """
-    token_path = str(_user_token_path(owner_id))
-
-    for d in images:
-        mime = (d.get("mime") or "").lower()
-        file_id = d.get("id")
-
-        if not file_id or not mime.startswith("image/"):
-            print(f"[WARN] Skipping non-image doc: {d.get('title')}")
-            d["text"] = ""
-            continue
-
-        # If text already exists, skip
-        if (d.get("text") or "").strip():
-            d["text"] = _trim_for_embedding(d["text"])
-            continue
-
-        # Download file bytes
-        try:
-            file_bytes = download_drive_file(file_id, token_path)
-        except Exception as e:
-            print(f"[Drive] Failed to download image {file_id}: {e}")
-            d["text"] = ""
-            continue
-
-        # OCR
-        tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".img")
-        try:
-            tmp.write(file_bytes)
-            tmp.close()
-
-            try:
-                img = Image.open(tmp.name)
-                text = pytesseract.image_to_string(img)
-                print(f"[IMAGE OCR] {d.get('title')} → {len(text)} chars")
-            except Exception as e:
-                print(f"[OCR] Failed on image {d.get('title')}: {e}")
-                text = ""
-
-        finally:
-            try:
-                os.remove(tmp.name)
-            except:
-                pass
-
-        d["text"] = _trim_for_embedding(text)
-
-    return images
-
-
 
 # add this helper near the top (after imports)
 def _sanitize_meta(meta: dict) -> dict:
@@ -453,14 +234,13 @@ def _load_drive_docs_raw(folder_id: str, loader_auth_kwargs: Dict):
         raise
 
 
-def retrieve(agent, query: str, k: int = 30) -> List[dict]:
+def retrieve(agent, query: str, k: int = 5) -> List[dict]:
     client = get_vector_client()
     col = ensure_collection(agent, client)
     res = col.query(query_texts=[query], n_results=max(1, k))
 
     if not res or not res.get("ids") or not res["ids"][0]:
         return []
-    
 
     out = []
     ids = res["ids"][0]
@@ -500,74 +280,20 @@ def _make_doc_id(agent_id: int, md: dict, idx: int) -> str:
     return f"{base}#i{idx}"
 
 
-# def load_drive_docs(agent) -> List[dict]:
-#     """Load Google Drive docs (recursive) and normalize."""
-#     folder_id = file_id_from_url_or_id(agent.drive_folder_id or "")
-#     auth_kwargs = _build_drive_auth_kwargs(agent.owner_id)
-#     docs_raw = _load_drive_docs_raw(folder_id, auth_kwargs)
-
-#     results = []
-#     seen_ids = set()
-#     for i, d in enumerate(docs_raw):
-#         md = getattr(d, "metadata", {}) or {}
-#         text = getattr(d, "page_content", "") or ""
-
-#         doc_id = _make_doc_id(agent.id, md, i)
-#         print("[DEBUG] doc_id ", doc_id)
-#         # Guard against any accidental dup even after suffixing
-#         if doc_id in seen_ids:
-#             doc_id = f"{doc_id}#dup{i}"
-#         seen_ids.add(doc_id)
-
-#         results.append({
-#             "id": doc_id,
-#             "source": md.get("source", ""),
-#             "title": md.get("title", ""),
-#             "page": md.get("page"),
-#             "slide": md.get("slide"),
-#             "last_modified": md.get("last_modified_time", "") or md.get("modified_time", ""),
-#             "text": text,
-#         })
-
-#         for doc in results:
-#                 if db.query(AgentFile).filter_by(agent_id=agent.id,  file_id=doc["id"]).first():
-#                     continue
-
-#                 db.add(AgentFile(
-#                     agent_id=agent.id,
-#                     #file_id=str(uuid.uuid4()),
-#                     file_id=doc["id"],
-#                     title=doc["title"],
-#                     page=None,
-#                     #text=img["text"],
-#                     last_modified=doc["last_modified"]
-#                 ))
-
-#         db.commit()
-
-#     return results
-
-
 def load_drive_docs(agent) -> List[dict]:
-    """
-    Load Google Drive docs and return clean normalized metadata.
-    DO NOT write to DB here.
-    """
+    """Load Google Drive docs (recursive) and normalize."""
     folder_id = file_id_from_url_or_id(agent.drive_folder_id or "")
     auth_kwargs = _build_drive_auth_kwargs(agent.owner_id)
     docs_raw = _load_drive_docs_raw(folder_id, auth_kwargs)
 
     results = []
     seen_ids = set()
-
     for i, d in enumerate(docs_raw):
         md = getattr(d, "metadata", {}) or {}
         text = getattr(d, "page_content", "") or ""
 
         doc_id = _make_doc_id(agent.id, md, i)
-        print("[DEBUG] doc_id ", doc_id)
-
-        # Ensure uniqueness
+        # Guard against any accidental dup even after suffixing
         if doc_id in seen_ids:
             doc_id = f"{doc_id}#dup{i}"
         seen_ids.add(doc_id)
@@ -580,12 +306,8 @@ def load_drive_docs(agent) -> List[dict]:
             "slide": md.get("slide"),
             "last_modified": md.get("last_modified_time", "") or md.get("modified_time", ""),
             "text": text,
-            "is_image": False,
         })
-
-
     return results
-
 
 
 # -------- Indexing & Retrieval --------
@@ -596,63 +318,14 @@ def _trim_for_embedding(text: str, limit: int = 12000) -> str:
 
 def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
     docs = load_drive_docs(agent)
-
-    ### to load images from drive #######
-    images = load_drive_images(agent)
-    #print("[DEBUG] images loaded : ", images)
-    _extract_text_for_images(images,agent.owner_id)
-    print("[DEBUG] text images , ", images)
-
-    all_docs = docs + images
-
     client = get_vector_client()
     col = ensure_collection(agent, client)
     provider = provider_from(agent)
 
-    existing_ids = set(col.get()['ids'])
-    existing_items = col.get()
-    existing_map = {}
-    for _id, meta in zip(existing_items["ids"], existing_items["metadatas"]):
-        existing_map[_id] = meta
-
-    current_ids = set([d["id"] for d in all_docs])
-    to_delete = existing_ids - current_ids
-
-    if to_delete:
-        col.delete(ids=list(to_delete))
-        print("Deleted removed files:", to_delete)
-
-
-    dirty_docs = []
-
-    for d in all_docs:
-        fid = d["id"]
-        modified = d.get("last_modified", "")
-
-        # New file
-        if fid not in existing_ids:
-            dirty_docs.append(d)
-            continue
-
-        # Get stored metadata
-        stored_meta = existing_map.get(fid)
-
-        # Updated file
-        if stored_meta and stored_meta.get("last_modified") != modified:
-            dirty_docs.append(d)
-            continue
-
-
-    # If nothing changed → no need to embed anything
-    if not dirty_docs:
-        print("[reindex_agent] No new or updated files. Nothing to index.")
-        return (0, 0, 0)
-
-
     # 1) Build triples
     triples = []
     dropped_empty = 0
-    for d in dirty_docs:
+    for d in docs:
         text = _trim_for_embedding(d.get("text") or "")
         if not text:
             dropped_empty += 1
@@ -663,13 +336,11 @@ def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
             "page": d.get("page"),
             "slide": d.get("slide"),
             "last_modified": d.get("last_modified") or "",
-            "is_image": d.get("is_image", False),   # ADD THIS
         })
         triples.append((d["id"], meta, text))
-        print ("[DEBUG] META:",meta)
 
     if dropped_empty:
-        print(f"[reindex_agent] Skipped {dropped_empty} empty chunks out of {len(all_docs)}")
+        print(f"[reindex_agent] Skipped {dropped_empty} empty chunks out of {len(docs)}")
     if not triples:
         return (0, 0, 0)
 
@@ -698,7 +369,7 @@ def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
             not isinstance(embs_batch, (list, tuple)) or
             len(embs_batch) != len(docs_batch)
         )
-        if not need_salvage:
+        if not need_salvage and embs_batch:
             d0 = len(embs_batch[0])
             if any(len(v) != d0 for v in embs_batch):
                 need_salvage = True
@@ -736,6 +407,7 @@ def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
 
     return (added, 0, added)
 
+
 def _flatten_once(x):
     # If x == [[...]] (extra wrapper), unwrap one level.
     if isinstance(x, (list, tuple)) and len(x) == 1 and isinstance(x[0], (list, tuple)):
@@ -771,4 +443,5 @@ def _as_2d_floats(embs):
             e = [float(v) for v in e]
         out.append(e)
     return out
+
 
