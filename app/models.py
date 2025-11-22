@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Bool
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .db import Base
+import uuid
 
 class User(Base):
     __tablename__ = "users"
@@ -18,7 +19,7 @@ class Agent(Base):
     id = Column(Integer, primary_key=True, index=True)
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     name = Column(String, nullable=False)
-    slug = Column(String, unique=True, index=True)
+    slug = Column(String, unique=True, index=True, default=lambda: str(uuid.uuid4()))
     drive_folder_id = Column(String, nullable=True)
     persona = Column(Text, default="")
     provider = Column(String, default="openai")

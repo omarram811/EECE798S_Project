@@ -64,6 +64,28 @@ def post_message(agent_id: int, request: Request, prompt: str = Form(...), db: S
     db.add(Message(conversation_id=conv.id, user_id=uid, role="user", content=prompt)); db.commit()
     return RedirectResponse(f"/a/{agent.slug}", status_code=302)
 
+@router.post("/public/{agent_id}")
+def post_public_message(agent_id: int, request: Request, prompt: str = Form(...), db: Session = Depends(get_db)):
+    agent = db.get(Agent, agent_id)
+    if not agent:
+        raise HTTPException(status_code=404)
+    
+    # Get or create session-based user ID
+    session_id = request.session.get("public_session_id")
+    if not session_id:
+        session_id = str(uuid.uuid4())
+        request.session["public_session_id"] = session_id
+    
+    public_user_id = -abs(hash(session_id)) % (10 ** 8)
+    
+    prompt = (prompt or "").strip()
+    if not prompt:
+        return RedirectResponse(f"/public/{agent.slug}", status_code=302)
+    
+    conv = _ensure_conversation(db, agent.id, public_user_id)
+    db.add(Message(conversation_id=conv.id, user_id=public_user_id, role="user", content=prompt)); db.commit()
+    return RedirectResponse(f"/public/{agent.slug}", status_code=302)
+
 @router.get("/{agent_id}/stream")
 def stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
     uid = get_current_user_id(request)
@@ -134,6 +156,85 @@ def stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
                  # ------------------------------------------
                 # LOG THE QUERY & RESPONSE
                 # ------------------------------------------
+                user_question = history[-1]["content"] if history else ""
+                db.add(QueryLog(
+                    agent_id=agent.id,
+                    query=user_question,
+                    response=acc
+                ))
+                db.commit()
+
+            yield {"event":"done", "data":"[END]"}
+        except Exception as e:
+            yield {"event":"error", "data": str(e)}
+        finally:
+            with _STREAMS_LOCK:
+                _ACTIVE_STREAMS.discard(conv.id)
+    return EventSourceResponse(event_gen())
+
+@router.get("/public/{agent_id}/stream")
+def public_stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
+    agent = db.get(Agent, agent_id)
+    if not agent:
+        return EventSourceResponse(({"event": "error", "data": "notfound"} for _ in []))
+    
+    # Get session-based user ID
+    session_id = request.session.get("public_session_id")
+    if not session_id:
+        session_id = str(uuid.uuid4())
+        request.session["public_session_id"] = session_id
+    
+    public_user_id = -abs(hash(session_id)) % (10 ** 8)
+    
+    conv = _ensure_conversation(db, agent.id, public_user_id)
+    msgs = db.query(Message).filter_by(conversation_id=conv.id).order_by(Message.id.asc()).all()
+    history = [
+        {"role": m.role, "content": m.content}
+        for m in msgs
+        if m.role in ("user", "assistant") and (m.content or "").strip()
+    ]
+    last = next((m for m in reversed(msgs) if (m.content or "").strip()), None)
+    if not last or last.role != "user":
+        def idle():
+            yield {"event": "done", "data": "[IDLE]"}
+        return EventSourceResponse(idle())
+
+    last_user = last.content
+
+    with _STREAMS_LOCK:
+        if conv.id in _ACTIVE_STREAMS:
+            return EventSourceResponse(({"event": "info", "data": "[BUSY]"} for _ in []))
+        _ACTIVE_STREAMS.add(conv.id)
+
+    files = db.query(AgentFile).filter_by(agent_id=agent.id).all()
+    file_list_text = "\n".join(
+        [f"- {f.title}" for f in files]
+    ) if files else "(No files found)"
+
+    context_docs = retrieve(agent, last_user, k=100)
+    context_text = "\n\n".join([f"[{i+1}] {d['metadata'].get('title','')}\n{d['text'][:1200]}" for i,d in enumerate(context_docs)])
+    system = {
+    "role": "system",
+    "content": (
+        f"You are a course TA agent.\n"
+        f"Persona: {agent.persona}\n\n"
+        f"When you use a document, cite it by its exact filename.\n\n"
+        f"Retrieved context (may be partial):\n{context_text}"
+    )
+}
+
+    provider = provider_from(agent)
+    def event_gen():
+        try:
+            stream = provider.stream_chat([system, *history])
+            acc = ""
+            for token in stream:
+                acc += token
+                yield {"event":"message", "data": token}
+                time.sleep(0.1)
+            if acc.strip():
+                db.add(Message(conversation_id=conv.id, user_id=public_user_id, role="assistant", content=acc))
+                db.commit()
                 user_question = history[-1]["content"] if history else ""
                 db.add(QueryLog(
                     agent_id=agent.id,

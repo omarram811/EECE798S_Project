@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Request, Depends, Form, HTTPException
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
-from slugify import slugify
 from .db import get_db
 from .models import Agent, Conversation, GoogleToken, AgentFile
 from .security import get_current_user_id
@@ -13,6 +12,7 @@ from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
 import json
 import tempfile
+import uuid
 
 router = APIRouter(prefix="/agents", tags=["agents"])
 from fastapi.templating import Jinja2Templates
@@ -30,7 +30,7 @@ def create_agent(request: Request,
     uid = get_current_user_id(request)
     if not uid:
         raise HTTPException(status_code=401, detail="Login required")
-    slug = slugify(name)
+    slug = str(uuid.uuid4())
     a = Agent(owner_id=uid, name=name, slug=slug, drive_folder_id=drive_folder, persona=persona,
               provider=provider, model=model, embed_model=embed_model)
     db.add(a); db.commit()

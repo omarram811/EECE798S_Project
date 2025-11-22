@@ -88,9 +88,33 @@ def chat_page(slug: str, request: Request, db: Session = Depends(get_db)):
     messages = []
     if conv:
         messages = db.query(Message).filter_by(conversation_id=conv.id).order_by(Message.id.asc()).all()
-    return templates.TemplateResponse("chat.html", {"request": request, "agent": agent, "messages": messages})
+    
+    # Get full URL for sharing
+    base_url = str(request.base_url).rstrip('/')
+    share_url = f"{base_url}/public/{slug}"
+    
+    return templates.TemplateResponse("chat.html", {"request": request, "agent": agent, "messages": messages, "share_url": share_url})
 
-# simple public redirect for sharing
-@app.get("/link/{slug}")
-def share_link(slug: str):
-    return RedirectResponse(f"/a/{slug}")
+# Public chat page (no authentication required)
+@app.get("/public/{slug}", response_class=HTMLResponse)
+def public_chat_page(slug: str, request: Request, db: Session = Depends(get_db)):
+    agent = db.query(Agent).filter_by(slug=slug).first()
+    if not agent:
+        raise HTTPException(status_code=404)
+    
+    # For public users, we'll use a session-based approach
+    session_id = request.session.get("public_session_id")
+    if not session_id:
+        import uuid
+        session_id = str(uuid.uuid4())
+        request.session["public_session_id"] = session_id
+    
+    # Store public conversations with session_id in user_id field as negative hash
+    public_user_id = -abs(hash(session_id)) % (10 ** 8)
+    
+    conv = db.query(Conversation).filter_by(agent_id=agent.id, user_id=public_user_id).order_by(Conversation.id.desc()).first()
+    messages = []
+    if conv:
+        messages = db.query(Message).filter_by(conversation_id=conv.id).order_by(Message.id.asc()).all()
+    
+    return templates.TemplateResponse("public_chat.html", {"request": request, "agent": agent, "messages": messages})
