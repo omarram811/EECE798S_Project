@@ -604,7 +604,7 @@ def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
     print("[DEBUG] text images , ", images)
 
     all_docs = docs + images
-    print("[DEBUG] ALLDOCS , ", all_docs)
+    #print("[DEBUG] ALLDOCS , ", all_docs)
     
 
     client = get_vector_client()

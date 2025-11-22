@@ -104,8 +104,6 @@ def stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
         [f"- {f.title}" for f in files]
     ) if files else "(No files found)"
 
-
-
     context_docs = retrieve(agent, last_user, k=100)
     context_text = "\n\n".join([f"[{i+1}] {d['metadata'].get('title','')}\n{d['text'][:1200]}" for i,d in enumerate(context_docs)])
     system = {
