@@ -110,7 +110,14 @@
       <button type="button" id="voice-btn" class="btn-round">🎤</button>
 
       <!-- Input -->
-      <input id="prompt" class="flex-1 border rounded-xl p-3 text-lg" name="prompt" placeholder="Type your message..." />
+      
+      <textarea id="prompt"
+        class="flex-1 border rounded-xl p-3 text-lg resize-none overflow-hidden"
+        name="prompt"
+        placeholder="Type your message..."
+        rows="1"
+      ></textarea>
+
 
       <!-- Send Button -->
       <button class="btn-round" type="submit">➤</button>
@@ -153,11 +160,24 @@
     startStream();
     form.addEventListener('submit', closeStream);
 
-    // Speech Recognition (Mic Button)
     let recognition = null;
     const promptInput = document.getElementById('prompt');
+    const autoResize = () => {
+    promptInput.style.height = "auto";
+    promptInput.style.height = promptInput.scrollHeight + "px";
+  };
+
     const voiceBtn = document.getElementById('voice-btn');
     let recognizing = false;
+
+    let lastInterim = "";
+    let finalText = "";
+
+    function longestCommonPrefix(a, b) {
+      let i = 0;
+      while (i < a.length && i < b.length && a[i] === b[i]) i++;
+      return a.substring(0, i);
+    }
 
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -166,12 +186,29 @@
       recognition.interimResults = true;
       recognition.lang = 'en-US';
 
+      recognition.onstart = () => {
+        lastInterim = "";
+        finalText = promptInput.value;
+      };
+
       recognition.onresult = (event) => {
-        let transcript = '';
+        let interim = "";
         for (let i = event.resultIndex; i < event.results.length; ++i) {
-          transcript += event.results[i][0].transcript;
+          interim += event.results[i][0].transcript;
         }
-        promptInput.value = transcript;
+
+        // Compute shared prefix (protects against Chrome rewrites)
+        const common = longestCommonPrefix(lastInterim, interim);
+
+        // New part is what's after the shared prefix in the NEW interim
+        const newPart = interim.substring(common.length);
+
+        // Append ONLY the new part
+        finalText += newPart;
+        promptInput.value = finalText.trim();
+        autoResize(); 
+
+        lastInterim = interim;
       };
 
       recognition.onerror = (e) => console.error("SpeechRecognition error:", e.error);
@@ -179,6 +216,7 @@
 
     voiceBtn.addEventListener('click', () => {
       if (!recognition) return;
+
       if (!recognizing) {
         recognition.start();
         recognizing = true;
@@ -189,7 +227,20 @@
         voiceBtn.classList.remove('ring-4', 'ring-aub');
       }
     });
+
+    
   </script>
+  <style>
+    #prompt {
+  width: 100%;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  resize: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+  </style>
 
 </body>
 </html>

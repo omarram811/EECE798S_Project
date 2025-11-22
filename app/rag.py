@@ -604,6 +604,8 @@ def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
     print("[DEBUG] text images , ", images)
 
     all_docs = docs + images
+    print("[DEBUG] ALLDOCS , ", all_docs)
+    
 
     client = get_vector_client()
     col = ensure_collection(agent, client)
@@ -618,9 +620,49 @@ def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
     current_ids = set([d["id"] for d in all_docs])
     to_delete = existing_ids - current_ids
 
-    if to_delete:
-        col.delete(ids=list(to_delete))
-        print("Deleted removed files:", to_delete)
+    # ----------------------------
+    # EXPANDED DELETE FIX  
+    # ----------------------------
+    # Ensure the base file source is marked for deletion
+    # Any file removed from Drive must have its source removed too
+    removed_sources = set()
+    for eid in to_delete:
+        meta = existing_map.get(eid)
+        if meta and meta.get("source"):
+            removed_sources.add(meta["source"])
+
+    for eid, meta in existing_map.items():
+        if meta.get("source") in removed_sources:
+            to_delete.add(eid)
+
+    expanded_delete = set(to_delete)
+    base_ids = {eid.split("#")[0] for eid in to_delete}
+
+    for eid in existing_ids:
+        base = eid.split("#")[0]
+        if base in base_ids:
+            expanded_delete.add(eid)
+
+    if expanded_delete:
+        print("Deleting expanded set:", expanded_delete)
+        col.delete(ids=list(expanded_delete))
+
+        # ----------------------------
+        # DELETE FROM LOCAL DATABASE  
+        # ----------------------------
+        session = SessionLocal()
+
+        for eid in expanded_delete:
+            db_entry = session.query(AgentFile).filter_by(agent_id=agent.id, file_id=eid).first()
+            if db_entry:
+                print(f"[DB] Deleting AgentFile entry: {eid}")
+                session.delete(db_entry)
+
+        session.commit()
+        session.close()
+
+    else:
+        print("No items to delete from Chroma (expanded delete)")
 
 
     dirty_docs = []
@@ -629,21 +671,17 @@ def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
         fid = d["id"]
         modified = d.get("last_modified", "")
 
-        # New file
         if fid not in existing_ids:
             dirty_docs.append(d)
             continue
 
-        # Get stored metadata
         stored_meta = existing_map.get(fid)
 
-        # Updated file
         if stored_meta and stored_meta.get("last_modified") != modified:
             dirty_docs.append(d)
             continue
 
 
-    # If nothing changed → no need to embed anything
     if not dirty_docs:
         print("[reindex_agent] No new or updated files. Nothing to index.")
         return (0, 0, 0)
@@ -654,6 +692,13 @@ def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
     dropped_empty = 0
     for d in dirty_docs:
         text = _trim_for_embedding(d.get("text") or "")
+        title = d.get("title") or ""
+        is_img = d.get("is_image", False)
+
+        # prepend metadata into searchable text
+        meta_prefix = f"FILE: {title}. IMAGE: {is_img}. "
+        text = meta_prefix + _trim_for_embedding(d.get("text") or "")
+
         if not text:
             dropped_empty += 1
             continue

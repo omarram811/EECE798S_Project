@@ -94,7 +94,7 @@ class AgentFile(Base):
 
     page = Column(Integer, nullable=True)      # <-- REQUIRED
     slide = Column(Integer, nullable=True)     # <-- REQUIRED
-
+    text = Column(Text, nullable=True) 
     last_modified = Column(String, nullable=True)
 
     __table_args__ = (

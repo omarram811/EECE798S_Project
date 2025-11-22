@@ -28,7 +28,7 @@ def save_drive_images_to_db(agent, db: Session):
             file_id=str(uuid.uuid4()),
             title=img["title"],
             page=None,
-            #text=img["text"],
+            text=img["text"],
             last_modified=img["last_modified"]
         ))
 
@@ -73,30 +73,6 @@ def stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
     if not agent:
         return EventSourceResponse(({"event": "error", "data": "notfound"} for _ in []))
     
-    # images = load_drive_images(agent)
-    # for img in images:
-    #     print(f"[DEBUG IMAGE] title={img['title']}, id={img['id']}, mime={img['mime']}")
-
-    # # Save images to DB (existing code)
-    # save_drive_images_to_db(agent, db)
-
-    # # ---- NEW: Fetch the true list of files from metadata ----
-    # files = (
-    #     db.query(AgentFile)
-    #     .filter_by(agent_id=agent.id)
-    #     .order_by(AgentFile.title.asc())
-    #     .all()
-    # )
-    # print ("[DEBUG] files",files)
-
-    # # Build a clean, deterministic list
-    # file_list_text = "\n".join(
-    #     f"- {f.title}" + (f" (page {f.page})" if f.page else "") 
-    #     for f in files
-    # )
-    # if not file_list_text:
-    #     file_list_text = "(No files indexed yet)"
-
 
     conv = _ensure_conversation(db, agent.id, uid)
     # build context (skip empty contents entirely)
@@ -116,14 +92,21 @@ def stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
 
     last_user = last.content
 
+
     # Prevent concurrent streams for the same conversation (debounce)
     with _STREAMS_LOCK:
         if conv.id in _ACTIVE_STREAMS:
             return EventSourceResponse(({"event": "info", "data": "[BUSY]"} for _ in []))
         _ACTIVE_STREAMS.add(conv.id)
 
+    files = db.query(AgentFile).filter_by(agent_id=agent.id).all()
+    file_list_text = "\n".join(
+        [f"- {f.title}" for f in files]
+    ) if files else "(No files found)"
 
-    context_docs = retrieve(agent, last_user, k=5)
+
+
+    context_docs = retrieve(agent, last_user, k=100)
     context_text = "\n\n".join([f"[{i+1}] {d['metadata'].get('title','')}\n{d['text'][:1200]}" for i,d in enumerate(context_docs)])
     system = {
     "role": "system",
@@ -135,6 +118,7 @@ def stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
         f"Retrieved context (may be partial):\n{context_text}"
     )
 }
+
 
     provider = provider_from(agent)
     def event_gen():
