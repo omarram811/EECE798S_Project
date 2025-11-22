@@ -158,14 +158,51 @@
     }
 
     startStream();
-    form.addEventListener('submit', closeStream);
 
+    // REMOVE THIS LINE (DO NOT KEEP)
+    // form.addEventListener('submit', closeStream);
+
+    //
+    // ⭐ NEW SUBMIT HANDLER — Paste here
+    //
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();   // stop page reload
+
+        const text = promptInput.value.trim();
+        if (!text) return;
+
+        // Show user message immediately
+        const div = document.createElement("div");
+        div.className = "user-msg";
+        div.textContent = text;
+        messages.appendChild(div);
+
+        messages.scrollTop = messages.scrollHeight;
+
+        // Send to backend without reloading
+        fetch(form.action, {
+            method: "POST",
+            body: new FormData(form)
+        }).then(() => {
+            promptInput.value = "";
+            finalText = "";  // reset buffer for speech recognition
+            lastInterim = "";
+            autoResize();
+            messages.scrollTop = messages.scrollHeight;
+            startStream();  // start receiving assistant reply
+        });
+    });
+
+
+    //
+    // SPEECH RECOGNITION (leave as is)
+    //
     let recognition = null;
     const promptInput = document.getElementById('prompt');
     const autoResize = () => {
-    promptInput.style.height = "auto";
-    promptInput.style.height = promptInput.scrollHeight + "px";
-  };
+        promptInput.style.height = "auto";
+        promptInput.style.height = promptInput.scrollHeight + "px";
+    };
 
     const voiceBtn = document.getElementById('voice-btn');
     let recognizing = false;
@@ -174,59 +211,56 @@
     let finalText = "";
 
     function longestCommonPrefix(a, b) {
-      let i = 0;
-      while (i < a.length && i < b.length && a[i] === b[i]) i++;
-      return a.substring(0, i);
+        let i = 0;
+        while (i < a.length && i < b.length && a[i] === b[i]) i++;
+        return a.substring(0, i);
     }
 
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = 'en-US';
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
 
-      recognition.onstart = () => {
-        lastInterim = "";
-        finalText = promptInput.value;
-      };
+        recognition.onstart = () => {
+            lastInterim = "";
+            finalText = promptInput.value;
+        };
 
-      recognition.onresult = (event) => {
-        let interim = "";
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          interim += event.results[i][0].transcript;
-        }
+        recognition.onresult = (event) => {
+            let interim = "";
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                interim += event.results[i][0].transcript;
+            }
 
-        // Compute shared prefix (protects against Chrome rewrites)
-        const common = longestCommonPrefix(lastInterim, interim);
+            const common = longestCommonPrefix(lastInterim, interim);
+            const newPart = interim.substring(common.length);
 
-        // New part is what's after the shared prefix in the NEW interim
-        const newPart = interim.substring(common.length);
+            finalText += newPart;
+            promptInput.value = finalText.trim();
+            autoResize();
 
-        // Append ONLY the new part
-        finalText += newPart;
-        promptInput.value = finalText.trim();
-        autoResize(); 
+            lastInterim = interim;
+        };
 
-        lastInterim = interim;
-      };
-
-      recognition.onerror = (e) => console.error("SpeechRecognition error:", e.error);
+        recognition.onerror = (e) => console.error("SpeechRecognition error:", e.error);
     }
 
     voiceBtn.addEventListener('click', () => {
-      if (!recognition) return;
+        if (!recognition) return;
 
-      if (!recognizing) {
-        recognition.start();
-        recognizing = true;
-        voiceBtn.classList.add('ring-4', 'ring-aub');
-      } else {
-        recognition.stop();
-        recognizing = false;
-        voiceBtn.classList.remove('ring-4', 'ring-aub');
-      }
+        if (!recognizing) {
+            recognition.start();
+            recognizing = true;
+            voiceBtn.classList.add('ring-4', 'ring-aub');
+        } else {
+            recognition.stop();
+            recognizing = false;
+            voiceBtn.classList.remove('ring-4', 'ring-aub');
+        }
     });
+
 
     
   </script>
