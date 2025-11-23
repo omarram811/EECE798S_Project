@@ -16,12 +16,9 @@ except ImportError:
 from .providers import OpenAIProvider, GeminiProvider, ProviderBase
 from .settings import get_settings
 import pdfplumber
-import requests
 import tempfile
-from pdf2image import convert_from_path
 import pytesseract
 from PIL import Image
-import mimetypes
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 import google.oauth2.credentials
@@ -592,41 +589,174 @@ def _make_doc_id(agent_id: int, md: dict, idx: int) -> str:
 #     return results
 
 
+def _list_all_files_in_drive_folder(folder_id: str, user_id: int):
+    """
+    List ALL files inside the given Google Drive folder using raw Drive API.
+    Returns list of file metadata dicts.
+    """
+    token_file = _user_token_path(user_id)
+
+    creds = Credentials.from_authorized_user_file(
+        str(token_file),
+        ["https://www.googleapis.com/auth/drive.readonly"]
+    )
+
+    service = build("drive", "v3", credentials=creds)
+
+    results = []
+    page_token = None
+
+    while True:
+        response = service.files().list(
+            q=f"'{folder_id}' in parents and trashed = false",
+            fields="nextPageToken, files(id, name, mimeType, webContentLink, modifiedTime)",
+            pageToken=page_token,
+            includeItemsFromAllDrives=False,
+            supportsAllDrives=True
+        ).execute()
+
+        results.extend(response.get("files", []))
+
+        page_token = response.get("nextPageToken")
+        if not page_token:
+            break
+
+    return results
+
+
+def _extract_text_from_pdf(file_bytes: bytes, title: str = "") -> str:
+    """
+    Extract text from PDF bytes using pdfplumber, with OCR fallback.
+    For each page:
+      1. Try to extract selectable text with pdfplumber
+      2. ONLY if no text found, then run OCR on that page
+    """
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+    try:
+        tmp.write(file_bytes)
+        tmp.close()
+
+        text = ""
+
+        try:
+            with pdfplumber.open(tmp.name) as pdf:
+                for i, page in enumerate(pdf.pages):
+                    # Try to extract selectable text first
+                    extracted = page.extract_text()
+                    
+                    if extracted and extracted.strip():
+                        # Page has selectable text, use it
+                        text += extracted + "\n"
+                    else:
+                        # No selectable text found, fallback to OCR
+                        try:
+                            pil_page = page.to_image(resolution=300).original
+                            ocr_text = pytesseract.image_to_string(pil_page)
+                            if ocr_text and ocr_text.strip():
+                                text += ocr_text + "\n"
+                                print(f"[PDF OCR] Page {i+1} of '{title}': extracted {len(ocr_text)} chars via OCR (fallback)")
+                            else:
+                                print(f"[PDF OCR] Page {i+1} of '{title}': no text found even after OCR")
+                        except Exception as e:
+                            print(f"[PDF OCR] Failed on page {i+1} of '{title}': {e}")
+
+            print(f"[PDF] Extracted total {len(text)} chars from '{title}'")
+        except Exception as e:
+            print(f"[PDF] Failed to process PDF '{title}': {e}")
+            text = ""
+
+    finally:
+        try:
+            os.remove(tmp.name)
+        except:
+            pass
+
+    return text
+
+
+def _extract_text_from_image(file_bytes: bytes, title: str = "") -> str:
+    """Extract text from image bytes using OCR."""
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".img")
+    try:
+        tmp.write(file_bytes)
+        tmp.close()
+
+        try:
+            img = Image.open(tmp.name)
+            text = pytesseract.image_to_string(img)
+            print(f"[Image OCR] Extracted {len(text)} chars from '{title}'")
+            return text
+        except Exception as e:
+            print(f"[Image OCR] Failed on '{title}': {e}")
+            return ""
+
+    finally:
+        try:
+            os.remove(tmp.name)
+        except:
+            pass
+
+
 def load_drive_docs(agent) -> List[dict]:
     """
-    Load Google Drive docs and return clean normalized metadata.
-    DO NOT write to DB here.
+    Load Google Drive docs using raw Drive API and extract text with OCR support.
+    Handles PDFs (selectable and non-selectable), images, and other formats.
     """
     folder_id = file_id_from_url_or_id(agent.drive_folder_id or "")
-    auth_kwargs = _build_drive_auth_kwargs(agent.owner_id)
-    docs_raw = _load_drive_docs_raw(folder_id, auth_kwargs)
+    if not folder_id:
+        return []
 
+    # List all files using raw Drive API
+    files = _list_all_files_in_drive_folder(folder_id, agent.owner_id)
+    
+    token_path = str(_user_token_path(agent.owner_id))
+    
     results = []
     seen_ids = set()
 
-    for i, d in enumerate(docs_raw):
-        md = getattr(d, "metadata", {}) or {}
-        text = getattr(d, "page_content", "") or ""
+    for f in files:
+        file_id = f.get("id")
+        if not file_id or file_id in seen_ids:
+            continue
+        seen_ids.add(file_id)
 
-        doc_id = _make_doc_id(agent.id, md, i)
-        print("[DEBUG] doc_id ", doc_id)
+        name = f.get("name", "")
+        mime = f.get("mimeType", "") or ""
+        web_link = f.get("webContentLink", "") or ""
+        modified = f.get("modifiedTime", "") or ""
 
-        # Ensure uniqueness
-        if doc_id in seen_ids:
-            doc_id = f"{doc_id}#dup{i}"
-        seen_ids.add(doc_id)
+        is_image = mime.startswith("image/")
+        is_pdf = (mime == "application/pdf")
+
+        # Initialize text as empty
+        text = ""
+        
+        # Download and extract text for PDFs and images
+        if is_pdf or is_image:
+            try:
+                file_bytes = download_drive_file(file_id, token_path)
+                
+                if is_pdf:
+                    text = _extract_text_from_pdf(file_bytes, name)
+                elif is_image:
+                    text = _extract_text_from_image(file_bytes, name)
+                    
+            except Exception as e:
+                print(f"[Drive] Failed to download/process '{name}': {e}")
+                text = ""
 
         results.append({
-            "id": doc_id,
-            "source": md.get("source", ""),
-            "title": md.get("title", ""),
-            "page": md.get("page"),
-            "slide": md.get("slide"),
-            "last_modified": md.get("last_modified_time", "") or md.get("modified_time", ""),
+            "id": file_id,
+            "source": web_link,
+            "title": name,
+            "page": None,
+            "slide": None,
+            "mime": mime,
+            "is_image": is_image,
+            "is_pdf": is_pdf,
+            "last_modified": modified,
             "text": text,
-            "is_image": False,
         })
-
 
     return results
 
@@ -639,17 +769,8 @@ def _trim_for_embedding(text: str, limit: int = 12000) -> str:
     return t[:limit] if len(t) > limit else t
 
 def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
-    docs = load_drive_docs(agent)
-
-    ### to load images from drive #######
-    images = load_drive_images(agent)
-    #print("[DEBUG] images loaded : ", images)
-    _extract_text_for_images(images,agent.owner_id)
-    print("[DEBUG] text images , ", images)
-
-    all_docs = docs + images
-    #print("[DEBUG] ALLDOCS , ", all_docs)
-    
+    # Load all documents (PDFs, images, etc.) with OCR support
+    all_docs = load_drive_docs(agent)
 
     client = get_vector_client()
     col = ensure_collection(agent, client)
@@ -766,7 +887,8 @@ def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
             "page": d.get("page"),
             "slide": d.get("slide"),
             "last_modified": d.get("last_modified") or "",
-            "is_image": d.get("is_image", False),   # ADD THIS
+            "is_image": d.get("is_image", False),
+            "is_pdf": d.get("is_pdf", False),
         })
         triples.append((d["id"], meta, text))
         print ("[DEBUG] META:",meta)
