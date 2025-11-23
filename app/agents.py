@@ -26,13 +26,14 @@ def create_agent(request: Request,
                  provider: str = Form("openai"),
                  model: str = Form("gpt-4o-mini"),
                  embed_model: str = Form("openai:text-embedding-3-small"),
+                 api_key: str = Form(...),
                  db: Session = Depends(get_db)):
     uid = get_current_user_id(request)
     if not uid:
         raise HTTPException(status_code=401, detail="Login required")
     slug = str(uuid.uuid4())
     a = Agent(owner_id=uid, name=name, slug=slug, drive_folder_id=drive_folder, persona=persona,
-              provider=provider, model=model, embed_model=embed_model)
+              provider=provider, model=model, embed_model=embed_model, api_key=api_key)
     db.add(a); db.commit()
     # initial index if Drive connected and token present
     tok = db.query(GoogleToken).filter_by(user_id=uid).first()
@@ -94,6 +95,7 @@ def update_agent(request: Request, agent_id: int,
                  provider: str = Form("openai"),
                  model: str = Form("gpt-4o-mini"),
                  embed_model: str = Form("openai:text-embedding-3-small"),
+                 api_key: str = Form(""),
                  db: Session = Depends(get_db)):
     uid = get_current_user_id(request)
     a = db.get(Agent, agent_id)
@@ -101,6 +103,8 @@ def update_agent(request: Request, agent_id: int,
         raise HTTPException(status_code=404)
     a.name, a.persona, a.drive_folder_id = name, persona, drive_folder
     a.provider, a.model, a.embed_model = provider, model, embed_model
+    if api_key:  # Only update API key if provided
+        a.api_key = api_key
     db.commit()
     return RedirectResponse(f"/a/{a.slug}", status_code=302)
 

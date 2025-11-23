@@ -8,8 +8,9 @@ from openai import OpenAI
 import google.generativeai as genai
 
 class ProviderBase:
-    def __init__(self, model: str):
+    def __init__(self, model: str, api_key: str | None = None):
         self.model = model
+        self.api_key = api_key
 
     def stream_chat(self, messages: List[Dict[str, str]]) -> Iterable[str]:
         raise NotImplementedError
@@ -18,9 +19,11 @@ class ProviderBase:
         raise NotImplementedError
 
 class OpenAIProvider(ProviderBase):
-    def __init__(self, model: str, embed_model: str | None = None):
-        super().__init__(model)
-        self.client = OpenAI(api_key=get_settings().OPENAI_API_KEY)
+    def __init__(self, model: str, embed_model: str | None = None, api_key: str | None = None):
+        super().__init__(model, api_key)
+        # Use provided API key, fall back to settings if not provided
+        key = api_key or get_settings().OPENAI_API_KEY
+        self.client = OpenAI(api_key=key)
         self.embed_model = embed_model or "text-embedding-3-small"
 
     def stream_chat(self, messages):
@@ -38,9 +41,11 @@ class OpenAIProvider(ProviderBase):
         return [d.embedding for d in resp.data]
 
 class GeminiProvider(ProviderBase):
-    def __init__(self, model: str, embed_model: str | None = None):
-        super().__init__(model)
-        genai.configure(api_key=get_settings().GEMINI_API_KEY)
+    def __init__(self, model: str, embed_model: str | None = None, api_key: str | None = None):
+        super().__init__(model, api_key)
+        # Use provided API key, fall back to settings if not provided
+        key = api_key or get_settings().GEMINI_API_KEY
+        genai.configure(api_key=key)
         self.gen_model = genai.GenerativeModel(model)
         self.embed_model = embed_model or "text-embedding-004"
 

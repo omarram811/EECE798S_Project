@@ -146,13 +146,14 @@ def _normalize_embed_model(provider: str, raw: str) -> str:
 
 
 def provider_from(agent) -> ProviderBase:
+   api_key = agent.api_key if hasattr(agent, 'api_key') else None
    provider = (agent.provider or "").lower()
    if provider == "gemini":
        embed_model = _normalize_embed_model("gemini", agent.embed_model)
-       return GeminiProvider(agent.model, embed_model)
+       return GeminiProvider(agent.model, embed_model, api_key)
    elif provider == "openai":
        embed_model = _normalize_embed_model("openai", agent.embed_model)
-       return OpenAIProvider(agent.model, embed_model)
+       return OpenAIProvider(agent.model, embed_model, api_key)
    else:
        raise ValueError(f"Unknown provider: {agent.provider}")
 

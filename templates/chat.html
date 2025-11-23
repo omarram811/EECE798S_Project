@@ -189,6 +189,9 @@
 
         <input class="border rounded p-3 text-lg" name="model" value="{{agent.model}}" placeholder="Model"/>
         <input class="border rounded p-3 text-lg" name="embed_model" value="{{agent.embed_model}}" placeholder="Embedding Model"/>
+        
+        <input type="password" class="border rounded p-3 text-lg md:col-span-3" name="api_key" 
+               value="{{agent.api_key or ''}}" placeholder="API Key (OpenAI or Gemini)" />
       </div>
 
       <div class="text-right">
@@ -202,7 +205,7 @@
           {% for m in messages %}
             <div class="msg-bubble {% if m.role=='user' %}user-msg{% else %}assistant-msg{% endif %}">
               {% if m.role == 'assistant' %}
-                <div class="markdown" data-raw="{{ m.content | tojson }}"></div>
+                <div class="markdown">{{ m.content }}</div>
               {% else %}
                 {{ m.content|safe }}
               {% endif %}
@@ -222,7 +225,10 @@
                 placeholder="Type your message..."
                 rows="1"></textarea>
 
-      <button class="btn-round" type="submit">➤</button>
+      <button id="send-btn" class="btn-round" type="submit">
+        <span id="send-icon">➤</span>
+        <span id="stop-icon" style="display: none;">⏹</span>
+      </button>
 
     </form>
 
@@ -233,9 +239,25 @@
     const messages = document.getElementById("messages");
     const form = document.getElementById("promptForm");
     const promptInput = document.getElementById("prompt");
+    const sendBtn = document.getElementById("send-btn");
+    const sendIcon = document.getElementById("send-icon");
+    const stopIcon = document.getElementById("stop-icon");
 
     let es = null;
     let streamingEl = null;
+    let isGenerating = false;
+    let currentStreamContent = "";
+
+    function setGenerating(generating) {
+      isGenerating = generating;
+      if (generating) {
+        sendIcon.style.display = "none";
+        stopIcon.style.display = "inline";
+      } else {
+        sendIcon.style.display = "inline";
+        stopIcon.style.display = "none";
+      }
+    }
 
     /* ------------------ COPY SHARE LINK ------------------ */
     function copyShareLink() {
@@ -249,17 +271,27 @@
 
     /* ------------------ STREAM HANDLING ------------------ */
     document.querySelectorAll(".markdown").forEach(el => {
-      const raw = el.dataset.raw || "";
-      el.innerHTML = marked.parse(cleanMarkdown(raw));
+      if (!el.dataset.raw) {
+        // For pre-loaded messages, the text is already in the element
+        const raw = el.textContent || "";
+        el.innerHTML = marked.parse(cleanMarkdown(raw));
+      } else {
+        // For streaming messages
+        const raw = el.dataset.raw || "";
+        el.innerHTML = marked.parse(cleanMarkdown(raw));
+      }
     });
 
 
     function closeStream() {
       if (es) { es.close(); es = null; }
+      setGenerating(false);
     }
 
     function startStream() {
       closeStream();
+      setGenerating(true);
+      currentStreamContent = "";
       es = new EventSource("/chat/{{agent.id}}/stream");
 
       es.addEventListener("message", (e) => {
@@ -279,6 +311,7 @@
         chunk = chunk.replace(/(\-\s\*\*)/g, "\n$1");
 
         streamingEl.dataset.raw = (streamingEl.dataset.raw || "") + chunk;
+        currentStreamContent = streamingEl.dataset.raw;
         streamingEl.innerHTML = marked.parse(streamingEl.dataset.raw);
 
         streamingEl.innerHTML = marked.parse(streamingEl.dataset.raw);
@@ -290,6 +323,11 @@
       es.addEventListener("done", () => {
         if (streamingEl) streamingEl.removeAttribute("id");
         streamingEl = null;
+        currentStreamContent = "";
+        closeStream();
+      });
+
+      es.addEventListener("error", () => {
         closeStream();
       });
     }
@@ -300,6 +338,18 @@
 
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
+
+      // If currently generating, stop the stream
+      if (isGenerating) {
+        // Close the stream and remove the incomplete message
+        closeStream();
+        if (streamingEl && streamingEl.parentElement) {
+          streamingEl.parentElement.remove();
+        }
+        streamingEl = null;
+        currentStreamContent = "";
+        return;
+      }
 
       const text = promptInput.value.trim();
       if (!text) return;

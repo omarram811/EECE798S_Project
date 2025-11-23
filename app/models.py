@@ -25,6 +25,7 @@ class Agent(Base):
     provider = Column(String, default="openai")
     model = Column(String, default="gpt-4o-mini")
     embed_model = Column(String, default="openai:text-embedding-3-small")
+    api_key = Column(String, nullable=True)  # Store API key per agent
     last_indexed_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow)

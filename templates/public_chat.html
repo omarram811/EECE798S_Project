@@ -171,7 +171,7 @@
           {% for m in messages %}
             <div class="msg-bubble {% if m.role=='user' %}user-msg{% else %}assistant-msg{% endif %}">
               {% if m.role == 'assistant' %}
-                <div class="markdown" data-raw="{{ m.content | tojson }}"></div>
+                <div class="markdown">{{ m.content }}</div>
               {% else %}
                 {{ m.content|safe }}
               {% endif %}
@@ -208,8 +208,15 @@
 
     /* ------------------ STREAM HANDLING ------------------ */
     document.querySelectorAll(".markdown").forEach(el => {
-      const raw = el.dataset.raw || "";
-      el.innerHTML = marked.parse(cleanMarkdown(raw));
+      if (!el.dataset.raw) {
+        // For pre-loaded messages, the text is already in the element
+        const raw = el.textContent || "";
+        el.innerHTML = marked.parse(cleanMarkdown(raw));
+      } else {
+        // For streaming messages
+        const raw = el.dataset.raw || "";
+        el.innerHTML = marked.parse(cleanMarkdown(raw));
+      }
     });
 
     function closeStream() {
