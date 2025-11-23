@@ -191,7 +191,10 @@
                 placeholder="Type your message..."
                 rows="1"></textarea>
 
-      <button class="btn-round" type="submit">➤</button>
+      <button id="send-btn" class="btn-round" type="submit">
+        <span id="send-icon">➤</span>
+        <span id="stop-icon" style="display: none;">⏹</span>
+      </button>
 
     </form>
 
@@ -202,9 +205,25 @@
     const messages = document.getElementById("messages");
     const form = document.getElementById("promptForm");
     const promptInput = document.getElementById("prompt");
+    const sendBtn = document.getElementById("send-btn");
+    const sendIcon = document.getElementById("send-icon");
+    const stopIcon = document.getElementById("stop-icon");
 
     let es = null;
     let streamingEl = null;
+    let isGenerating = false;
+    let currentStreamContent = "";
+
+    function setGenerating(generating) {
+      isGenerating = generating;
+      if (generating) {
+        sendIcon.style.display = "none";
+        stopIcon.style.display = "inline";
+      } else {
+        sendIcon.style.display = "inline";
+        stopIcon.style.display = "none";
+      }
+    }
 
     /* ------------------ STREAM HANDLING ------------------ */
     document.querySelectorAll(".markdown").forEach(el => {
@@ -221,10 +240,13 @@
 
     function closeStream() {
       if (es) { es.close(); es = null; }
+      setGenerating(false);
     }
 
     function startStream() {
       closeStream();
+      setGenerating(true);
+      currentStreamContent = "";
       es = new EventSource("/chat/public/{{agent.id}}/stream");
 
       es.addEventListener("message", (e) => {
@@ -261,6 +283,24 @@
 
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
+
+      // If currently generating, stop the stream
+      if (isGenerating) {
+        // Call the cancel endpoint
+        await fetch("/chat/public/{{agent.id}}/cancel", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
+        });
+        
+        // Close the stream and remove the incomplete message
+        closeStream();
+        if (streamingEl && streamingEl.parentElement) {
+          streamingEl.parentElement.remove();
+        }
+        streamingEl = null;
+        currentStreamContent = "";
+        return;
+      }
 
       const text = promptInput.value.trim();
       if (!text) return;

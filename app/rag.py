@@ -348,22 +348,43 @@ def ensure_collection(agent, client=None):
     client = client or get_vector_client()
     name = _collection_name(agent.id)
     _ensure_chroma_ready(client)
+    
+    provider = provider_from(agent)
+    embed_fn = _embed_fn(provider)
+    
+    # Check if collection exists
+    existing_collections = [c.name for c in client.list_collections()]
+    
+    if name in existing_collections:
+        # Collection exists - try to get it and handle dimension mismatch
+        try:
+            col = client.get_collection(name=name, embedding_function=embed_fn)
+            return col
+        except Exception as e:
+            # Dimension mismatch or other error - delete and recreate
+            error_msg = str(e).lower()
+            if "dimension" in error_msg or "dimensionality" in error_msg:
+                print(f"[ensure_collection] Dimension mismatch for agent {agent.id}. Deleting old collection...")
+            else:
+                print(f"[ensure_collection] Error getting collection for agent {agent.id}: {e}")
+            
+            try:
+                client.delete_collection(name)
+                print(f"[ensure_collection] Deleted collection '{name}'. Creating new one...")
+            except Exception as del_err:
+                print(f"[ensure_collection] Failed to delete collection: {del_err}")
+    
+    # Create new collection
     try:
-        col = client.get_or_create_collection(
+        col = client.create_collection(
             name=name,
-            embedding_function=_embed_fn(provider_from(agent)),
+            embedding_function=embed_fn,
         )
-    except Exception as e:
-        if "no such table: tenants" in str(e) or "Could not connect to tenant" in str(e):
-            _ensure_chroma_ready(client)
-        existing = [c.name for c in client.list_collections()]
-        if name in existing:
-            client.delete_collection(name)
-        col = client.get_or_create_collection(
-            name=name,
-            embedding_function=_embed_fn(provider_from(agent)),
-        )
-    return col
+        print(f"[ensure_collection] Created collection '{name}' for agent {agent.id}")
+        return col
+    except Exception as create_error:
+        print(f"[ensure_collection] Failed to create collection: {create_error}")
+        raise
 
 
 # ---------------- Google Drive auth helpers ----------------
@@ -457,7 +478,29 @@ def _load_drive_docs_raw(folder_id: str, loader_auth_kwargs: Dict):
 def retrieve(agent, query: str, k: int = 30) -> List[dict]:
     client = get_vector_client()
     col = ensure_collection(agent, client)
-    res = col.query(query_texts=[query], n_results=max(1, k))
+    
+    try:
+        res = col.query(query_texts=[query], n_results=max(1, k))
+    except Exception as e:
+        # Handle dimension mismatch during query
+        if "dimension" in str(e).lower() or "dimensionality" in str(e).lower():
+            print(f"[retrieve] Dimension mismatch during query. Recreating collection for agent {agent.id}...")
+            # Delete and recreate collection
+            name = _collection_name(agent.id)
+            try:
+                client.delete_collection(name)
+            except:
+                pass
+            # Recreate and retry
+            col = ensure_collection(agent, client)
+            # If collection is empty, return empty results
+            try:
+                res = col.query(query_texts=[query], n_results=max(1, k))
+            except:
+                print(f"[retrieve] Collection is empty after recreation. Returning no results.")
+                return []
+        else:
+            raise
 
     if not res or not res.get("ids") or not res["ids"][0]:
         return []
@@ -612,11 +655,25 @@ def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
     col = ensure_collection(agent, client)
     provider = provider_from(agent)
 
-    existing_ids = set(col.get()['ids'])
-    existing_items = col.get()
-    existing_map = {}
-    for _id, meta in zip(existing_items["ids"], existing_items["metadatas"]):
-        existing_map[_id] = meta
+    try:
+        existing_ids = set(col.get()['ids'])
+        existing_items = col.get()
+        existing_map = {}
+        for _id, meta in zip(existing_items["ids"], existing_items["metadatas"]):
+            existing_map[_id] = meta
+    except Exception as e:
+        # Handle dimension mismatch or empty collection
+        if "dimension" in str(e).lower() or "dimensionality" in str(e).lower():
+            print(f"[reindex_agent] Dimension mismatch detected. Recreating collection for agent {agent.id}...")
+            name = _collection_name(agent.id)
+            try:
+                client.delete_collection(name)
+            except:
+                pass
+            col = ensure_collection(agent, client)
+        # Assume empty collection
+        existing_ids = set()
+        existing_map = {}
 
     current_ids = set([d["id"] for d in all_docs])
     to_delete = existing_ids - current_ids

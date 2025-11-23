@@ -37,6 +37,7 @@ def save_drive_images_to_db(agent, db: Session):
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 _ACTIVE_STREAMS: set[int] = set()
+_CANCELLED_STREAMS: set[int] = set()  # Track cancelled conversations
 _STREAMS_LOCK = threading.Lock()
 
 
@@ -63,6 +64,40 @@ def post_message(agent_id: int, request: Request, prompt: str = Form(...), db: S
     conv = _ensure_conversation(db, agent.id, uid)
     db.add(Message(conversation_id=conv.id, user_id=uid, role="user", content=prompt)); db.commit()
     return RedirectResponse(f"/a/{agent.slug}", status_code=302)
+
+@router.post("/{agent_id}/cancel")
+def cancel_stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
+    """Cancel the current stream for this agent and user"""
+    uid = get_current_user_id(request)
+    if not uid:
+        raise HTTPException(status_code=401, detail="Login required")
+    agent = db.get(Agent, agent_id)
+    if not agent:
+        raise HTTPException(status_code=404)
+    
+    conv = _ensure_conversation(db, agent.id, uid)
+    with _STREAMS_LOCK:
+        _CANCELLED_STREAMS.add(conv.id)
+    
+    return {"status": "cancelled"}
+
+@router.post("/public/{agent_id}/cancel")
+def cancel_public_stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
+    """Cancel the current stream for public chat"""
+    agent = db.get(Agent, agent_id)
+    if not agent:
+        raise HTTPException(status_code=404)
+    
+    session_id = request.session.get("public_session_id")
+    if not session_id:
+        return {"status": "no_session"}
+    
+    public_user_id = -abs(hash(session_id)) % (10 ** 8)
+    conv = _ensure_conversation(db, agent.id, public_user_id)
+    with _STREAMS_LOCK:
+        _CANCELLED_STREAMS.add(conv.id)
+    
+    return {"status": "cancelled"}
 
 @router.post("/public/{agent_id}")
 def post_public_message(agent_id: int, request: Request, prompt: str = Form(...), db: Session = Depends(get_db)):
@@ -146,10 +181,24 @@ def stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
             stream = provider.stream_chat([system, *history])
             acc = ""
             for token in stream:
+                # Check if stream was cancelled
+                with _STREAMS_LOCK:
+                    if conv.id in _CANCELLED_STREAMS:
+                        _CANCELLED_STREAMS.discard(conv.id)
+                        yield {"event":"cancelled", "data":"[CANCELLED]"}
+                        return
                 acc += token
                 yield {"event":"message", "data": token}
                 time.sleep(0.1) ##added here for streaming
-            # save assistant message
+            
+            # Check again before saving to prevent race condition
+            with _STREAMS_LOCK:
+                if conv.id in _CANCELLED_STREAMS:
+                    _CANCELLED_STREAMS.discard(conv.id)
+                    yield {"event":"cancelled", "data":"[CANCELLED]"}
+                    return
+            
+            # save assistant message only if not cancelled
             if acc.strip():
                 db.add(Message(conversation_id=conv.id, user_id=uid, role="assistant", content=acc))
                 db.commit()
@@ -170,6 +219,7 @@ def stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
         finally:
             with _STREAMS_LOCK:
                 _ACTIVE_STREAMS.discard(conv.id)
+                _CANCELLED_STREAMS.discard(conv.id)
     return EventSourceResponse(event_gen())
 
 @router.get("/public/{agent_id}/stream")
@@ -229,9 +279,23 @@ def public_stream(agent_id: int, request: Request, db: Session = Depends(get_db)
             stream = provider.stream_chat([system, *history])
             acc = ""
             for token in stream:
+                # Check if stream was cancelled
+                with _STREAMS_LOCK:
+                    if conv.id in _CANCELLED_STREAMS:
+                        _CANCELLED_STREAMS.discard(conv.id)
+                        yield {"event":"cancelled", "data":"[CANCELLED]"}
+                        return
                 acc += token
                 yield {"event":"message", "data": token}
                 time.sleep(0.1)
+            
+            # Check again before saving to prevent race condition
+            with _STREAMS_LOCK:
+                if conv.id in _CANCELLED_STREAMS:
+                    _CANCELLED_STREAMS.discard(conv.id)
+                    yield {"event":"cancelled", "data":"[CANCELLED]"}
+                    return
+            
             if acc.strip():
                 db.add(Message(conversation_id=conv.id, user_id=public_user_id, role="assistant", content=acc))
                 db.commit()
@@ -249,4 +313,5 @@ def public_stream(agent_id: int, request: Request, db: Session = Depends(get_db)
         finally:
             with _STREAMS_LOCK:
                 _ACTIVE_STREAMS.discard(conv.id)
+                _CANCELLED_STREAMS.discard(conv.id)
     return EventSourceResponse(event_gen())

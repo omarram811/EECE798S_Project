@@ -341,6 +341,12 @@
 
       // If currently generating, stop the stream
       if (isGenerating) {
+        // Call the cancel endpoint
+        await fetch("/chat/{{agent.id}}/cancel", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
+        });
+        
         // Close the stream and remove the incomplete message
         closeStream();
         if (streamingEl && streamingEl.parentElement) {

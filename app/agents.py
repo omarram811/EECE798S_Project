@@ -101,11 +101,27 @@ def update_agent(request: Request, agent_id: int,
     a = db.get(Agent, agent_id)
     if not a or a.owner_id != uid:
         raise HTTPException(status_code=404)
+    
+    # Check if embedding model or provider changed
+    embedding_changed = (a.provider != provider or a.embed_model != embed_model)
+    
     a.name, a.persona, a.drive_folder_id = name, persona, drive_folder
     a.provider, a.model, a.embed_model = provider, model, embed_model
     if api_key:  # Only update API key if provided
         a.api_key = api_key
     db.commit()
+    
+    # If embedding model changed, trigger re-indexing to rebuild vector store
+    if embedding_changed and drive_folder:
+        tok = db.query(GoogleToken).filter_by(user_id=uid).first()
+        if tok:
+            creds_path = _creds_path_for_user(uid)
+            try:
+                print(f"[update_agent] Embedding model changed for agent {agent_id}. Re-indexing...")
+                reindex_agent(a, creds_path)
+            except Exception as e:
+                print(f"[update_agent] Re-indexing failed: {e}")
+    
     return RedirectResponse(f"/a/{a.slug}", status_code=302)
 
 
