@@ -24,13 +24,14 @@ templates = Jinja2Templates(directory="templates")
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from .scheduler import start_scheduler
-
+from .server_state import SERVER_INSTANCE_ID
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # STARTUP
     print("[lifespan] Starting scheduler...")
+    print(f"[lifespan] Server instance ID: {SERVER_INSTANCE_ID}")
     start_scheduler()
     yield
     # SHUTDOWN
@@ -53,17 +54,28 @@ app.include_router(google_router)
 
 
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request):
+def home(request: Request, error: str = None):
     uid = get_current_user_id(request)
 
-
+    # Check if user has the current server instance in their session
+    # If not, clear their authentication and force re-login
     if uid:
+        session_instance = request.session.get("server_instance_id")
+        if session_instance != SERVER_INSTANCE_ID:
+            # Server was restarted, force re-login
+            request.session.clear()
+            return templates.TemplateResponse("home.html", {
+                "request": request,
+                "user_id": None,
+                "error": error
+            })
         return RedirectResponse("/dashboard")
 
-    # Else show login/register page
+    # Else show login/register page with error parameter
     return templates.TemplateResponse("home.html", {
         "request": request,
-        "user_id": None
+        "user_id": None,
+        "error": error
     })
 
 
@@ -72,6 +84,13 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
     uid = get_current_user_id(request)
     if not uid:
         return RedirectResponse("/")
+    
+    # Verify server instance matches (force re-login on server restart)
+    session_instance = request.session.get("server_instance_id")
+    if session_instance != SERVER_INSTANCE_ID:
+        request.session.clear()
+        return RedirectResponse("/")
+    
     agents = db.query(Agent).filter_by(owner_id=uid).all()
     google_connected = db.query(GoogleToken).filter_by(user_id=uid).first() is not None
     return templates.TemplateResponse("dashboard.html", {"request": request, "agents": agents, "google_connected": google_connected})

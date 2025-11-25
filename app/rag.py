@@ -34,6 +34,7 @@ from .models import QueryLog
 import uuid
 from fastapi import APIRouter, Request, Depends, HTTPException, Form
 from .db import SessionLocal
+from .progress import start_progress, update_progress, complete_progress
 
 log = logging.getLogger(__name__)
 
@@ -776,7 +777,7 @@ def _extract_text_from_image(file_bytes: bytes, title: str = "") -> str:
             pass
 
 
-def load_drive_docs(agent) -> List[dict]:
+def load_drive_docs(agent, track_progress: bool = False) -> List[dict]:
     """
     Load Google Drive docs using raw Drive API and extract text with OCR support.
     Handles PDFs (selectable and non-selectable), images, and other formats.
@@ -788,10 +789,15 @@ def load_drive_docs(agent) -> List[dict]:
     # List all files using raw Drive API
     files = _list_all_files_in_drive_folder(folder_id, agent.owner_id)
     
+    # Initialize progress tracking if requested
+    if track_progress:
+        start_progress(agent.id, len(files))
+    
     token_path = str(_user_token_path(agent.owner_id))
     
     results = []
     seen_ids = set()
+    processed_count = 0
 
     for f in files:
         file_id = f.get("id")
@@ -836,6 +842,11 @@ def load_drive_docs(agent) -> List[dict]:
             "last_modified": modified,
             "text": text,
         })
+        
+        # Update progress after processing each file
+        if track_progress:
+            processed_count += 1
+            update_progress(agent.id, processed_count, name)
 
     return results
 
@@ -847,198 +858,209 @@ def _trim_for_embedding(text: str, limit: int = 12000) -> str:
     t = (text or "").strip()
     return t[:limit] if len(t) > limit else t
 
-def reindex_agent(agent, _creds_path_ignored: str = "") -> Tuple[int, int, int]:
-    # Load all documents (PDFs, images, etc.) with OCR support
-    all_docs = load_drive_docs(agent)
-
-    client = get_vector_client()
-    col = ensure_collection(agent, client)
-    provider = provider_from(agent)
-
+def reindex_agent(agent, _creds_path_ignored: str = "", track_progress: bool = True) -> Tuple[int, int, int]:
     try:
-        existing_ids = set(col.get()['ids'])
-        existing_items = col.get()
-        existing_map = {}
-        for _id, meta in zip(existing_items["ids"], existing_items["metadatas"]):
-            existing_map[_id] = meta
-    except Exception as e:
-        # Handle dimension mismatch or empty collection
-        if "dimension" in str(e).lower() or "dimensionality" in str(e).lower():
-            print(f"[reindex_agent] Dimension mismatch detected. Recreating collection for agent {agent.id}...")
-            name = _collection_name(agent.id)
-            try:
-                client.delete_collection(name)
-            except:
-                pass
-            col = ensure_collection(agent, client)
-        # Assume empty collection
-        existing_ids = set()
-        existing_map = {}
+        # Load all documents (PDFs, images, etc.) with OCR support
+        # Progress tracking starts inside load_drive_docs
+        all_docs = load_drive_docs(agent, track_progress=track_progress)
+        
+        client = get_vector_client()
+        col = ensure_collection(agent, client)
+        provider = provider_from(agent)
 
-    current_ids = set([d["id"] for d in all_docs])
-    to_delete = existing_ids - current_ids
-
-    # ----------------------------
-    # EXPANDED DELETE FIX  
-    # ----------------------------
-    # Ensure the base file source is marked for deletion
-    # Any file removed from Drive must have its source removed too
-    removed_sources = set()
-    for eid in to_delete:
-        meta = existing_map.get(eid)
-        if meta and meta.get("source"):
-            removed_sources.add(meta["source"])
-
-    for eid, meta in existing_map.items():
-        if meta.get("source") in removed_sources:
-            to_delete.add(eid)
-
-    expanded_delete = set(to_delete)
-    base_ids = {eid.split("#")[0] for eid in to_delete}
-
-    for eid in existing_ids:
-        base = eid.split("#")[0]
-        if base in base_ids:
-            expanded_delete.add(eid)
-
-    if expanded_delete:
-        print("Deleting expanded set:", expanded_delete)
-        col.delete(ids=list(expanded_delete))
-
-        # ----------------------------
-        # DELETE FROM LOCAL DATABASE  
-        # ----------------------------
-        session = SessionLocal()
-
-        for eid in expanded_delete:
-            db_entry = session.query(AgentFile).filter_by(agent_id=agent.id, file_id=eid).first()
-            if db_entry:
-                print(f"[DB] Deleting AgentFile entry: {eid}")
-                session.delete(db_entry)
-
-        session.commit()
-        session.close()
-
-    else:
-        print("No items to delete from Chroma (expanded delete)")
-
-
-    dirty_docs = []
-
-    for d in all_docs:
-        fid = d["id"]
-        modified = d.get("last_modified", "")
-
-        if fid not in existing_ids:
-            dirty_docs.append(d)
-            continue
-
-        stored_meta = existing_map.get(fid)
-
-        if stored_meta and stored_meta.get("last_modified") != modified:
-            dirty_docs.append(d)
-            continue
-
-
-    if not dirty_docs:
-        print("[reindex_agent] No new or updated files. Nothing to index.")
-        return (0, 0, 0)
-
-
-    # 1) Build triples
-    triples = []
-    dropped_empty = 0
-    for d in dirty_docs:
-        text = _trim_for_embedding(d.get("text") or "")
-        title = d.get("title") or ""
-        is_img = d.get("is_image", False)
-
-        # prepend metadata into searchable text
-        meta_prefix = f"FILE: {title}. IMAGE: {is_img}. "
-        text = meta_prefix + _trim_for_embedding(d.get("text") or "")
-
-        if not text:
-            dropped_empty += 1
-            continue
-        meta = _sanitize_meta({
-            "title": d.get("title") or "",
-            "source": d.get("source") or "",
-            "page": d.get("page"),
-            "slide": d.get("slide"),
-            "last_modified": d.get("last_modified") or "",
-            "is_image": d.get("is_image", False),
-            "is_pdf": d.get("is_pdf", False),
-        })
-        triples.append((d["id"], meta, text))
-        print ("[DEBUG] META:",meta)
-
-    if dropped_empty:
-        print(f"[reindex_agent] Skipped {dropped_empty} empty chunks out of {len(all_docs)}")
-    if not triples:
-        return (0, 0, 0)
-
-    # 2) Embed & upsert in batches
-    BATCH = 64
-    added = 0
-    salvaged_total = 0
-    dims = None
-
-    for i in range(0, len(triples), BATCH):
-        batch = triples[i:i+BATCH]
-        ids_batch   = [t[0] for t in batch]
-        metas_batch = [t[1] for t in batch]
-        docs_batch  = [t[2] for t in batch]
-
-        # Try batch embed
-        embs_batch = None
         try:
-            embs_batch = _as_2d_floats(provider.embed(docs_batch))
+            existing_ids = set(col.get()['ids'])
+            existing_items = col.get()
+            existing_map = {}
+            for _id, meta in zip(existing_items["ids"], existing_items["metadatas"]):
+                existing_map[_id] = meta
         except Exception as e:
-            print(f"[reindex_agent] Batch embed error at [{i}:{i+len(batch)}]: {e}")
-
-        # Salvage per item if needed
-        need_salvage = (
-            embs_batch is None or
-            not isinstance(embs_batch, (list, tuple)) or
-            len(embs_batch) != len(docs_batch)
-        )
-        if not need_salvage:
-            d0 = len(embs_batch[0])
-            if any(len(v) != d0 for v in embs_batch):
-                need_salvage = True
-
-        if need_salvage:
-            keep_idx, fixed_embs = [], []
-            for j, txt in enumerate(docs_batch):
+            # Handle dimension mismatch or empty collection
+            if "dimension" in str(e).lower() or "dimensionality" in str(e).lower():
+                print(f"[reindex_agent] Dimension mismatch detected. Recreating collection for agent {agent.id}...")
+                name = _collection_name(agent.id)
                 try:
-                    one = provider.embed([txt])
-                    one = _as_2d_floats(one)[0]
-                    if dims is None:
-                        dims = len(one)
-                    if len(one) != dims:
-                        print(f"[reindex_agent] Dropped item {i+j}: dim {len(one)} != {dims}")
-                        continue
-                    fixed_embs.append(one)
-                    keep_idx.append(j)
-                except Exception as ee:
-                    print(f"[reindex_agent] Dropped item {i+j}: {ee}")
-            if not keep_idx:
-                continue
-            ids_batch   = [ids_batch[j] for j in keep_idx]
-            metas_batch = [metas_batch[j] for j in keep_idx]
-            docs_batch  = [docs_batch[j] for j in keep_idx]
-            embs_batch  = fixed_embs
-            salvaged_total += (len(batch) - len(keep_idx))
+                    client.delete_collection(name)
+                except:
+                    pass
+                col = ensure_collection(agent, client)
+            # Assume empty collection
+            existing_ids = set()
+            existing_map = {}
+
+        current_ids = set([d["id"] for d in all_docs])
+        to_delete = existing_ids - current_ids
+
+        # ----------------------------
+        # EXPANDED DELETE FIX  
+        # ----------------------------
+        # Ensure the base file source is marked for deletion
+        # Any file removed from Drive must have its source removed too
+        removed_sources = set()
+        for eid in to_delete:
+            meta = existing_map.get(eid)
+            if meta and meta.get("source"):
+                removed_sources.add(meta["source"])
+
+        for eid, meta in existing_map.items():
+            if meta.get("source") in removed_sources:
+                to_delete.add(eid)
+
+        expanded_delete = set(to_delete)
+        base_ids = {eid.split("#")[0] for eid in to_delete}
+
+        for eid in existing_ids:
+            base = eid.split("#")[0]
+            if base in base_ids:
+                expanded_delete.add(eid)
+
+        if expanded_delete:
+            print("Deleting expanded set:", expanded_delete)
+            col.delete(ids=list(expanded_delete))
+
+            # ----------------------------
+            # DELETE FROM LOCAL DATABASE  
+            # ----------------------------
+            session = SessionLocal()
+
+            for eid in expanded_delete:
+                db_entry = session.query(AgentFile).filter_by(agent_id=agent.id, file_id=eid).first()
+                if db_entry:
+                    print(f"[DB] Deleting AgentFile entry: {eid}")
+                    session.delete(db_entry)
+
+            session.commit()
+            session.close()
+
         else:
-            dims = dims or len(embs_batch[0])
+            print("No items to delete from Chroma (expanded delete)")
 
-        col.upsert(ids=ids_batch, documents=docs_batch, metadatas=metas_batch, embeddings=embs_batch)
-        added += len(ids_batch)
 
-    if salvaged_total:
-        print(f"[reindex_agent] Salvaged {salvaged_total} items via per-item embedding fallback")
+        dirty_docs = []
 
-    return (added, 0, added)
+        for d in all_docs:
+            fid = d["id"]
+            modified = d.get("last_modified", "")
+
+            if fid not in existing_ids:
+                dirty_docs.append(d)
+                continue
+
+            stored_meta = existing_map.get(fid)
+
+            if stored_meta and stored_meta.get("last_modified") != modified:
+                dirty_docs.append(d)
+                continue
+
+
+        if not dirty_docs:
+            print("[reindex_agent] No new or updated files. Nothing to index.")
+            complete_progress(agent.id)
+            return (0, 0, 0)
+
+
+        # 1) Build triples
+        triples = []
+        dropped_empty = 0
+        
+        for d in dirty_docs:
+            text = _trim_for_embedding(d.get("text") or "")
+            title = d.get("title") or ""
+            is_img = d.get("is_image", False)
+
+            # prepend metadata into searchable text
+            meta_prefix = f"FILE: {title}. IMAGE: {is_img}. "
+            text = meta_prefix + _trim_for_embedding(d.get("text") or "")
+
+            if not text:
+                dropped_empty += 1
+                continue
+            meta = _sanitize_meta({
+                "title": d.get("title") or "",
+                "source": d.get("source") or "",
+                "page": d.get("page"),
+                "slide": d.get("slide"),
+                "last_modified": d.get("last_modified") or "",
+                "is_image": d.get("is_image", False),
+                "is_pdf": d.get("is_pdf", False),
+            })
+            triples.append((d["id"], meta, text))
+            print ("[DEBUG] META:",meta)
+
+        if dropped_empty:
+            print(f"[reindex_agent] Skipped {dropped_empty} empty chunks out of {len(all_docs)}")
+        if not triples:
+            complete_progress(agent.id)
+            return (0, 0, 0)
+
+        # 2) Embed & upsert in batches
+        BATCH = 64
+        added = 0
+        salvaged_total = 0
+        dims = None
+
+        for i in range(0, len(triples), BATCH):
+            batch = triples[i:i+BATCH]
+            ids_batch   = [t[0] for t in batch]
+            metas_batch = [t[1] for t in batch]
+            docs_batch  = [t[2] for t in batch]
+
+            # Try batch embed
+            embs_batch = None
+            try:
+                embs_batch = _as_2d_floats(provider.embed(docs_batch))
+            except Exception as e:
+                print(f"[reindex_agent] Batch embed error at [{i}:{i+len(batch)}]: {e}")
+
+            # Salvage per item if needed
+            need_salvage = (
+                embs_batch is None or
+                not isinstance(embs_batch, (list, tuple)) or
+                len(embs_batch) != len(docs_batch)
+            )
+            if not need_salvage:
+                d0 = len(embs_batch[0])
+                if any(len(v) != d0 for v in embs_batch):
+                    need_salvage = True
+
+            if need_salvage:
+                keep_idx, fixed_embs = [], []
+                for j, txt in enumerate(docs_batch):
+                    try:
+                        one = provider.embed([txt])
+                        one = _as_2d_floats(one)[0]
+                        if dims is None:
+                            dims = len(one)
+                        if len(one) != dims:
+                            print(f"[reindex_agent] Dropped item {i+j}: dim {len(one)} != {dims}")
+                            continue
+                        fixed_embs.append(one)
+                        keep_idx.append(j)
+                    except Exception as ee:
+                        print(f"[reindex_agent] Dropped item {i+j}: {ee}")
+                if not keep_idx:
+                    continue
+                ids_batch   = [ids_batch[j] for j in keep_idx]
+                metas_batch = [metas_batch[j] for j in keep_idx]
+                docs_batch  = [docs_batch[j] for j in keep_idx]
+                embs_batch  = fixed_embs
+                salvaged_total += (len(batch) - len(keep_idx))
+            else:
+                dims = dims or len(embs_batch[0])
+
+            col.upsert(ids=ids_batch, documents=docs_batch, metadatas=metas_batch, embeddings=embs_batch)
+            added += len(ids_batch)
+
+        if salvaged_total:
+            print(f"[reindex_agent] Salvaged {salvaged_total} items via per-item embedding fallback")
+
+        complete_progress(agent.id)
+        return (added, 0, added)
+        
+    except Exception as e:
+        # Mark progress as failed
+        complete_progress(agent.id, str(e))
+        raise
 
 def _flatten_once(x):
     # If x == [[...]] (extra wrapper), unwrap one level.

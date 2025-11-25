@@ -40,7 +40,15 @@
       <form action="/login" method="post" class="bg-white shadow rounded p-6">
         <h2 class="font-semibold mb-4 text-gray-700">Login</h2>
         <input class="border p-2 w-full mb-3 rounded" type="email" name="email" placeholder="Email" required />
-        <input class="border p-2 w-full mb-4 rounded" type="password" name="password" placeholder="Password" required />
+        <input class="border p-2 w-full mb-3 rounded" type="password" name="password" placeholder="Password" required />
+        
+        <!-- Error message for invalid credentials -->
+        {% if error == 'invalid_credentials' %}
+        <div class="mb-3 p-2 bg-red-50 border border-red-300 rounded text-red-700 text-sm">
+          Invalid email or password. Please try again.
+        </div>
+        {% endif %}
+        
         <button class="btn-custom w-full">Login</button>
       </form>
 
@@ -48,7 +56,15 @@
       <form action="/register" method="post" class="bg-white shadow rounded p-6">
         <h2 class="font-semibold mb-4 text-gray-700">Register</h2>
         <input class="border p-2 w-full mb-3 rounded" type="email" name="email" placeholder="Email" required />
-        <input class="border p-2 w-full mb-4 rounded" type="password" name="password" placeholder="Password" required />
+        <input class="border p-2 w-full mb-3 rounded" type="password" name="password" placeholder="Password" required />
+        
+        <!-- Error message for email exists -->
+        {% if error == 'email_exists' %}
+        <div class="mb-3 p-2 bg-red-50 border border-red-300 rounded text-red-700 text-sm">
+          An account with this email already exists.
+        </div>
+        {% endif %}
+        
         <button class="btn-custom w-full">Create Account</button>
       </form>
 

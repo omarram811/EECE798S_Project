@@ -73,25 +73,31 @@
               <option value="gemini">Gemini</option>
             </select>
           </div>
-          <div>
+          <!-- <div>
             <label class="text-sm font-medium">Chat Model</label>
             <input class="border rounded p-3 w-full text-lg" name="model" placeholder="gpt-4o-mini or gemini-2.0-flash"/>
+          </div> -->
+          <div>
+            <label class="text-sm font-medium">Chat Model</label>
+            <input id="model-input" class="border rounded p-3 w-full text-lg" name="model" placeholder="gpt-4o-mini or gemini-2.0-flash"/>
+            <p id="model-error" class="text-xs text-red-600 mt-1 hidden"></p>
           </div>
         </div>
 
         <div>
           <label class="text-sm font-medium">API Key</label>
-          <input type="password" class="border rounded p-3 w-full text-lg" name="api_key" placeholder="Enter your OpenAI or Gemini API key" required />
+          <input type="password" id="api-key-input" class="border rounded p-3 w-full text-lg" name="api_key" placeholder="Enter your OpenAI or Gemini API key" required />
           <p class="text-xs text-gray-500 mt-1">Your API key will be stored securely and used only for this agent.</p>
+          <p id="api-key-error" class="text-xs text-red-600 mt-1 hidden"></p>
         </div>
 
         <div>
           <label class="text-sm font-medium">Embedding Model</label>
-          <!-- <input class="border rounded p-3 w-full text-lg" name="embed_model" value="openai:text-embedding-3-small" /> -->
-           <input class="border rounded p-3 w-full text-lg" name="embed_model" placeholder="text-embedding-3-small or models/text-embedding-004"/>
+          <input id="embed-model-input" class="border rounded p-3 w-full text-lg" name="embed_model" placeholder="text-embedding-3-small or models/text-embedding-004"/>
+          <p id="embed-model-error" class="text-xs text-red-600 mt-1 hidden"></p>
         </div>
 
-        <button type="submit" class="btn-custom w-full text-lg">Create Agent</button>
+        <button type="submit" id="create-agent-btn" class="btn-custom w-full text-lg">Create Agent</button>
       </form>
 
       <!-- Your Agents List -->
@@ -157,6 +163,43 @@
     </div>
 </div>
 
+<!-- EMBEDDING PROGRESS MODAL -->
+<div id="progressModal"
+     class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden">
+    
+    <div class="bg-white rounded-xl shadow-lg p-6 w-96">
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">Embedding Progress</h3>
+        
+        <div class="mb-4">
+            <div class="flex justify-between text-sm text-gray-600 mb-2">
+                <span>Processing files...</span>
+                <span id="progressText">0 / 0</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-4">
+                <div id="progressBar" class="bg-[#840032] h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <p id="progressPercentage" class="text-xs text-gray-500 mt-1 text-center">0%</p>
+        </div>
+        
+        <div class="mb-4">
+            <p class="text-xs text-gray-600 mb-1">Current file:</p>
+            <p id="currentFile" class="text-sm font-medium text-gray-800 truncate">-</p>
+        </div>
+        
+        <div id="progressError" class="hidden mb-4 p-3 bg-red-50 border border-red-300 rounded text-red-700 text-sm">
+        </div>
+        
+        <div id="progressComplete" class="hidden mb-4 p-3 bg-green-50 border border-green-300 rounded text-green-700 text-sm">
+            ✓ Embedding completed successfully!
+        </div>
+        
+        <button onclick="closeProgressModal()" id="progressCloseBtn"
+                class="w-full px-4 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 hidden">
+            Close
+        </button>
+    </div>
+</div>
+
 <script>
     function openDeleteModal(agentId) {
         let modal = document.getElementById("deleteModal");
@@ -169,6 +212,186 @@
     function closeDeleteModal() {
         document.getElementById("deleteModal").classList.add("hidden");
     }
+
+    // Progress Modal Functions
+    let progressInterval = null;
+    let currentAgentId = null;
+
+    function openProgressModal(agentId) {
+        currentAgentId = agentId;
+        document.getElementById("progressModal").classList.remove("hidden");
+        document.getElementById("progressCloseBtn").classList.add("hidden");
+        document.getElementById("progressComplete").classList.add("hidden");
+        document.getElementById("progressError").classList.add("hidden");
+        
+        // Start polling for progress
+        progressInterval = setInterval(() => pollProgress(agentId), 1000);
+    }
+
+    function closeProgressModal() {
+        document.getElementById("progressModal").classList.add("hidden");
+        if (progressInterval) {
+            clearInterval(progressInterval);
+            progressInterval = null;
+        }
+        currentAgentId = null;
+    }
+
+    async function pollProgress(agentId) {
+        try {
+            const response = await fetch(`/agents/${agentId}/progress`);
+            const data = await response.json();
+            
+            // Update progress bar
+            const percentage = Math.round(data.progress_percentage);
+            document.getElementById("progressBar").style.width = `${percentage}%`;
+            document.getElementById("progressPercentage").textContent = `${percentage}%`;
+            document.getElementById("progressText").textContent = `${data.processed_files} / ${data.total_files}`;
+            document.getElementById("currentFile").textContent = data.current_file || "-";
+            
+            // Check status
+            if (data.status === "completed") {
+                clearInterval(progressInterval);
+                progressInterval = null;
+                document.getElementById("progressComplete").classList.remove("hidden");
+                document.getElementById("progressCloseBtn").classList.remove("hidden");
+            } else if (data.status === "error") {
+                clearInterval(progressInterval);
+                progressInterval = null;
+                const errorElem = document.getElementById("progressError");
+                errorElem.textContent = `Error: ${data.error_message || "Unknown error occurred"}`;
+                errorElem.classList.remove("hidden");
+                document.getElementById("progressCloseBtn").classList.remove("hidden");
+            } else if (data.status === "idle") {
+                // No progress found, might not have started yet
+                // Keep polling for a bit
+            }
+        } catch (error) {
+            console.error("Error polling progress:", error);
+        }
+    }
+
+    // Validation functions
+    function validateApiKey() {
+        const provider = document.getElementById("provider-select").value;
+        const apiKey = document.getElementById("api-key-input").value.trim();
+        const errorElem = document.getElementById("api-key-error");
+
+        if (!apiKey) {
+            errorElem.textContent = "";
+            errorElem.classList.add("hidden");
+            return true; // Let HTML5 required attribute handle empty validation
+        }
+
+        if (provider === "openai") {
+            if (!apiKey.startsWith("sk-")) {
+                errorElem.textContent = "⚠ OpenAI API keys should start with 'sk-'";
+                errorElem.classList.remove("hidden");
+                return false;
+            }
+        } else if (provider === "gemini") {
+            if (!apiKey.startsWith("AI")) {
+                errorElem.textContent = "⚠ Gemini API keys should start with 'AI'";
+                errorElem.classList.remove("hidden");
+                return false;
+            }
+        }
+
+        errorElem.textContent = "";
+        errorElem.classList.add("hidden");
+        return true;
+    }
+
+    function validateModel() {
+        const provider = document.getElementById("provider-select").value;
+        const model = document.getElementById("model-input").value.trim();
+        const errorElem = document.getElementById("model-error");
+
+        if (!model) {
+            errorElem.textContent = "";
+            errorElem.classList.add("hidden");
+            return true;
+        }
+
+        if (provider === "openai") {
+            if (!model.toLowerCase().startsWith("gpt")) {
+                errorElem.textContent = "⚠ OpenAI chat models should start with 'gpt' (e.g., gpt-4o-mini)";
+                errorElem.classList.remove("hidden");
+                return false;
+            }
+        } else if (provider === "gemini") {
+            if (!model.toLowerCase().startsWith("gemini")) {
+                errorElem.textContent = "⚠ Gemini chat models should start with 'gemini' (e.g., gemini-2.0-flash)";
+                errorElem.classList.remove("hidden");
+                return false;
+            }
+        }
+
+        errorElem.textContent = "";
+        errorElem.classList.add("hidden");
+        return true;
+    }
+
+    function validateEmbedModel() {
+        const provider = document.getElementById("provider-select").value;
+        const embedModel = document.getElementById("embed-model-input").value.trim();
+        const errorElem = document.getElementById("embed-model-error");
+
+        if (!embedModel) {
+            errorElem.textContent = "";
+            errorElem.classList.add("hidden");
+            return true;
+        }
+
+        if (provider === "openai") {
+            if (!embedModel.toLowerCase().includes("text-embedding")) {
+                errorElem.textContent = "⚠ OpenAI embedding models should contain 'text-embedding' (e.g., text-embedding-3-small)";
+                errorElem.classList.remove("hidden");
+                return false;
+            }
+        } else if (provider === "gemini") {
+            if (!embedModel.startsWith("models/")) {
+                errorElem.textContent = "⚠ Gemini embedding models should start with 'models/' (e.g., models/text-embedding-004)";
+                errorElem.classList.remove("hidden");
+                return false;
+            }
+        }
+
+        errorElem.textContent = "";
+        errorElem.classList.add("hidden");
+        return true;
+    }
+
+    function validateAll() {
+        const apiKeyValid = validateApiKey();
+        const modelValid = validateModel();
+        const embedModelValid = validateEmbedModel();
+        return apiKeyValid && modelValid && embedModelValid;
+    }
+
+    // Add event listeners
+    document.addEventListener("DOMContentLoaded", function() {
+        const providerSelect = document.getElementById("provider-select");
+        const apiKeyInput = document.getElementById("api-key-input");
+        const modelInput = document.getElementById("model-input");
+        const embedModelInput = document.getElementById("embed-model-input");
+        const form = document.querySelector("form[action='/agents/create']");
+
+        // Validate on input change
+        providerSelect.addEventListener("change", validateAll);
+        apiKeyInput.addEventListener("input", validateApiKey);
+        modelInput.addEventListener("input", validateModel);
+        embedModelInput.addEventListener("input", validateEmbedModel);
+
+        // Validate on form submit and show progress modal
+        form.addEventListener("submit", function(e) {
+            if (!validateAll()) {
+                e.preventDefault();
+                alert("Please fix the validation errors before creating the agent.");
+                return;
+            }
+        });
+    });
 </script>
 
 

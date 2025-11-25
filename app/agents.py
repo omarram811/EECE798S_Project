@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Depends, Form, HTTPException
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
 from sqlalchemy.orm import Session
 from .db import get_db
 from .models import Agent, Conversation, GoogleToken, AgentFile
@@ -13,6 +13,8 @@ from fastapi.responses import FileResponse
 import json
 import tempfile
 import uuid
+from .progress import get_progress
+import threading
 
 router = APIRouter(prefix="/agents", tags=["agents"])
 from fastapi.templating import Jinja2Templates
@@ -35,14 +37,39 @@ def create_agent(request: Request,
     a = Agent(owner_id=uid, name=name, slug=slug, drive_folder_id=drive_folder, persona=persona,
               provider=provider, model=model, embed_model=embed_model, api_key=api_key)
     db.add(a); db.commit()
-    # initial index if Drive connected and token present
+    
+    # Start indexing in background thread if Drive connected
     tok = db.query(GoogleToken).filter_by(user_id=uid).first()
     if tok and drive_folder:
+        agent_id = a.id  # Store agent ID for background thread
         creds_path = _creds_path_for_user(uid)
-        try:
-            reindex_agent(a, creds_path)
-        except Exception as e:
-            print("Initial reindex failed:", e)
+        # Run in background thread with its own DB session
+        def background_index():
+            from .db import SessionLocal
+            db_bg = SessionLocal()
+            try:
+                # Fetch agent in background thread's session
+                agent_bg = db_bg.get(Agent, agent_id)
+                if agent_bg:
+                    # Enable progress tracking for initial agent creation
+                    reindex_agent(agent_bg, creds_path, track_progress=True)
+                    print(f"[create_agent] Background indexing completed for agent {agent_id}")
+                else:
+                    print(f"[create_agent] Agent {agent_id} not found in background thread")
+            except Exception as e:
+                print(f"[create_agent] Background indexing failed for agent {agent_id}: {e}")
+                import traceback
+                traceback.print_exc()
+            finally:
+                db_bg.close()
+        
+        thread = threading.Thread(target=background_index, daemon=True)
+        thread.start()
+        
+        # Redirect to progress page to show indexing progress
+        return RedirectResponse(f"/agents/{a.id}/progress-page", status_code=302)
+    
+    # If no drive folder, go directly to agent
     return RedirectResponse(f"/a/{slug}", status_code=302)
 
 
@@ -118,7 +145,8 @@ def update_agent(request: Request, agent_id: int,
             creds_path = _creds_path_for_user(uid)
             try:
                 print(f"[update_agent] Embedding model changed for agent {agent_id}. Re-indexing...")
-                reindex_agent(a, creds_path)
+                # Don't track progress for updates (happens in background)
+                reindex_agent(a, creds_path, track_progress=False)
             except Exception as e:
                 print(f"[update_agent] Re-indexing failed: {e}")
     
@@ -192,3 +220,47 @@ def download_logs(agent_id: int, request: Request, db: Session = Depends(get_db)
         media_type="application/json",
         filename=f"{agent.name}_logs.json"
     )
+
+
+@router.get("/{agent_id}/progress")
+def get_embedding_progress(agent_id: int, request: Request, db: Session = Depends(get_db)):
+    """Get the current embedding progress for an agent"""
+    uid = get_current_user_id(request)
+    agent = db.get(Agent, agent_id)
+
+    if not agent or agent.owner_id != uid:
+        raise HTTPException(status_code=404)
+
+    progress = get_progress(agent_id)
+    if not progress:
+        return JSONResponse({
+            "status": "idle",
+            "total_files": 0,
+            "processed_files": 0,
+            "current_file": "",
+            "progress_percentage": 0
+        })
+
+    return JSONResponse({
+        "status": progress.status,
+        "total_files": progress.total_files,
+        "processed_files": progress.processed_files,
+        "current_file": progress.current_file,
+        "progress_percentage": progress.progress_percentage,
+        "error_message": progress.error_message
+    })
+
+
+@router.get("/{agent_id}/progress-page")
+def show_progress_page(agent_id: int, request: Request, db: Session = Depends(get_db)):
+    """Show the progress page for initial agent setup"""
+    uid = get_current_user_id(request)
+    agent = db.get(Agent, agent_id)
+
+    if not agent or agent.owner_id != uid:
+        raise HTTPException(status_code=404)
+
+    return templates.TemplateResponse("agent_progress.html", {
+        "request": request,
+        "agent": agent
+    })

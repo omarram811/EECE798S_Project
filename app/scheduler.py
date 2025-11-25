@@ -38,7 +38,8 @@ def daily_refresh_job():
                 continue
             creds_path = _creds_path_for_user(a.owner_id)
             try:
-                reindex_agent(a, creds_path)
+                # Pass track_progress=False for background scheduler updates
+                reindex_agent(a, creds_path, track_progress=False)
                 print(f"[refresh] refresh job finished for agent {a.id}")
             except Exception as e:
                 print(f"[refresh] agent {a.id} failed: {e}")
