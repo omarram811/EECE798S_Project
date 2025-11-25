@@ -646,22 +646,59 @@ def _list_all_files_in_drive_folder(folder_id: str, user_id: int):
 
 def _extract_text_from_pdf(file_bytes: bytes, title: str = "") -> str:
     """
-    Extract text from PDF bytes using pdfplumber, with OCR fallback.
+    Extract text from PDF bytes with a robust two-stage strategy:
 
-    For each page:
-      1. Try to extract selectable text with pdfplumber.
-      2. If no text on that page, run OCR via page.to_image() + Tesseract.
-    If pdfplumber as a whole fails (e.g. 'Cannot convert None to Decimal'),
-    fall back to pypdf.PdfReader for plain text extraction.
+      1) Fast path: pypdf.PdfReader over the whole file.
+         - If it returns any non-empty text, use that and STOP (no OCR).
+      2) Fallback: pdfplumber per-page.
+         - For each page, try page.extract_text().
+         - If no text or extract_text() fails, fallback to OCR using
+           page.to_image() + Tesseract.
+
+    This gives us:
+      - fast selectable-text extraction when possible (like on Windows),
+      - OCR only when necessary (scanned/image-only PDFs or broken text extractors).
     """
     tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
     try:
         tmp.write(file_bytes)
         tmp.close()
 
-        text = ""
+        # -------------------------------
+        # 1) Fast path: pypdf.PdfReader
+        # -------------------------------
+        try:
+            reader = PdfReader(tmp.name)
+            fast_text = ""
+            for i, page in enumerate(reader.pages):
+                try:
+                    t = page.extract_text() or ""
+                    fast_text += t + "\n"
+                except Exception as e2:
+                    print(f"[PDF pypdf] Failed on page {i+1} of '{title}': {e2}")
 
-        # ---- First attempt: pdfplumber + OCR per page ----
+            if fast_text.strip():
+                # We got real text, no need to run pdfplumber or OCR.
+                print(
+                    f"[PDF] Extracted total {len(fast_text)} chars from '{title}' "
+                    f"(pypdf fast path)"
+                )
+                return fast_text
+            else:
+                print(
+                    f"[PDF] pypdf fast path extracted no text from '{title}', "
+                    "falling back to pdfplumber + OCR"
+                )
+        except Exception as e:
+            print(
+                f"[PDF] pypdf fast path failed for '{title}': {e}. "
+                "Falling back to pdfplumber + OCR."
+            )
+
+        # ---------------------------------------
+        # 2) Fallback: pdfplumber + page-level OCR
+        # ---------------------------------------
+        text = ""
         try:
             with pdfplumber.open(tmp.name) as pdf:
                 for i, page in enumerate(pdf.pages):
@@ -670,13 +707,17 @@ def _extract_text_from_pdf(file_bytes: bytes, title: str = "") -> str:
                     try:
                         extracted = page.extract_text() or ""
                     except Exception as e:
-                        print(f"[PDF] extract_text failed on page {i+1} of '{title}': {e}")
+                        print(
+                            f"[PDF] extract_text failed on page {i+1} of "
+                            f"'{title}': {e}"
+                        )
                         extracted = ""
 
                     if extracted.strip():
+                        # Normal selectable text
                         text += extracted + "\n"
                     else:
-                        # No selectable text -> OCR fallback with ImageMagick/Wand
+                        # No selectable text -> OCR fallback using page.to_image()
                         try:
                             pil_page = page.to_image(resolution=300).original
                             ocr_text = pytesseract.image_to_string(pil_page)
@@ -696,37 +737,12 @@ def _extract_text_from_pdf(file_bytes: bytes, title: str = "") -> str:
                                 f"[PDF OCR] Failed on page {i+1} of '{title}': {e}"
                             )
 
-            print(f"[PDF] Extracted total {len(text)} chars from '{title}'")
+            print(f"[PDF] Extracted total {len(text)} chars from '{title}' (pdfplumber+OCR)")
             return text
 
         except Exception as e:
-            # This is where 'Cannot convert None to Decimal' is happening
+            # If pdfplumber as a whole explodes, we have no further fallback here.
             print(f"[PDF] Failed to process PDF '{title}' with pdfplumber: {e}")
-
-        # ---- Second attempt: fallback to pypdf ----
-        try:
-            reader = PdfReader(tmp.name)
-            fallback_text = ""
-            for i, page in enumerate(reader.pages):
-                try:
-                    t = page.extract_text() or ""
-                    fallback_text += t + "\n"
-                except Exception as e2:
-                    print(
-                        f"[PDF Fallback pypdf] Failed on page {i+1} of '{title}': {e2}"
-                    )
-
-            if fallback_text.strip():
-                print(
-                    f"[PDF Fallback pypdf] Extracted total {len(fallback_text)} chars from '{title}'"
-                )
-                return fallback_text
-            else:
-                print(f"[PDF Fallback pypdf] No text extracted from '{title}'")
-                return ""
-
-        except Exception as e2:
-            print(f"[PDF Fallback pypdf] Failed to process PDF '{title}': {e2}")
             return ""
 
     finally:
@@ -734,6 +750,7 @@ def _extract_text_from_pdf(file_bytes: bytes, title: str = "") -> str:
             os.remove(tmp.name)
         except:
             pass
+
 
 
 def _extract_text_from_image(file_bytes: bytes, title: str = "") -> str:
