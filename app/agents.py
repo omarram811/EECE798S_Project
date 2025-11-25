@@ -142,14 +142,36 @@ def update_agent(request: Request, agent_id: int,
     if embedding_changed and drive_folder:
         tok = db.query(GoogleToken).filter_by(user_id=uid).first()
         if tok:
+            stored_agent_id = a.id  # Store agent ID for background thread
             creds_path = _creds_path_for_user(uid)
-            try:
-                print(f"[update_agent] Embedding model changed for agent {agent_id}. Re-indexing...")
-                # Don't track progress for updates (happens in background)
-                reindex_agent(a, creds_path, track_progress=False)
-            except Exception as e:
-                print(f"[update_agent] Re-indexing failed: {e}")
+            
+            # Run re-indexing in background thread with progress tracking
+            def background_reindex():
+                from .db import SessionLocal
+                db_bg = SessionLocal()
+                try:
+                    # Fetch agent in background thread's session
+                    agent_bg = db_bg.get(Agent, stored_agent_id)
+                    if agent_bg:
+                        print(f"[update_agent] Embedding model changed for agent {stored_agent_id}. Re-indexing with progress tracking...")
+                        reindex_agent(agent_bg, creds_path, track_progress=True)
+                        print(f"[update_agent] Background re-indexing completed for agent {stored_agent_id}")
+                    else:
+                        print(f"[update_agent] Agent {stored_agent_id} not found in background thread")
+                except Exception as e:
+                    print(f"[update_agent] Background re-indexing failed for agent {stored_agent_id}: {e}")
+                    import traceback
+                    traceback.print_exc()
+                finally:
+                    db_bg.close()
+            
+            thread = threading.Thread(target=background_reindex, daemon=True)
+            thread.start()
+            
+            # Redirect to progress page to show re-indexing progress
+            return RedirectResponse(f"/agents/{a.id}/progress-page", status_code=302)
     
+    # No embedding change, go back to chat
     return RedirectResponse(f"/a/{a.slug}", status_code=302)
 
 
