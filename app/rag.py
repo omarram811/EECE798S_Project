@@ -477,10 +477,29 @@ def retrieve(agent, query: str, k: int = 30) -> List[dict]:
     col = ensure_collection(agent, client)
     
     try:
-        res = col.query(query_texts=[query], n_results=max(1, k))
+        # Get collection count to avoid requesting more results than available
+        col_count = col.count()
+        if col_count == 0:
+            return []
+        
+        # Limit k to the number of documents in the collection
+        actual_k = min(k, col_count)
+        
+        res = col.query(query_texts=[query], n_results=max(1, actual_k))
     except Exception as e:
+        error_msg = str(e).lower()
+        
+        # Handle HNSW index errors (ef or M too small, contiguous array errors)
+        if "contiguous" in error_msg or "ef or m" in error_msg:
+            print(f"[retrieve] HNSW index error. Trying with fewer results...")
+            try:
+                # Try with minimal results
+                res = col.query(query_texts=[query], n_results=1)
+            except:
+                print(f"[retrieve] Query still failed. Returning no results.")
+                return []
         # Handle dimension mismatch during query
-        if "dimension" in str(e).lower() or "dimensionality" in str(e).lower():
+        elif "dimension" in error_msg or "dimensionality" in error_msg:
             print(f"[retrieve] Dimension mismatch during query. Recreating collection for agent {agent.id}...")
             # Delete and recreate collection
             name = _collection_name(agent.id)
