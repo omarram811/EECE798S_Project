@@ -369,6 +369,10 @@ def stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
 
 @router.get("/public/{agent_id}/stream")
 def public_stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
+    print("\n==============================")
+    print("ENTERED /chat/public/<id>/stream")
+    print("==============================")
+
     agent = db.get(Agent, agent_id)
     if not agent:
         return EventSourceResponse(({"event": "error", "data": "notfound"} for _ in []))
@@ -380,60 +384,96 @@ def public_stream(agent_id: int, request: Request, db: Session = Depends(get_db)
         request.session["public_session_id"] = session_id
     
     public_user_id = -abs(hash(session_id)) % (10 ** 8)
+    print(f"[DEBUG] public_user_id = {public_user_id}")
     
     conv = _ensure_conversation(db, agent.id, public_user_id)
-    msgs = db.query(Message).filter_by(conversation_id=conv.id).order_by(Message.id.asc()).all()
+    print(f"[DEBUG] Conversation ID = {conv.id}")
+    print(f"[DEBUG] Existing summary = '{conv.summary}'")
+
+    # Get messages using the same logic as private chat
+    last12, msgs = _get_last_messages(db, conv, k=12)
+    print(f"[DEBUG] Last12 count = {len(last12)}")
+    print(f"[DEBUG] Total msgs count = {len(msgs)}")
+
+    # Build history from active (non-summarized) messages only
     history = [
         {"role": m.role, "content": m.content}
-        for m in msgs
+        for m in last12
         if m.role in ("user", "assistant") and (m.content or "").strip()
     ]
+    print(f"[DEBUG] History entries = {len(history)}")
+
+    # Inject summary if available
+    if conv.summary and conv.summary.strip():
+        print("[DEBUG] Injecting summary into history")
+        history = [
+            {"role": "system", "content": f"Conversation summary:\n{conv.summary}"}
+        ] + history
+    else:
+        print("[DEBUG] No summary to inject")
+
     last = next((m for m in reversed(msgs) if (m.content or "").strip()), None)
+    print(f"[DEBUG] Last message role = {last.role if last else None}")
+
     if not last or last.role != "user":
         def idle():
             yield {"event": "done", "data": "[IDLE]"}
         return EventSourceResponse(idle())
 
     last_user = last.content
+    print(f"[DEBUG] Last user message = {last_user[:80] if last_user else ''}")
 
     with _STREAMS_LOCK:
         if conv.id in _ACTIVE_STREAMS:
             return EventSourceResponse(({"event": "info", "data": "[BUSY]"} for _ in []))
         _ACTIVE_STREAMS.add(conv.id)
 
-    files = db.query(AgentFile).filter_by(agent_id=agent.id).all()
-    file_list_text = "\n".join(
-        [f"- {f.title}" for f in files]
-    ) if files else "(No files found)"
-
+    print("[DEBUG] Running RAG retrieval")
     context_docs = retrieve(agent, last_user, k=100)
+    print(f"[DEBUG] Retrieved {len(context_docs)} context docs")
+
     context_text = "\n\n".join([f"[{i+1}] {d['metadata'].get('title','')}\n{d['text'][:1200]}" for i,d in enumerate(context_docs)])
+    
     system = {
-    "role": "system",
-    "content": (
-        f"You are a course TA agent.\n"
-        f"Persona: {agent.persona}\n\n"
-        f"When you use a document, cite it by its exact filename.\n\n"
-        f"Retrieved context (may be partial):\n{context_text}"
-    )
-}
+        "role": "system",
+        "content": (
+            f"You are a course TA agent.\n"
+            f"Persona: {agent.persona}\n\n"
+            f"When you use a document, cite it by its exact filename.\n\n"
+            f"Retrieved context (may be partial):\n{context_text}"
+        )
+    }
 
     provider = provider_from(agent)
+    print("[DEBUG] Provider loaded OK")
+
+    MAX_CONTEXT = 12
+    SUMMARY_CHUNK = 8
+    print(f"[DEBUG] Memory thresholds: MAX_CONTEXT={MAX_CONTEXT}, SUMMARY_CHUNK={SUMMARY_CHUNK}")
+
     def event_gen():
+        print("PUBLIC STREAMING STARTED")
+
         try:
+            yield {"event": "start", "data": ""}
+
+            print("[DEBUG] Starting model.stream_chat call")
             stream = provider.stream_chat([system, *history])
+
             acc = ""
             for token in stream:
                 # Check if stream was cancelled
                 with _STREAMS_LOCK:
                     if conv.id in _CANCELLED_STREAMS:
+                        print("Stream cancelled during output!")
                         _CANCELLED_STREAMS.discard(conv.id)
                         yield {"event":"cancelled", "data":"[CANCELLED]"}
                         return
                 acc += token
                 yield {"event":"message", "data": token}
-                time.sleep(0.1)
             
+            print(f"[DEBUG] Finished streaming. Accumulated {len(acc)} chars")
+
             # Check again before saving to prevent race condition
             with _STREAMS_LOCK:
                 if conv.id in _CANCELLED_STREAMS:
@@ -442,21 +482,64 @@ def public_stream(agent_id: int, request: Request, db: Session = Depends(get_db)
                     return
             
             if acc.strip():
-                db.add(Message(conversation_id=conv.id, user_id=public_user_id, role="assistant", content=acc))
+                print("[DEBUG] Saving assistant message to DB")
+                db.add(Message(
+                    conversation_id=conv.id,
+                    user_id=public_user_id,
+                    role="assistant",
+                    content=acc,
+                    is_summarized=False
+                ))
                 db.commit()
-                user_question = history[-1]["content"] if history else ""
+
+                # Log the query (separate from conversation memory)
+                user_question = last_user
                 db.add(QueryLog(
                     agent_id=agent.id,
                     query=user_question,
                     response=acc
                 ))
                 db.commit()
+                print("[DEBUG] Query logged")
+
+            # Summarization logic - same as private chat
+            _, all_msgs = _get_last_messages(db, conv, k=MAX_CONTEXT)
+            active_msgs = [m for m in all_msgs if not m.is_summarized]
+            print(f"[DEBUG] Active unsummarized msgs = {len(active_msgs)}")
+
+            if len(active_msgs) > MAX_CONTEXT:
+                print("TRIGGERING SUMMARIZATION (PUBLIC)")
+                to_summarize = active_msgs[:-SUMMARY_CHUNK]
+                print(f"[DEBUG] Summarizing {len(to_summarize)} msgs")
+                print(f"[DEBUG] Previous summary = {conv.summary!r}")
+
+                new_summary = _summarize_memory(provider, conv.summary, to_summarize)
+                print(f"[DEBUG] New summary generated = {new_summary!r}")
+                
+                conv_persistent = db.merge(conv)
+                conv_persistent.summary = new_summary
+                db.commit()
+                db.refresh(conv_persistent)
+
+                for m in to_summarize:
+                    m.is_summarized = True
+
+                db.commit()
+                db.refresh(conv)
+                print(f"[DEBUG] Summary saved. Length = {len(conv.summary)}")
+            else:
+                print("[DEBUG] Threshold not reached — skipping summarization")
 
             yield {"event":"done", "data":"[END]"}
+
         except Exception as e:
+            print(f"ERROR DURING PUBLIC STREAM: {e}")
             yield {"event":"error", "data": str(e)}
+
         finally:
+            print("PUBLIC STREAM FINISHED — cleaning locks")
             with _STREAMS_LOCK:
                 _ACTIVE_STREAMS.discard(conv.id)
                 _CANCELLED_STREAMS.discard(conv.id)
+
     return EventSourceResponse(event_gen())
