@@ -38,17 +38,33 @@
     <div class="bg-white p-6 rounded-xl shadow-md">
       <h2 class="text-xl font-semibold mb-3">Connect Google Drive</h2>
       {% if google_connected %}
-        <p class="text-green-700 font-medium">Connected. You can add Drive folders to your agents.</p>
+        <div class="flex items-center justify-between">
+          <p class="text-green-700 font-medium">✓ Connected. You can add Drive folders to your agents.</p>
+          <a class="px-4 py-2 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 font-medium" 
+             href="/google/disconnect" 
+             onclick="return confirm('Are you sure you want to disconnect Google Drive? Existing agents will keep their data, but you won\'t be able to create new agents until you reconnect.');">
+            Disconnect Drive
+          </a>
+        </div>
       {% else %}
-        <a class="btn-custom" href="/google/auth">Authorize Drive</a>
+        <div class="flex items-center justify-between">
+          <p class="text-yellow-700 font-medium">⚠ Not connected. Connect your Google Drive to create agents.</p>
+          <a class="btn-custom" href="/google/auth">Authorize Drive</a>
+        </div>
       {% endif %}
     </div>
 
     <div class="grid md:grid-cols-2 gap-8 items-start">
 
       <!-- Create TA Agent Form -->
-      <form action="/agents/create" method="post" class="bg-white p-6 rounded-xl shadow-md space-y-4">
+      <form action="/agents/create" method="post" id="create-agent-form" class="bg-white p-6 rounded-xl shadow-md space-y-4 {% if not google_connected %}opacity-60{% endif %}">
         <h2 class="text-xl font-semibold">Create a TA Agent</h2>
+        
+        {% if not google_connected %}
+        <div class="bg-yellow-50 border border-yellow-300 rounded p-3 text-yellow-800 text-sm">
+          ⚠ Please connect your Google Drive above before creating an agent.
+        </div>
+        {% endif %}
 
         <div>
           <label class="text-sm font-medium">Model Name</label>
@@ -97,7 +113,9 @@
           <p id="embed-model-error" class="text-xs text-red-600 mt-1 hidden"></p>
         </div>
 
-        <button type="submit" id="create-agent-btn" class="btn-custom w-full text-lg">Create Agent</button>
+        <button type="submit" id="create-agent-btn" class="btn-custom w-full text-lg {% if not google_connected %}cursor-not-allowed{% endif %}" {% if not google_connected %}disabled{% endif %}>
+          {% if google_connected %}Create Agent{% else %}Connect Google Drive First{% endif %}
+        </button>
       </form>
 
       <!-- Your Agents List -->

@@ -33,14 +33,22 @@ def create_agent(request: Request,
     uid = get_current_user_id(request)
     if not uid:
         raise HTTPException(status_code=401, detail="Login required")
+    
+    # Check if Google Drive is connected - required to create agents
+    tok = db.query(GoogleToken).filter_by(user_id=uid).first()
+    if not tok:
+        raise HTTPException(
+            status_code=400, 
+            detail="Google Drive not connected. Please connect your Google Drive before creating an agent."
+        )
+    
     slug = str(uuid.uuid4())
     a = Agent(owner_id=uid, name=name, slug=slug, drive_folder_id=drive_folder, persona=persona,
               provider=provider, model=model, embed_model=embed_model, api_key=api_key)
     db.add(a); db.commit()
     
-    # Start indexing in background thread if Drive connected
-    tok = db.query(GoogleToken).filter_by(user_id=uid).first()
-    if tok and drive_folder:
+    # Start indexing in background thread if Drive folder provided
+    if drive_folder:
         agent_id = a.id  # Store agent ID for background thread
         creds_path = _creds_path_for_user(uid)
         # Run in background thread with its own DB session
