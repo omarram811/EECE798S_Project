@@ -284,16 +284,13 @@
     /* ------------------ STREAM HANDLING ------------------ */
     document.querySelectorAll(".markdown").forEach(el => {
       if (!el.dataset.raw) {
-        // For pre-loaded messages, the text is already in the element
         const raw = el.textContent || "";
         el.innerHTML = marked.parse(cleanMarkdown(raw));
       } else {
-        // For streaming messages
         const raw = el.dataset.raw || "";
         el.innerHTML = marked.parse(cleanMarkdown(raw));
       }
     });
-
 
     function closeStream() {
       if (es) { es.close(); es = null; }
@@ -304,47 +301,67 @@
       closeStream();
       setGenerating(true);
       currentStreamContent = "";
+
       es = new EventSource("/chat/{{agent.id}}/stream");
 
-      es.addEventListener("message", (e) => {
-        if (!streamingEl) {
-          const container = document.createElement("div");
-          container.className = "msg-bubble assistant-msg";
-          container.innerHTML = '<div id="streaming" class="markdown"></div>';
-          messages.appendChild(container);
-          streamingEl = container.querySelector("#streaming");
+      /* ------------------ NEW: HANDLE START EVENT ------------------ */
+      es.addEventListener("start", () => {
+        // Clean any leftover streaming bubble
+        if (streamingEl) {
+          streamingEl.removeAttribute("id");
+          streamingEl = null;
         }
 
-        
-        let chunk = e.data;
+        // Create a fresh assistant bubble
+        const container = document.createElement("div");
+        container.className = "msg-bubble assistant-msg";
+        container.innerHTML = '<div class="markdown streaming"></div>';
+        messages.appendChild(container);
 
-        // inject newline before numbered or bullet list if missing
-        chunk = chunk.replace(/(\d+\.\s\*\*)/g, "\n$1");
-        chunk = chunk.replace(/(\-\s\*\*)/g, "\n$1");
-
-        streamingEl.dataset.raw = (streamingEl.dataset.raw || "") + chunk;
-        currentStreamContent = streamingEl.dataset.raw;
-        streamingEl.innerHTML = marked.parse(streamingEl.dataset.raw);
-
-        streamingEl.innerHTML = marked.parse(streamingEl.dataset.raw);
-
+        streamingEl = container.querySelector(".streaming");
+        streamingEl.dataset.raw = "";  // reset text buffer
 
         messages.scrollTop = messages.scrollHeight;
       });
 
+      /* ------------------ MESSAGE EVENT (TOKEN STREAMING) ------------------ */
+      es.addEventListener("message", (e) => {
+        if (!streamingEl) return; // Waiting for 'start'
+
+        let chunk = e.data;
+
+        // Fix lists that get broken
+        chunk = chunk.replace(/(\d+\.\s\*\*)/g, "\n$1");
+        chunk = chunk.replace(/(\-\s\*\*)/g, "\n$1");
+
+        streamingEl.dataset.raw += chunk;
+        currentStreamContent = streamingEl.dataset.raw;
+
+        streamingEl.innerHTML = marked.parse(streamingEl.dataset.raw);
+
+        messages.scrollTop = messages.scrollHeight;
+      });
+
+      /* ------------------ DONE EVENT ------------------ */
       es.addEventListener("done", () => {
-        if (streamingEl) streamingEl.removeAttribute("id");
-        streamingEl = null;
+        if (streamingEl) {
+          streamingEl.classList.remove("streaming");
+          streamingEl.removeAttribute("id");
+          streamingEl = null;
+        }
+
         currentStreamContent = "";
         closeStream();
       });
 
+      /* ------------------ ERROR EVENT ------------------ */
       es.addEventListener("error", () => {
         closeStream();
       });
     }
 
     startStream();
+
 
     /* ------------------ FORM SUBMISSION ------------------ */
 

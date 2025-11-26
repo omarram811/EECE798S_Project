@@ -47,6 +47,7 @@ class Conversation(Base):
     title = Column(String, default="New chat")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow)
+    summary = Column(String, nullable=True)
 
     agent = relationship("Agent", back_populates="conversations")
     messages = relationship("Message", back_populates="conversation", cascade="all, delete-orphan")
@@ -59,7 +60,7 @@ class Message(Base):
     role = Column(String)  # 'user' or 'assistant' or 'system'
     content = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
-
+    is_summarized = Column(Boolean, default=False)
     conversation = relationship("Conversation", back_populates="messages")
     user = relationship("User", back_populates="messages")
 
