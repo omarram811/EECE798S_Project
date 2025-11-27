@@ -68,6 +68,32 @@ class GeminiProvider(ProviderBase):
         self.gen_model = genai.GenerativeModel(model)
         self.embed_model = embed_model or "text-embedding-004"
 
+    def complete(self, messages):
+        """
+        Non-streaming call used for summarization and recommendations.
+        Returns the FULL response as a single string.
+        
+        Supports: gemini-2.0-flash-lite, gemini-2.0-flash, gemini-2.5-flash, gemini-2.5-pro
+        """
+        try:
+            # Convert OpenAI-style messages to single prompt w/ roles
+            parts = []
+            for m in messages:
+                role = m.get("role", "user")
+                content = m.get("content", "")
+                parts.append(f"{role.upper()}: {content}")
+            prompt = "\n\n".join(parts)
+            
+            response = self.gen_model.generate_content(prompt)
+            
+            # Extract text from response
+            if hasattr(response, 'text'):
+                return response.text
+            return ""
+        except Exception as e:
+            print(f"[GeminiProvider.complete ERROR] {e}")
+            return ""
+
     def stream_chat(self, messages):
         # Convert OpenAI-style messages to single prompt w/ roles
         parts = []
