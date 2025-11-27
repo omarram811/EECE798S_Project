@@ -546,35 +546,63 @@ def public_stream(agent_id: int, request: Request, db: Session = Depends(get_db)
 
 @router.get("/public/{agent_id}/recommendations/general")
 def general_recommendations(agent_id: int, db: Session = Depends(get_db)):
-    """Get general topic recommendations based on indexed documents"""
+    """
+    Generate suggested questions for students based on indexed course materials.
+    Uses the agent's configured LLM provider to create contextual recommendations.
+    """
     agent = db.get(Agent, agent_id)
     if not agent:
-        return {"recommendations": []}
+        raise HTTPException(status_code=404, detail="Agent not found")
     
-    # Get a sample of documents to generate topic recommendations
     try:
-        from .rag import retrieve
-        # Use a generic query to get diverse documents
-        docs = retrieve(agent, "course topics assignments lectures", k=10)
+        # Retrieve a sample of course documents to understand the content
+        docs = retrieve(agent, "course topics lectures assignments exams concepts", k=15)
         
         if not docs:
-            return {"recommendations": []}
+            return {"suggestions": []}
         
-        # Extract unique titles/topics
-        titles = set()
-        for doc in docs:
-            title = doc.get("metadata", {}).get("title", "")
-            if title:
-                titles.add(title)
+        # Build a context summary from the retrieved documents
+        context_snippets = []
+        for doc in docs[:10]:  # Limit to top 10 for context
+            title = doc.get("metadata", {}).get("title", "Untitled")
+            text_preview = doc.get("text", "")[:300]  # First 300 chars
+            context_snippets.append(f"Document: {title}\nContent: {text_preview}")
         
-        # Generate simple recommendations from document titles
-        recommendations = []
-        for title in list(titles)[:5]:
-            # Clean up the title for display
-            clean_title = title.replace(".pdf", "").replace(".pptx", "").replace("_", " ")
-            recommendations.append(f"Ask about: {clean_title}")
+        context_text = "\n\n".join(context_snippets)
         
-        return {"recommendations": recommendations}
+        # Use the agent's configured provider to generate suggestions
+        provider = provider_from(agent)
+        
+        prompt = [
+            {
+                "role": "system",
+                "content": (
+                    "You are a helpful course TA assistant. Based on the course materials provided, "
+                    "generate 6 short, engaging questions that a student might want to ask about this course. "
+                    "The questions should be relevant to the actual course content, covering topics like "
+                    "lectures, assignments, concepts, deadlines, or exam preparation. "
+                    "Each question must be 8–20 words, phrased as a natural student inquiry. "
+                    "Do NOT use numbering, bullet points, or any prefixes. "
+                    "Return exactly 6 questions, one per line."
+                )
+            },
+            {
+                "role": "user",
+                "content": f"Here are some course materials to base your questions on:\n\n{context_text}"
+            }
+        ]
+        
+        output = provider.complete(prompt)
+        
+        # Parse the output into individual suggestions
+        suggestions = [
+            line.strip().strip("-•*1234567890.)")  # Remove common prefixes
+            for line in output.split("\n")
+            if line.strip() and len(line.strip()) > 10  # Filter out empty or too-short lines
+        ]
+        
+        return {"suggestions": suggestions[:6]}
+        
     except Exception as e:
         print(f"[recommendations] Error: {e}")
-        return {"recommendations": []}
+        return {"suggestions": []}
