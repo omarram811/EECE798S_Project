@@ -154,31 +154,45 @@
 <body class="bg-gray-100 min-h-screen flex flex-col">
 
     <!-- HEADER -->
-  <header class="w-full bg-[#840032] py-12 px-6 text-center shadow-lg">
+  <header class="w-full bg-[#840032] py-6 px-6 text-center shadow-lg">
+    <!-- Centered Logo -->
+    <div class="flex justify-center">
+      <img src="/static/logo2.png"
+          class="h-40 w-auto mb-2"
+          alt="AUB Logo" />
+    </div>
 
-      <!-- Centered Logo -->
-      <div class="flex justify-center">
-          <img src="/static/logo2.png"
-               class="h-40 w-auto mb-4"
-               alt="AUB Logo" />
-      </div>
+    <!-- Agent / Course Title -->
+    <h1 class="text-4xl font-bold text-white tracking-wide">
+      {{ agent.name }}
+    </h1>
 
-      <!-- Agent / Course Title -->
-      <h1 class="text-4xl font-bold text-white tracking-wide">
-          {{ agent.name }}
-      </h1>
-
-      <!-- Short Description -->
-      <p class="text-gray-200 text-sm max-w-2xl mx-auto mt-4 leading-relaxed">
-          Your AI course assistant; ask about lectures, assignments, deadlines, and announcements.
-      </p>
-
+    <!-- Short Description -->
+    <p class="text-gray-200 text-sm max-w-2xl mx-auto mt-1 leading-relaxed">
+      Your AI course assistant; ask about lectures, assignments, deadlines, and announcements.
+    </p>
   </header>
+
 
 
 
   <!-- MAIN -->
   <main class="max-w-4xl mx-auto w-full p-6 space-y-6 flex-1">
+
+    <!-- Announcement Banner (only shown if professor set one) -->
+    {% if agent.announcement %}
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-xl shadow">
+      <div class="flex items-start">
+        <div class="flex-shrink-0">
+          <span class="text-2xl">📢</span>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-lg font-semibold text-yellow-800">Announcement from Instructor</h3>
+          <p class="mt-1 text-yellow-700">{{ agent.announcement }}</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
 
     <!-- Recommendations Box -->
     <div id="recommendations-box"

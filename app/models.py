@@ -22,6 +22,7 @@ class Agent(Base):
     slug = Column(String, unique=True, index=True, default=lambda: str(uuid.uuid4()))
     drive_folder_id = Column(String, nullable=True)
     persona = Column(Text, default="")
+    announcement = Column(Text, nullable=True)  # Professor's announcement for students
     provider = Column(String, default="openai")
     model = Column(String, default="gpt-4o-mini")
     embed_model = Column(String, default="openai:text-embedding-3-small")

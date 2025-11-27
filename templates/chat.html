@@ -91,6 +91,29 @@
       </div>
     </form>
 
+    <!-- Announcement Section -->
+    <form action="/agents/{{agent.id}}/update" method="post"
+          class="bg-white rounded-xl shadow p-6 space-y-4 border border-yellow-400">
+      <h2 class="text-xl font-bold text-aub">📢 Student Announcement</h2>
+      <p class="text-gray-600 text-sm">Write an important message to display to students in the public chat. Leave empty to hide the announcement.</p>
+      
+      <!-- Hidden fields to preserve other settings -->
+      <input type="hidden" name="name" value="{{agent.name}}" />
+      <input type="hidden" name="drive_folder" value="{{agent.drive_folder_id or ''}}" />
+      <input type="hidden" name="persona" value="{{agent.persona}}" />
+      <input type="hidden" name="provider" value="{{agent.provider}}" />
+      <input type="hidden" name="model" value="{{agent.model}}" />
+      <input type="hidden" name="embed_model" value="{{agent.embed_model}}" />
+      
+      <textarea name="announcement" rows="3" 
+                class="w-full border rounded-lg p-3 text-lg" 
+                placeholder="e.g., Midterm exam on Dec 5th! Office hours extended this week.">{{agent.announcement or ''}}</textarea>
+      
+      <div class="text-right">
+        <button class="bg-yellow-500 text-white px-6 py-2 rounded-xl hover:bg-yellow-600">Update Announcement</button>
+      </div>
+    </form>
+
     <!-- Public Link Section -->
     <div class="bg-white rounded-xl shadow p-6 space-y-4 border border-aub/30">
       <h2 class="text-xl font-bold text-aub">Public Chat Link</h2>

@@ -130,6 +130,7 @@ def update_agent(request: Request, agent_id: int,
                  name: str = Form(...),
                  drive_folder: str = Form(""),
                  persona: str = Form(""),
+                 announcement: str = Form(""),
                  provider: str = Form("openai"),
                  model: str = Form("gpt-4o-mini"),
                  embed_model: str = Form("openai:text-embedding-3-small"),
@@ -144,6 +145,7 @@ def update_agent(request: Request, agent_id: int,
     embedding_changed = (a.provider != provider or a.embed_model != embed_model)
     
     a.name, a.persona, a.drive_folder_id = name, persona, drive_folder
+    a.announcement = announcement.strip() if announcement else None
     a.provider, a.model, a.embed_model = provider, model, embed_model
     if api_key:  # Only update API key if provided
         a.api_key = api_key
