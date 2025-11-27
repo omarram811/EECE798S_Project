@@ -79,8 +79,7 @@ class QueryLog(Base):
     agent_id = Column(Integer, ForeignKey("agents.id"), nullable=False)
     timestamp = Column(DateTime, default=datetime.utcnow)
     query = Column(Text, nullable=False)
-    response = Column(Text, nullable=False)
-
+    #response = Column(Text, nullable=False)
     #agent = relationship("Agent")
     agent = relationship("Agent", back_populates="query_logs")
 

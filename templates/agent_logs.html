@@ -46,52 +46,101 @@
 
 
   <main class="max-w-5xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-xl space-y-6">
+
   <!-- Download Logs Icon (Top Right) -->
-    <div class="flex justify-end">
-      <a href="/agents/{{ agent.id }}/logs/download"
-        title="Download Logs (JSON)"
-        class="text-3xl text-gray-600 hover:text-[#840032] transition">
-        ⤓
-      </a>
+  <div class="flex justify-end">
+    <a href="/agents/{{ agent.id }}/logs/download"
+      title="Download Logs (JSON)"
+      class="text-3xl text-gray-600 hover:text-[#840032] transition">
+      ⤓
+    </a>
+  </div>
+
+  <!-- Log Table -->
+  {% if logs|length == 0 %}
+    <p class="text-gray-600 text-lg">No logs available yet.</p>
+
+  {% else %}
+    <div class="overflow-hidden rounded-xl shadow-md border border-[#840032]">
+      <table class="min-w-full bg-white">
+        <thead class="aub-header">
+          <tr>
+            <th class="p-3 text-left font-semibold">Timestamp</th>
+            <th class="p-3 text-left font-semibold">Query</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for entry in logs %}
+          <tr class="border-t border-[#840032]/40 hover:bg-[#840032]/5 transition">
+            <td class="p-3 text-gray-700 whitespace-nowrap">
+              {{ entry.timestamp.strftime("%b %d, %Y – %I:%M %p") }}
+            </td>
+            <td class="p-3 text-gray-800 max-w-xs break-words">
+              {{ entry.query }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+  {% endif %}
 
+  <!-- Analytics Section -->
+  <hr class="my-8 border-[#840032]/40">
 
-    <!-- Removed back button here -->
+  <button onclick="toggleAnalytics()"
+    class="btn-aub shadow-md">
+    Show / Hide Analytics
+  </button>
 
-    <!-- Log Table -->
-    {% if logs|length == 0 %}
-      <p class="text-gray-600 text-lg">No logs available yet.</p>
+  <div id="analytics-section" class="mt-4 hidden">
+    <h2 class="text-2xl font-bold text-gray-800 mb-3">Frequently Asked Questions</h2>
 
-    {% else %}
-      <div class="overflow-hidden rounded-xl shadow-md border border-[#840032]">
-        <table class="min-w-full bg-white">
-          <thead class="aub-header">
-            <tr>
-              <th class="p-3 text-left font-semibold">Timestamp</th>
-              <th class="p-3 text-left font-semibold">Query</th>
-              <th class="p-3 text-left font-semibold">Response</th>
-            </tr>
-          </thead>
+    <div id="analytics-container"
+      class="p-4 border border-[#840032] bg-gray-50 rounded-lg shadow-inner text-gray-800">
+      <p>Loading analytics...</p>
+    </div>
+  </div>
 
-          <tbody>
-            {% for entry in logs %}
-            <tr class="border-t border-[#840032]/40 hover:bg-[#840032]/5 transition">
-              <td class="p-3 text-gray-700 whitespace-nowrap">
-                {{ entry.timestamp.strftime("%b %d, %Y – %I:%M %p") }}
-              </td>
-              <td class="p-3 text-gray-800 max-w-xs break-words">
-                {{ entry.query }}
-              </td>
-              <td class="p-3 text-gray-800 max-w-lg break-words">
-                {{ entry.response }}
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    {% endif %}
-  </main>
+</main>
+
+<script>
+function toggleAnalytics() {
+    const section = document.getElementById("analytics-section");
+    const isHidden = section.classList.contains("hidden");
+    if (isHidden) {
+        section.classList.remove("hidden");
+        if (!section.dataset.loaded) {
+            loadAnalytics();
+            section.dataset.loaded = "true";
+        }
+    } else {
+        section.classList.add("hidden");
+    }
+}
+
+async function loadAnalytics() {
+    const agentId = "{{ agent.id }}";
+    const container = document.getElementById("analytics-container");
+
+    try {
+        const response = await fetch(`/agents/${agentId}/analytics/data`);
+        const data = await response.json();
+
+        if (!data.summary) {
+            container.innerHTML = "<p class='text-gray-600'>No student queries available yet.</p>";
+            return;
+        }
+
+        container.innerHTML = `
+            <pre class="whitespace-pre-wrap text-gray-800">${data.summary}</pre>
+        `;
+    } catch (err) {
+        container.innerHTML = "<p class='text-red-600'>Error loading analytics.</p>";
+    }
+}
+</script>
 
 </body>
 </html>

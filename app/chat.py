@@ -348,7 +348,7 @@ def stream(agent_id: int, request: Request, db: Session = Depends(get_db)):
                 print("[DEBUG] Threshold not reached — skipping summarization")
 
             # Save logs
-            db.add(QueryLog(agent_id=agent.id, query=last_user, response=acc))
+            db.add(QueryLog(agent_id=agent.id, query=last_user))
             db.commit()
             print("[DEBUG] Query logged")
 
@@ -496,8 +496,7 @@ def public_stream(agent_id: int, request: Request, db: Session = Depends(get_db)
                 user_question = last_user
                 db.add(QueryLog(
                     agent_id=agent.id,
-                    query=user_question,
-                    response=acc
+                    query=user_question
                 ))
                 db.commit()
                 print("[DEBUG] Query logged")
@@ -543,3 +542,39 @@ def public_stream(agent_id: int, request: Request, db: Session = Depends(get_db)
                 _CANCELLED_STREAMS.discard(conv.id)
 
     return EventSourceResponse(event_gen())
+
+
+@router.get("/public/{agent_id}/recommendations/general")
+def general_recommendations(agent_id: int, db: Session = Depends(get_db)):
+    """Get general topic recommendations based on indexed documents"""
+    agent = db.get(Agent, agent_id)
+    if not agent:
+        return {"recommendations": []}
+    
+    # Get a sample of documents to generate topic recommendations
+    try:
+        from .rag import retrieve
+        # Use a generic query to get diverse documents
+        docs = retrieve(agent, "course topics assignments lectures", k=10)
+        
+        if not docs:
+            return {"recommendations": []}
+        
+        # Extract unique titles/topics
+        titles = set()
+        for doc in docs:
+            title = doc.get("metadata", {}).get("title", "")
+            if title:
+                titles.add(title)
+        
+        # Generate simple recommendations from document titles
+        recommendations = []
+        for title in list(titles)[:5]:
+            # Clean up the title for display
+            clean_title = title.replace(".pdf", "").replace(".pptx", "").replace("_", " ")
+            recommendations.append(f"Ask about: {clean_title}")
+        
+        return {"recommendations": recommendations}
+    except Exception as e:
+        print(f"[recommendations] Error: {e}")
+        return {"recommendations": []}

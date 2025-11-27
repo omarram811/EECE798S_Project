@@ -5,16 +5,19 @@ from .db import get_db
 from .models import Agent, Conversation, GoogleToken, AgentFile
 from .security import get_current_user_id
 from .rag import reindex_agent
+from .rag import provider_from
 from .scheduler import _creds_path_for_user
 from fastapi.templating import Jinja2Templates
 from .models import QueryLog  # Make sure this exists in models.py
 from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
+from .analytics import fetch_queries, cluster_queries, summarize_clusters
 import json
 import tempfile
 import uuid
 from .progress import get_progress
 import threading
+from markdown import markdown
 
 router = APIRouter(prefix="/agents", tags=["agents"])
 from fastapi.templating import Jinja2Templates
@@ -234,7 +237,6 @@ def download_logs(agent_id: int, request: Request, db: Session = Depends(get_db)
         {
             "timestamp": log.timestamp.isoformat(),
             "query": log.query,
-            "response": log.response,
         }
         for log in logs
     ]
@@ -294,3 +296,42 @@ def show_progress_page(agent_id: int, request: Request, db: Session = Depends(ge
         "request": request,
         "agent": agent
     })
+
+
+@router.get("/{agent_id}/analytics")
+def show_analytics_page(request: Request, agent_id: int, db: Session = Depends(get_db)):
+    uid = get_current_user_id(request)
+    agent = db.get(Agent, agent_id)
+
+    if not agent or agent.owner_id != uid:
+        raise HTTPException(status_code=403, detail="Not allowed")
+
+    return templates.TemplateResponse("agent_logs.html", {
+        "request": request,
+        "agent": agent,
+        "logs": []
+    })
+
+
+@router.get("/{agent_id}/analytics/data")
+def analytics_data(agent_id: int, db: Session = Depends(get_db)):
+    agent = db.get(Agent, agent_id)
+    if not agent:
+        raise HTTPException(status_code=404)
+
+    queries = fetch_queries(db, agent_id)
+    if not queries:
+        return JSONResponse({"summary": None})
+
+    provider = provider_from(agent)
+
+    try:
+        embeddings = provider.embed(queries)
+    except Exception as e:
+        print("[Analytics] Embedding error:", e)
+        return JSONResponse({"summary": "Embedding failed."})
+
+    clusters = cluster_queries(queries, embeddings, k=5)
+    summary = summarize_clusters(clusters, provider)
+
+    return JSONResponse({"summary": summary})
