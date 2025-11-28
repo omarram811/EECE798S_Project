@@ -34,6 +34,26 @@
 
   <main class="max-w-6xl mx-auto p-6 space-y-8">
 
+    <!-- Getting Started Guide -->
+    <div class="bg-gradient-to-r from-[#840032]/10 to-[#840032]/5 p-6 rounded-xl border border-[#840032]/20">
+      <h2 class="text-xl font-semibold text-[#840032] mb-3">📚 Getting Started Guide</h2>
+      <div class="text-gray-700 space-y-2 text-sm">
+        <p><strong>Welcome, Professor!</strong> Follow these steps to create your first AI Teaching Assistant:</p>
+        <ol class="list-decimal list-inside space-y-1 ml-2">
+          <li><strong>Connect Google Drive</strong> — Click "Authorize Drive" below to link your account.</li>
+          <li><strong>Prepare Course Materials</strong> — Create a Google Drive folder with your syllabus, lecture notes, assignments, etc.</li>
+          <li><strong>Create an Agent</strong> — Fill out the form with your course name, Drive folder URL, and API key.</li>
+          <li><strong>Share with Students</strong> — After creation, copy the public link and share it with your class.</li>
+        </ol>
+        <p class="mt-3 text-xs text-gray-500">
+          <strong>Tip:</strong> For OpenAI, use models like <code class="bg-gray-100 px-1 rounded">gpt-4o-mini</code>. 
+          For Gemini, use <code class="bg-gray-100 px-1 rounded">gemini-2.0-flash</code>. 
+          Get API keys from <a href="https://platform.openai.com/api-keys" target="_blank" class="text-[#840032] underline">OpenAI</a> or 
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-[#840032] underline">Google AI Studio</a>.
+        </p>
+      </div>
+    </div>
+
     <!-- Google Drive connection -->
     <div class="bg-white p-6 rounded-xl shadow-md">
       <h2 class="text-xl font-semibold mb-3">Connect Google Drive</h2>
@@ -57,63 +77,126 @@
     <div class="grid md:grid-cols-2 gap-8 items-start">
 
       <!-- Create TA Agent Form -->
-      <form action="/agents/create" method="post" id="create-agent-form" class="bg-white p-6 rounded-xl shadow-md space-y-4 {% if not google_connected %}opacity-60{% endif %}">
-        <h2 class="text-xl font-semibold">Create a TA Agent</h2>
+      <form action="/agents/create" method="post" id="create-agent-form" class="bg-white p-6 rounded-xl shadow-md {% if not google_connected %}opacity-60{% endif %}">
+        <h2 class="text-xl font-semibold mb-4">Create a TA Agent</h2>
         
         {% if not google_connected %}
-        <div class="bg-yellow-50 border border-yellow-300 rounded p-3 text-yellow-800 text-sm">
+        <div class="bg-yellow-50 border border-yellow-300 rounded p-3 text-yellow-800 text-sm mb-4">
           ⚠ Please connect your Google Drive above before creating an agent.
         </div>
         {% endif %}
 
-        <div>
-          <label class="text-sm font-medium">Model Name</label>
-          <input class="border rounded p-3 w-full text-lg" placeholder="e.g. EECE 490 TA" name="name" required />
+        <!-- Error message display -->
+        <div id="create-error-banner" class="hidden bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg mb-4">
+          <strong>⚠️ Error:</strong> <span id="create-error-message"></span>
         </div>
 
-        <div>
-          <label class="text-sm font-medium">Google Drive Folder URL or ID</label>
-          <input class="border rounded p-3 w-full text-lg" placeholder="https://drive.google.com/drive/folders/..." name="drive_folder"/>
-        </div>
-
-        <div>
-          <label class="text-sm font-medium">Persona / Description</label>
-          <textarea class="border rounded p-3 w-full text-lg" name="persona" rows="6" placeholder="You are a helpful teaching assistant for this course...">You are a helpful teaching assistant for this course. You have access to course materials and can help students understand concepts, answer questions, and guide them through assignments. Be encouraging, clear, and always cite sources from the course materials when possible.</textarea>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="text-sm font-medium">Provider</label>
-            <select id="provider-select" class="border rounded p-3 w-full text-lg" name="provider">
-              <option value="openai">OpenAI</option>
-              <option value="gemini">Gemini</option>
-            </select>
+        <!-- Step 1: Basic Info -->
+        <div class="mb-6">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-[#840032] text-white text-xs font-bold">1</span>
+            <h3 class="font-semibold text-gray-700">Basic Information</h3>
           </div>
-          <!-- <div>
-            <label class="text-sm font-medium">Chat Model</label>
-            <input class="border rounded p-3 w-full text-lg" name="model" placeholder="gpt-4o-mini or gemini-2.0-flash"/>
-          </div> -->
-          <div>
-            <label class="text-sm font-medium">Chat Model</label>
-            <input id="model-input" class="border rounded p-3 w-full text-lg" name="model" placeholder="gpt-4o-mini or gemini-2.0-flash"/>
-            <p id="model-error" class="text-xs text-red-600 mt-1 hidden"></p>
+          <div class="pl-8 space-y-3">
+            <div>
+              <label class="text-sm font-medium text-gray-600">Agent Name <span class="text-red-500">*</span></label>
+              <input class="border border-gray-300 rounded-lg p-2.5 w-full focus:ring-2 focus:ring-[#840032]/20 focus:border-[#840032] transition" 
+                     placeholder="e.g. EECE 490 TA" name="name" required />
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-600">Google Drive Folder <span class="text-red-500">*</span></label>
+              <input id="drive-folder-input" class="border border-gray-300 rounded-lg p-2.5 w-full focus:ring-2 focus:ring-[#840032]/20 focus:border-[#840032] transition" 
+                     placeholder="Paste folder URL or ID" name="drive_folder" required />
+              <p id="drive-folder-error" class="text-xs text-red-600 mt-1 hidden"></p>
+              <p class="text-xs text-gray-500 mt-1">📁 Required: Your TA needs course materials to learn from</p>
+            </div>
           </div>
         </div>
 
-        <div>
-          <label class="text-sm font-medium">API Key</label>
-          <input type="password" id="api-key-input" class="border rounded p-3 w-full text-lg" name="api_key" placeholder="Enter your OpenAI or Gemini API key" required />
-          <p class="text-xs text-gray-500 mt-1">Your API key will be stored securely and used only for this agent.</p>
-          <p id="api-key-error" class="text-xs text-red-600 mt-1 hidden"></p>
+        <!-- Step 2: Persona -->
+        <div class="mb-6">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-[#840032] text-white text-xs font-bold">2</span>
+            <h3 class="font-semibold text-gray-700">Agent Persona</h3>
+          </div>
+          <div class="pl-8">
+            <textarea class="border border-gray-300 rounded-lg p-2.5 w-full focus:ring-2 focus:ring-[#840032]/20 focus:border-[#840032] transition text-sm" 
+                      name="persona" rows="4" placeholder="Describe how your TA should behave...">You are a helpful teaching assistant for this course. You have access to course materials and can help students understand concepts, answer questions, and guide them through assignments. Be encouraging, clear, and always cite sources from the course materials when possible.</textarea>
+          </div>
         </div>
 
-        <div>
-          <label class="text-sm font-medium">Embedding Model</label>
-          <input id="embed-model-input" class="border rounded p-3 w-full text-lg" name="embed_model" placeholder="text-embedding-3-small or models/text-embedding-004"/>
-          <p id="embed-model-error" class="text-xs text-red-600 mt-1 hidden"></p>
+        <!-- Step 3: Model Configuration -->
+        <div class="mb-6">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-[#840032] text-white text-xs font-bold">3</span>
+            <h3 class="font-semibold text-gray-700">AI Model Configuration</h3>
+          </div>
+          <div class="pl-8 space-y-3">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-sm font-medium text-gray-600">Provider <span class="text-red-500">*</span></label>
+                <select id="provider-select" class="border border-gray-300 rounded-lg p-2.5 w-full focus:ring-2 focus:ring-[#840032]/20 focus:border-[#840032] transition bg-white" name="provider">
+                  <option value="openai">🟢 OpenAI</option>
+                  <option value="gemini">🔵 Gemini</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-gray-600">Chat Model</label>
+                <select id="model-select" class="border border-gray-300 rounded-lg p-2.5 w-full focus:ring-2 focus:ring-[#840032]/20 focus:border-[#840032] transition bg-white" name="model">
+                  <!-- OpenAI models -->
+                  <option value="gpt-4o-mini" data-provider="openai" selected>gpt-4o-mini (default)</option>
+                  <option value="gpt-4.1-nano" data-provider="openai">gpt-4.1-nano</option>
+                  <option value="gpt-5-mini" data-provider="openai">gpt-5-mini</option>
+                  <option value="gpt-5-nano" data-provider="openai">gpt-5-nano</option>
+                  <option value="gpt-5" data-provider="openai">gpt-5</option>
+                  <!-- Gemini models -->
+                  <option value="gemini-2.5-flash" data-provider="gemini">gemini-2.5-flash (default)</option>
+                  <option value="gemini-2.5-pro" data-provider="gemini">gemini-2.5-pro</option>
+                  <option value="gemini-2.0-flash" data-provider="gemini">gemini-2.0-flash</option>
+                  <option value="gemini-2.0-flash-lite" data-provider="gemini">gemini-2.0-flash-lite</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-gray-600">Embedding Model</label>
+              <select id="embed-model-select" class="border border-gray-300 rounded-lg p-2.5 w-full focus:ring-2 focus:ring-[#840032]/20 focus:border-[#840032] transition bg-white" name="embed_model">
+                <!-- OpenAI embedding models -->
+                <option value="text-embedding-3-small" data-provider="openai" selected>text-embedding-3-small (default)</option>
+                <option value="text-embedding-ada-002" data-provider="openai">text-embedding-ada-002</option>
+                <!-- Gemini embedding models -->
+                <option value="models/text-embedding-004" data-provider="gemini">models/text-embedding-004 (default)</option>
+                <option value="models/gemini-embedding-001" data-provider="gemini">models/gemini-embedding-001</option>
+              </select>
+            </div>
+            <p class="text-xs text-gray-500">💡 Models are filtered based on selected provider.</p>
+          </div>
         </div>
 
-        <button type="submit" id="create-agent-btn" class="btn-custom w-full text-lg {% if not google_connected %}cursor-not-allowed{% endif %}" {% if not google_connected %}disabled{% endif %}>
+        <!-- Step 4: API Key -->
+        <div class="mb-6">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-[#840032] text-white text-xs font-bold">4</span>
+            <h3 class="font-semibold text-gray-700">API Key</h3>
+          </div>
+          <div class="pl-8">
+            <div class="relative">
+              <input type="password" id="api-key-input" 
+                     class="border border-gray-300 rounded-lg p-2.5 w-full pr-10 focus:ring-2 focus:ring-[#840032]/20 focus:border-[#840032] transition" 
+                     name="api_key" placeholder="sk-..." required />
+              <button type="button" onclick="toggleApiKeyVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                <span id="eye-icon">👁️</span>
+              </button>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">🔒 Stored securely, used only for this agent</p>
+            <p id="api-key-error" class="text-xs text-red-600 mt-1 hidden"></p>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="create-agent-btn" 
+                class="btn-custom w-full text-lg py-3 rounded-xl flex items-center justify-center gap-2 {% if not google_connected %}cursor-not-allowed{% endif %}" 
+                {% if not google_connected %}disabled{% endif %}>
+          <span>🚀</span>
           {% if google_connected %}Create Agent{% else %}Connect Google Drive First{% endif %}
         </button>
       </form>
@@ -219,6 +302,19 @@
 </div>
 
 <script>
+    // Toggle API key visibility
+    function toggleApiKeyVisibility() {
+        const input = document.getElementById("api-key-input");
+        const icon = document.getElementById("eye-icon");
+        if (input.type === "password") {
+            input.type = "text";
+            icon.textContent = "🙈";
+        } else {
+            input.type = "password";
+            icon.textContent = "👁️";
+        }
+    }
+
     function openDeleteModal(agentId) {
         let modal = document.getElementById("deleteModal");
         let form = document.getElementById("deleteForm");
@@ -289,87 +385,96 @@
         }
     }
 
+    // Model defaults per provider
+    const MODEL_DEFAULTS = {
+        openai: { model: "gpt-4o-mini", embed: "text-embedding-3-small" },
+        gemini: { model: "gemini-2.5-flash", embed: "models/text-embedding-004" }
+    };
+
+    // Filter model dropdowns based on selected provider
+    function filterModelsByProvider() {
+        const provider = document.getElementById("provider-select").value;
+        const modelSelect = document.getElementById("model-select");
+        const embedModelSelect = document.getElementById("embed-model-select");
+        
+        // Filter chat models
+        Array.from(modelSelect.options).forEach(option => {
+            if (option.dataset.provider === provider) {
+                option.style.display = "";
+            } else {
+                option.style.display = "none";
+            }
+        });
+        
+        // Filter embedding models
+        Array.from(embedModelSelect.options).forEach(option => {
+            if (option.dataset.provider === provider) {
+                option.style.display = "";
+            } else {
+                option.style.display = "none";
+            }
+        });
+        
+        // Set default values for the selected provider
+        const defaults = MODEL_DEFAULTS[provider];
+        modelSelect.value = defaults.model;
+        embedModelSelect.value = defaults.embed;
+        
+        // Update API key placeholder based on provider
+        const apiKeyInput = document.getElementById("api-key-input");
+        if (provider === "openai") {
+            apiKeyInput.placeholder = "sk-...";
+        } else if (provider === "gemini") {
+            apiKeyInput.placeholder = "AI...";
+        }
+    }
+
     // Validation functions
+    function validateDriveFolder() {
+        const driveFolder = document.getElementById("drive-folder-input").value.trim();
+        const errorElem = document.getElementById("drive-folder-error");
+
+        if (!driveFolder) {
+            errorElem.textContent = "⚠ Google Drive folder is required";
+            errorElem.classList.remove("hidden");
+            return false;
+        }
+
+        errorElem.textContent = "";
+        errorElem.classList.add("hidden");
+        return true;
+    }
+
     function validateApiKey() {
         const provider = document.getElementById("provider-select").value;
         const apiKey = document.getElementById("api-key-input").value.trim();
         const errorElem = document.getElementById("api-key-error");
 
         if (!apiKey) {
-            errorElem.textContent = "";
-            errorElem.classList.add("hidden");
-            return true; // Let HTML5 required attribute handle empty validation
+            errorElem.textContent = "⚠ API key is required";
+            errorElem.classList.remove("hidden");
+            return false;
         }
 
         if (provider === "openai") {
             if (!apiKey.startsWith("sk-")) {
-                errorElem.textContent = "⚠ OpenAI API keys should start with 'sk-'";
+                errorElem.textContent = "⚠ OpenAI API keys must start with 'sk-'";
+                errorElem.classList.remove("hidden");
+                return false;
+            }
+            if (apiKey.length < 20) {
+                errorElem.textContent = "⚠ OpenAI API key seems too short";
                 errorElem.classList.remove("hidden");
                 return false;
             }
         } else if (provider === "gemini") {
             if (!apiKey.startsWith("AI")) {
-                errorElem.textContent = "⚠ Gemini API keys should start with 'AI'";
+                errorElem.textContent = "⚠ Gemini API keys must start with 'AI'";
                 errorElem.classList.remove("hidden");
                 return false;
             }
-        }
-
-        errorElem.textContent = "";
-        errorElem.classList.add("hidden");
-        return true;
-    }
-
-    function validateModel() {
-        const provider = document.getElementById("provider-select").value;
-        const model = document.getElementById("model-input").value.trim();
-        const errorElem = document.getElementById("model-error");
-
-        if (!model) {
-            errorElem.textContent = "";
-            errorElem.classList.add("hidden");
-            return true;
-        }
-
-        if (provider === "openai") {
-            if (!model.toLowerCase().startsWith("gpt")) {
-                errorElem.textContent = "⚠ OpenAI chat models should start with 'gpt' (e.g., gpt-4o-mini)";
-                errorElem.classList.remove("hidden");
-                return false;
-            }
-        } else if (provider === "gemini") {
-            if (!model.toLowerCase().startsWith("gemini")) {
-                errorElem.textContent = "⚠ Gemini chat models should start with 'gemini' (e.g., gemini-2.0-flash)";
-                errorElem.classList.remove("hidden");
-                return false;
-            }
-        }
-
-        errorElem.textContent = "";
-        errorElem.classList.add("hidden");
-        return true;
-    }
-
-    function validateEmbedModel() {
-        const provider = document.getElementById("provider-select").value;
-        const embedModel = document.getElementById("embed-model-input").value.trim();
-        const errorElem = document.getElementById("embed-model-error");
-
-        if (!embedModel) {
-            errorElem.textContent = "";
-            errorElem.classList.add("hidden");
-            return true;
-        }
-
-        if (provider === "openai") {
-            if (!embedModel.toLowerCase().includes("text-embedding")) {
-                errorElem.textContent = "⚠ OpenAI embedding models should contain 'text-embedding' (e.g., text-embedding-3-small)";
-                errorElem.classList.remove("hidden");
-                return false;
-            }
-        } else if (provider === "gemini") {
-            if (!embedModel.startsWith("models/")) {
-                errorElem.textContent = "⚠ Gemini embedding models should start with 'models/' (e.g., models/text-embedding-004)";
+            if (apiKey.length < 30) {
+                errorElem.textContent = "⚠ Gemini API key seems too short";
                 errorElem.classList.remove("hidden");
                 return false;
             }
@@ -381,32 +486,79 @@
     }
 
     function validateAll() {
+        const driveFolderValid = validateDriveFolder();
         const apiKeyValid = validateApiKey();
-        const modelValid = validateModel();
-        const embedModelValid = validateEmbedModel();
-        return apiKeyValid && modelValid && embedModelValid;
+        return driveFolderValid && apiKeyValid;
+    }
+
+    function showCreateError(message) {
+        const banner = document.getElementById("create-error-banner");
+        const msgElem = document.getElementById("create-error-message");
+        msgElem.textContent = message;
+        banner.classList.remove("hidden");
+        banner.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function hideCreateError() {
+        document.getElementById("create-error-banner").classList.add("hidden");
     }
 
     // Add event listeners
     document.addEventListener("DOMContentLoaded", function() {
         const providerSelect = document.getElementById("provider-select");
         const apiKeyInput = document.getElementById("api-key-input");
-        const modelInput = document.getElementById("model-input");
-        const embedModelInput = document.getElementById("embed-model-input");
-        const form = document.querySelector("form[action='/agents/create']");
+        const driveFolderInput = document.getElementById("drive-folder-input");
+        const form = document.getElementById("create-agent-form");
 
-        // Validate on input change
-        providerSelect.addEventListener("change", validateAll);
-        apiKeyInput.addEventListener("input", validateApiKey);
-        modelInput.addEventListener("input", validateModel);
-        embedModelInput.addEventListener("input", validateEmbedModel);
+        // Initialize model dropdowns
+        filterModelsByProvider();
 
-        // Validate on form submit and show progress modal
-        form.addEventListener("submit", function(e) {
+        // Update models when provider changes
+        providerSelect.addEventListener("change", function() {
+            hideCreateError();
+            filterModelsByProvider();
+        });
+        driveFolderInput.addEventListener("input", function() {
+            hideCreateError();
+            validateDriveFolder();
+        });
+        apiKeyInput.addEventListener("input", function() {
+            hideCreateError();
+            validateApiKey();
+        });
+
+        // Handle form submit with AJAX for better error handling
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            hideCreateError();
+
             if (!validateAll()) {
-                e.preventDefault();
-                alert("Please fix the validation errors before creating the agent.");
+                showCreateError("Please fix the validation errors above before creating the agent.");
                 return;
+            }
+
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (response.ok) {
+                    // Follow redirect on success
+                    window.location.href = response.url;
+                } else if (response.status === 400) {
+                    const data = await response.json();
+                    showCreateError(data.detail || "Invalid configuration. Please check your settings.");
+                } else if (response.status === 401) {
+                    showCreateError("Please log in to create an agent.");
+                } else {
+                    showCreateError("An error occurred while creating the agent. Please try again.");
+                }
+            } catch (error) {
+                console.error("Form submission error:", error);
+                showCreateError("Network error. Please check your connection and try again.");
             }
         });
     });

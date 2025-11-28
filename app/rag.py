@@ -34,7 +34,7 @@ from .models import QueryLog
 import uuid
 from fastapi import APIRouter, Request, Depends, HTTPException, Form
 from .db import SessionLocal
-from .progress import start_progress, update_progress, complete_progress
+from .progress import start_progress, update_progress, complete_progress, is_force_reindex
 
 log = logging.getLogger(__name__)
 
@@ -777,10 +777,15 @@ def _extract_text_from_image(file_bytes: bytes, title: str = "") -> str:
             pass
 
 
-def load_drive_docs(agent, track_progress: bool = False) -> List[dict]:
+def load_drive_docs(agent, track_progress: bool = False, force_reindex: bool = False) -> List[dict]:
     """
     Load Google Drive docs using raw Drive API and extract text with OCR support.
     Handles PDFs (selectable and non-selectable), images, and other formats.
+    
+    Args:
+        agent: The agent to load documents for
+        track_progress: Whether to track progress for UI display
+        force_reindex: If True, indicates this is a force reindex (for progress tracking purposes)
     """
     folder_id = file_id_from_url_or_id(agent.drive_folder_id or "")
     if not folder_id:
@@ -791,7 +796,7 @@ def load_drive_docs(agent, track_progress: bool = False) -> List[dict]:
     
     # Initialize progress tracking if requested
     if track_progress:
-        start_progress(agent.id, len(files))
+        start_progress(agent.id, len(files), force_reindex=force_reindex)
     
     token_path = str(_user_token_path(agent.owner_id))
     
@@ -858,13 +863,44 @@ def _trim_for_embedding(text: str, limit: int = 12000) -> str:
     t = (text or "").strip()
     return t[:limit] if len(t) > limit else t
 
-def reindex_agent(agent, _creds_path_ignored: str = "", track_progress: bool = True) -> Tuple[int, int, int]:
+
+def reindex_agent(agent, _creds_path_ignored: str = "", track_progress: bool = True, force_reindex: bool = False) -> Tuple[int, int, int]:
+    """
+    Reindex an agent's documents.
+    
+    Args:
+        agent: The agent to reindex
+        _creds_path_ignored: Deprecated parameter, kept for compatibility
+        track_progress: Whether to track progress for UI display
+        force_reindex: If True, forces full re-embedding regardless of cache
+    
+    Note: API key validation is done upfront before agent creation/update,
+          so we assume the API key is valid when this function is called.
+    """
     try:
         # Load all documents (PDFs, images, etc.) with OCR support
         # Progress tracking starts inside load_drive_docs
-        all_docs = load_drive_docs(agent, track_progress=track_progress)
+        all_docs = load_drive_docs(agent, track_progress=track_progress, force_reindex=force_reindex)
+        
+        if not all_docs:
+            # No documents found - still mark as complete
+            print(f"[reindex_agent] No documents found in Drive folder for agent {agent.id}")
+            complete_progress(agent.id)
+            return (0, 0, 0)
         
         client = get_vector_client()
+        
+        # Check if force reindex is requested (e.g., embedding model changed)
+        # If force_reindex, delete existing collection first
+        if force_reindex:
+            print(f"[reindex_agent] Force reindex requested for agent {agent.id}. Deleting existing collection...")
+            name = _collection_name(agent.id)
+            try:
+                client.delete_collection(name)
+                print(f"[reindex_agent] Deleted collection '{name}'")
+            except Exception as del_err:
+                print(f"[reindex_agent] Note: Could not delete collection (may not exist): {del_err}")
+        
         col = ensure_collection(agent, client)
         provider = provider_from(agent)
 
@@ -935,24 +971,27 @@ def reindex_agent(agent, _creds_path_ignored: str = "", track_progress: bool = T
         else:
             print("No items to delete from Chroma (expanded delete)")
 
-
+        # Determine which documents need to be processed
         dirty_docs = []
+        
+        # If force reindex, ALL documents are dirty
+        if force_reindex:
+            dirty_docs = all_docs
+            print(f"[reindex_agent] Force reindex: processing all {len(dirty_docs)} documents")
+        else:
+            for d in all_docs:
+                fid = d["id"]
+                modified = d.get("last_modified", "")
 
-        for d in all_docs:
-            fid = d["id"]
-            modified = d.get("last_modified", "")
+                if fid not in existing_ids:
+                    dirty_docs.append(d)
+                    continue
 
-            if fid not in existing_ids:
-                dirty_docs.append(d)
-                continue
+                stored_meta = existing_map.get(fid)
 
-            stored_meta = existing_map.get(fid)
-
-            if stored_meta and stored_meta.get("last_modified") != modified:
-                dirty_docs.append(d)
-                continue
-
-
+                if stored_meta and stored_meta.get("last_modified") != modified:
+                    dirty_docs.append(d)
+                    continue
         if not dirty_docs:
             print("[reindex_agent] No new or updated files. Nothing to index.")
             complete_progress(agent.id)

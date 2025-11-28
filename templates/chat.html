@@ -52,17 +52,32 @@
   <main class="max-w-4xl mx-auto w-full p-6 space-y-6 flex-1">
 
     <!-- Agent Settings -->
-    <form action="/agents/{{agent.id}}/update" method="post"
+    <form id="agent-settings-form" action="/agents/{{agent.id}}/update" method="post"
           class="bg-white rounded-xl shadow p-6 space-y-4 border border-aub/30">
       <h2 class="text-xl font-bold text-aub">Agent Settings</h2>
+      
+      <!-- Error message display -->
+      <div id="settings-error-banner" class="hidden bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg">
+        <strong>⚠️ Error:</strong> <span id="settings-error-message"></span>
+      </div>
 
       <div class="grid md:grid-cols-3 gap-4">
-        <input class="border rounded p-3 text-lg" name="name" value="{{agent.name}}" />
-        <input class="border rounded p-3 text-lg" name="drive_folder" value="{{agent.drive_folder_id or ''}}"
-               placeholder="Drive Folder URL or ID"/>
-        <input class="border rounded p-3 text-lg" name="persona" value="{{agent.persona}}" placeholder="Persona / Description"/>
+        <div>
+          <label class="text-sm font-medium text-gray-700 mb-1 block">Agent Name</label>
+          <input class="border rounded p-3 text-lg w-full" name="name" value="{{agent.name}}" required />
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-700 mb-1 block">Google Drive Folder</label>
+          <input class="border rounded p-3 text-lg w-full" name="drive_folder" value="{{agent.drive_folder_id or ''}}"
+                 placeholder="Drive Folder URL or ID"/>
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-700 mb-1 block">Persona / Description</label>
+          <input class="border rounded p-3 text-lg w-full" name="persona" value="{{agent.persona}}" placeholder="Helpful TA for this course..."/>
+        </div>
 
         <div>
+          <label class="text-sm font-medium text-gray-700 mb-1 block">Provider</label>
           <select id="chat-provider-select" class="border rounded p-3 text-lg w-full" name="provider">
             <option {% if agent.provider=='openai' %}selected{% endif %} value="openai">OpenAI</option>
             <option {% if agent.provider=='gemini' %}selected{% endif %} value="gemini">Gemini</option>
@@ -70,24 +85,54 @@
         </div>
 
         <div>
-          <input id="chat-model-input" class="border rounded p-3 text-lg w-full" name="model" value="{{agent.model}}" placeholder="Model"/>
-          <p id="chat-model-error" class="text-xs text-red-600 mt-1 hidden"></p>
+          <label class="text-sm font-medium text-gray-700 mb-1 block">Chat Model</label>
+          <select id="chat-model-select" class="border rounded p-3 text-lg w-full" name="model">
+            <optgroup label="OpenAI Models" class="openai-models">
+              <option value="gpt-4.1-nano" {% if agent.model=='gpt-4.1-nano' %}selected{% endif %}>gpt-4.1-nano</option>
+              <option value="gpt-4o-mini" {% if agent.model=='gpt-4o-mini' %}selected{% endif %}>gpt-4o-mini</option>
+              <option value="gpt-5-mini" {% if agent.model=='gpt-5-mini' %}selected{% endif %}>gpt-5-mini</option>
+              <option value="gpt-5-nano" {% if agent.model=='gpt-5-nano' %}selected{% endif %}>gpt-5-nano</option>
+              <option value="gpt-5" {% if agent.model=='gpt-5' %}selected{% endif %}>gpt-5</option>
+            </optgroup>
+            <optgroup label="Gemini Models" class="gemini-models">
+              <option value="gemini-2.0-flash-lite" {% if agent.model=='gemini-2.0-flash-lite' %}selected{% endif %}>gemini-2.0-flash-lite</option>
+              <option value="gemini-2.0-flash" {% if agent.model=='gemini-2.0-flash' %}selected{% endif %}>gemini-2.0-flash</option>
+              <option value="gemini-2.5-flash" {% if agent.model=='gemini-2.5-flash' %}selected{% endif %}>gemini-2.5-flash</option>
+              <option value="gemini-2.5-pro" {% if agent.model=='gemini-2.5-pro' %}selected{% endif %}>gemini-2.5-pro</option>
+            </optgroup>
+          </select>
         </div>
         
         <div>
-          <input id="chat-embed-model-input" class="border rounded p-3 text-lg w-full" name="embed_model" value="{{agent.embed_model}}" placeholder="Embedding Model"/>
-          <p id="chat-embed-model-error" class="text-xs text-red-600 mt-1 hidden"></p>
+          <label class="text-sm font-medium text-gray-700 mb-1 block">Embedding Model</label>
+          <select id="chat-embed-model-select" class="border rounded p-3 text-lg w-full" name="embed_model">
+            <optgroup label="OpenAI Embeddings" class="openai-embeds">
+              <option value="text-embedding-3-small" {% if agent.embed_model=='text-embedding-3-small' %}selected{% endif %}>text-embedding-3-small</option>
+              <option value="text-embedding-ada-002" {% if agent.embed_model=='text-embedding-ada-002' %}selected{% endif %}>text-embedding-ada-002</option>
+            </optgroup>
+            <optgroup label="Gemini Embeddings" class="gemini-embeds">
+              <option value="models/text-embedding-004" {% if agent.embed_model=='models/text-embedding-004' %}selected{% endif %}>models/text-embedding-004</option>
+              <option value="models/gemini-embedding-001" {% if agent.embed_model=='models/gemini-embedding-001' %}selected{% endif %}>models/gemini-embedding-001</option>
+            </optgroup>
+          </select>
         </div>
         
         <div class="md:col-span-3">
-          <input type="password" id="chat-api-key-input" class="border rounded p-3 text-lg w-full" name="api_key" 
-                 value="{{agent.api_key or ''}}" placeholder="API Key (OpenAI or Gemini)" />
+          <label class="text-sm font-medium text-gray-700 mb-1 block">API Key</label>
+          <div class="relative">
+            <input type="password" id="chat-api-key-input" class="border rounded p-3 text-lg w-full pr-12" name="api_key" 
+                   value="{{agent.api_key or ''}}" placeholder="sk-... or AI..." required />
+            <button type="button" onclick="toggleChatApiKeyVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+              <span id="chat-eye-icon">👁️</span>
+            </button>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">🔒 Stored securely, used only for this agent</p>
           <p id="chat-api-key-error" class="text-xs text-red-600 mt-1 hidden"></p>
         </div>
       </div>
 
       <div class="text-right">
-        <button class="bg-aub text-white px-6 py-2 rounded-xl hover:bg-aub/80">Save</button>
+        <button type="submit" class="bg-aub text-white px-6 py-2 rounded-xl hover:bg-aub/80">Save Settings</button>
       </div>
     </form>
 
@@ -166,11 +211,89 @@
     }
 
     /* ------------------ SETTINGS VALIDATION ------------------ */
+    
+    // Toggle API key visibility
+    function toggleChatApiKeyVisibility() {
+        const input = document.getElementById("chat-api-key-input");
+        const icon = document.getElementById("chat-eye-icon");
+        if (input.type === "password") {
+            input.type = "text";
+            icon.textContent = "🙈";
+        } else {
+            input.type = "password";
+            icon.textContent = "👁️";
+        }
+    }
+
+    // Update API key placeholder based on provider
+    function updateChatApiKeyPlaceholder() {
+        const provider = document.getElementById("chat-provider-select").value;
+        const apiKeyInput = document.getElementById("chat-api-key-input");
+        if (provider === "openai") {
+            apiKeyInput.placeholder = "sk-...";
+        } else if (provider === "gemini") {
+            apiKeyInput.placeholder = "AI...";
+        }
+    }
+
+    // Update model dropdowns based on selected provider
+    function updateChatModelOptions() {
+        const provider = document.getElementById("chat-provider-select").value;
+        const modelSelect = document.getElementById("chat-model-select");
+        const embedSelect = document.getElementById("chat-embed-model-select");
+
+        // Show/hide options based on provider
+        const showOpenAI = provider === "openai";
+        const showGemini = provider === "gemini";
+
+        // Toggle optgroups visibility
+        modelSelect.querySelectorAll("optgroup").forEach(group => {
+            if (group.classList.contains("openai-models")) {
+                group.style.display = showOpenAI ? "" : "none";
+                group.querySelectorAll("option").forEach(opt => opt.disabled = !showOpenAI);
+            } else if (group.classList.contains("gemini-models")) {
+                group.style.display = showGemini ? "" : "none";
+                group.querySelectorAll("option").forEach(opt => opt.disabled = !showGemini);
+            }
+        });
+
+        embedSelect.querySelectorAll("optgroup").forEach(group => {
+            if (group.classList.contains("openai-embeds")) {
+                group.style.display = showOpenAI ? "" : "none";
+                group.querySelectorAll("option").forEach(opt => opt.disabled = !showOpenAI);
+            } else if (group.classList.contains("gemini-embeds")) {
+                group.style.display = showGemini ? "" : "none";
+                group.querySelectorAll("option").forEach(opt => opt.disabled = !showGemini);
+            }
+        });
+
+        // Select default model for the provider if current selection is not valid
+        const currentModel = modelSelect.value;
+        const currentEmbed = embedSelect.value;
+
+        if (showOpenAI) {
+            if (!currentModel.startsWith("gpt")) {
+                modelSelect.value = "gpt-4o-mini";
+            }
+            if (!currentEmbed.includes("embedding") || currentEmbed.startsWith("models/")) {
+                embedSelect.value = "text-embedding-3-small";
+            }
+        } else if (showGemini) {
+            if (!currentModel.startsWith("gemini")) {
+                modelSelect.value = "gemini-2.5-flash";
+            }
+            if (!currentEmbed.startsWith("models/")) {
+                embedSelect.value = "models/text-embedding-004";
+            }
+        }
+    }
+
     function validateChatApiKey() {
         const provider = document.getElementById("chat-provider-select").value;
         const apiKey = document.getElementById("chat-api-key-input").value.trim();
         const errorElem = document.getElementById("chat-api-key-error");
 
+        // API key is optional on update (empty means keep existing)
         if (!apiKey) {
             errorElem.textContent = "";
             errorElem.classList.add("hidden");
@@ -179,13 +302,23 @@
 
         if (provider === "openai") {
             if (!apiKey.startsWith("sk-")) {
-                errorElem.textContent = "⚠ OpenAI API keys should start with 'sk-'";
+                errorElem.textContent = "⚠ OpenAI API keys must start with 'sk-'";
+                errorElem.classList.remove("hidden");
+                return false;
+            }
+            if (apiKey.length < 20) {
+                errorElem.textContent = "⚠ OpenAI API key seems too short";
                 errorElem.classList.remove("hidden");
                 return false;
             }
         } else if (provider === "gemini") {
             if (!apiKey.startsWith("AI")) {
-                errorElem.textContent = "⚠ Gemini API keys should start with 'AI'";
+                errorElem.textContent = "⚠ Gemini API keys must start with 'AI'";
+                errorElem.classList.remove("hidden");
+                return false;
+            }
+            if (apiKey.length < 30) {
+                errorElem.textContent = "⚠ Gemini API key seems too short";
                 errorElem.classList.remove("hidden");
                 return false;
             }
@@ -196,94 +329,71 @@
         return true;
     }
 
-    function validateChatModel() {
-        const provider = document.getElementById("chat-provider-select").value;
-        const model = document.getElementById("chat-model-input").value.trim();
-        const errorElem = document.getElementById("chat-model-error");
-
-        if (!model) {
-            errorElem.textContent = "";
-            errorElem.classList.add("hidden");
-            return true;
-        }
-
-        if (provider === "openai") {
-            if (!model.toLowerCase().startsWith("gpt")) {
-                errorElem.textContent = "⚠ OpenAI chat models should start with 'gpt' (e.g., gpt-4o-mini)";
-                errorElem.classList.remove("hidden");
-                return false;
-            }
-        } else if (provider === "gemini") {
-            if (!model.toLowerCase().startsWith("gemini")) {
-                errorElem.textContent = "⚠ Gemini chat models should start with 'gemini' (e.g., gemini-2.0-flash)";
-                errorElem.classList.remove("hidden");
-                return false;
-            }
-        }
-
-        errorElem.textContent = "";
-        errorElem.classList.add("hidden");
-        return true;
+    function showSettingsError(message) {
+        const banner = document.getElementById("settings-error-banner");
+        const msgElem = document.getElementById("settings-error-message");
+        msgElem.textContent = message;
+        banner.classList.remove("hidden");
+        banner.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
-    function validateChatEmbedModel() {
-        const provider = document.getElementById("chat-provider-select").value;
-        const embedModel = document.getElementById("chat-embed-model-input").value.trim();
-        const errorElem = document.getElementById("chat-embed-model-error");
-
-        if (!embedModel) {
-            errorElem.textContent = "";
-            errorElem.classList.add("hidden");
-            return true;
-        }
-
-        if (provider === "openai") {
-            if (!embedModel.toLowerCase().includes("text-embedding")) {
-                errorElem.textContent = "⚠ OpenAI embedding models should contain 'text-embedding' (e.g., text-embedding-3-small)";
-                errorElem.classList.remove("hidden");
-                return false;
-            }
-        } else if (provider === "gemini") {
-            if (!embedModel.startsWith("models/")) {
-                errorElem.textContent = "⚠ Gemini embedding models should start with 'models/' (e.g., models/text-embedding-004)";
-                errorElem.classList.remove("hidden");
-                return false;
-            }
-        }
-
-        errorElem.textContent = "";
-        errorElem.classList.add("hidden");
-        return true;
-    }
-
-    function validateAllChatSettings() {
-        const apiKeyValid = validateChatApiKey();
-        const modelValid = validateChatModel();
-        const embedModelValid = validateChatEmbedModel();
-        return apiKeyValid && modelValid && embedModelValid;
+    function hideSettingsError() {
+        document.getElementById("settings-error-banner").classList.add("hidden");
     }
 
     // Add event listeners for settings form
     document.addEventListener("DOMContentLoaded", function() {
         const chatProviderSelect = document.getElementById("chat-provider-select");
         const chatApiKeyInput = document.getElementById("chat-api-key-input");
-        const chatModelInput = document.getElementById("chat-model-input");
-        const chatEmbedModelInput = document.getElementById("chat-embed-model-input");
-        const settingsForm = document.querySelector("form[action='/agents/{{agent.id}}/update']");
+        const settingsForm = document.getElementById("agent-settings-form");
 
-        if (chatProviderSelect && chatApiKeyInput && chatModelInput && chatEmbedModelInput && settingsForm) {
-            // Validate on input change
-            chatProviderSelect.addEventListener("change", validateAllChatSettings);
-            chatApiKeyInput.addEventListener("input", validateChatApiKey);
-            chatModelInput.addEventListener("input", validateChatModel);
-            chatEmbedModelInput.addEventListener("input", validateChatEmbedModel);
+        if (chatProviderSelect && chatApiKeyInput && settingsForm) {
+            // Initialize model options based on current provider
+            updateChatModelOptions();
+            updateChatApiKeyPlaceholder();
 
-            // Validate on form submit
-            settingsForm.addEventListener("submit", function(e) {
-                if (!validateAllChatSettings()) {
-                    e.preventDefault();
-                    alert("Please fix the validation errors before saving the agent settings.");
+            // Update on provider change
+            chatProviderSelect.addEventListener("change", function() {
+                hideSettingsError();
+                updateChatApiKeyPlaceholder();
+                updateChatModelOptions();
+            });
+
+            chatApiKeyInput.addEventListener("input", function() {
+                hideSettingsError();
+                validateChatApiKey();
+            });
+
+            // Handle form submit with AJAX for better error handling
+            settingsForm.addEventListener("submit", async function(e) {
+                e.preventDefault();
+                hideSettingsError();
+
+                if (!validateChatApiKey()) {
+                    showSettingsError("Please fix the validation errors above before saving.");
                     return;
+                }
+
+                const formData = new FormData(settingsForm);
+                
+                try {
+                    const response = await fetch(settingsForm.action, {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        // Follow redirect on success
+                        window.location.href = response.url;
+                    } else if (response.status === 400) {
+                        const data = await response.json();
+                        showSettingsError(data.detail || "Invalid configuration. Please check your settings.");
+                    } else {
+                        showSettingsError("An error occurred while saving. Please try again.");
+                    }
+                } catch (error) {
+                    console.error("Form submission error:", error);
+                    showSettingsError("Network error. Please check your connection and try again.");
                 }
             });
         }

@@ -5,5 +5,13 @@ __pycache__/
 *.pyd
 *.db
 .env
-data/
 *.log
+
+# Exclude data directory contents except google_client_secret.json
+data/chroma/
+data/google_tokens/
+data/*.db
+
+# Keep eval and templates in build
+!templates/
+!data/google_client_secret.json

@@ -8,16 +8,28 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     imagemagick \
     ghostscript \
     libmagickwand-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
+
+# Fix ImageMagick policy to allow PDF processing
+RUN if [ -f /etc/ImageMagick-6/policy.xml ]; then \
+        sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml; \
+    fi
 
 WORKDIR /app
 
+# Create data directories
+RUN mkdir -p /app/data/chroma /app/data/google_tokens
+
 COPY requirements.txt .
 
-# Now pycrypto and any other C extensions can compile
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+
+# Ensure data directory has correct permissions
+RUN chmod -R 755 /app/data
 
 ENV PYTHONUNBUFFERED=1 \
     DATA_DIR=/app/data \

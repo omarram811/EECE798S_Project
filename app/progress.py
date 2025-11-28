@@ -14,6 +14,7 @@ class EmbeddingProgress:
     error_message: Optional[str] = None
     started_at: datetime = None
     completed_at: Optional[datetime] = None
+    force_reindex: bool = False  # If True, forces full re-embedding regardless of cache
 
     @property
     def progress_percentage(self) -> float:
@@ -25,7 +26,7 @@ class EmbeddingProgress:
 _progress_lock = threading.Lock()
 _progress_tracker: Dict[int, EmbeddingProgress] = {}
 
-def start_progress(agent_id: int, total_files: int):
+def start_progress(agent_id: int, total_files: int, force_reindex: bool = False):
     """Initialize progress tracking for an agent"""
     with _progress_lock:
         _progress_tracker[agent_id] = EmbeddingProgress(
@@ -34,8 +35,16 @@ def start_progress(agent_id: int, total_files: int):
             processed_files=0,
             current_file="",
             status="processing",
-            started_at=datetime.utcnow()
+            started_at=datetime.utcnow(),
+            force_reindex=force_reindex
         )
+
+
+def is_force_reindex(agent_id: int) -> bool:
+    """Check if force reindex is enabled for an agent"""
+    with _progress_lock:
+        progress = _progress_tracker.get(agent_id)
+        return progress.force_reindex if progress else False
 
 def update_progress(agent_id: int, processed_files: int, current_file: str = ""):
     """Update progress for an agent"""
