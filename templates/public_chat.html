@@ -261,20 +261,43 @@
 
     /* ------------------ GENERAL RECOMMENDER ------------------ */
 
-    async function loadGeneralRecommender() {
+    // Retry configuration for loading suggestions
+    const SUGGESTION_MAX_RETRIES = 5;
+    const SUGGESTION_BASE_DELAY = 2000; // 2 seconds initial delay
+    let suggestionRetryCount = 0;
+
+    async function loadGeneralRecommender(retryAttempt = 0) {
         const agentId = "{{ agent.id }}";
+        const box = document.getElementById("recommendations-box");
+        const list = document.getElementById("recommendations-list");
+
         try {
             const response = await fetch(`/chat/public/${agentId}/recommendations/general`);
             const data = await response.json();
 
-            const box = document.getElementById("recommendations-box");
-            const list = document.getElementById("recommendations-list");
-
             if (!data.suggestions || data.suggestions.length === 0) {
+                // If no suggestions and we haven't exhausted retries, try again
+                // This handles the case where the vector store is still being indexed
+                if (retryAttempt < SUGGESTION_MAX_RETRIES) {
+                    const delay = SUGGESTION_BASE_DELAY * Math.pow(1.5, retryAttempt);
+                    console.log(`No suggestions yet, retrying in ${delay}ms (attempt ${retryAttempt + 1}/${SUGGESTION_MAX_RETRIES})`);
+                    
+                    // Show a loading message on first retry
+                    if (retryAttempt === 0) {
+                        list.innerHTML = '<li class="text-gray-400 italic">Loading suggestions...</li>';
+                        box.classList.remove("hidden");
+                    }
+                    
+                    setTimeout(() => loadGeneralRecommender(retryAttempt + 1), delay);
+                    return;
+                }
+                
+                // All retries exhausted, hide the box
                 box.classList.add("hidden");
                 return;
             }
 
+            // Success! Render the suggestions
             list.innerHTML = "";
             data.suggestions.forEach(suggestion => {
                 const li = document.createElement("li");
@@ -292,6 +315,14 @@
             box.classList.remove("hidden");
         } catch (e) {
             console.error("Failed to load suggestions:", e);
+            
+            // On network error, also retry if we haven't exhausted retries
+            if (retryAttempt < SUGGESTION_MAX_RETRIES) {
+                const delay = SUGGESTION_BASE_DELAY * Math.pow(1.5, retryAttempt);
+                setTimeout(() => loadGeneralRecommender(retryAttempt + 1), delay);
+            } else {
+                box.classList.add("hidden");
+            }
         }
     }
 

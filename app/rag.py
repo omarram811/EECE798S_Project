@@ -445,6 +445,77 @@ def file_id_from_url_or_id(val: str) -> str:
     return val  # already an ID
 
 
+def validate_drive_folder(drive_folder_url: str, user_id: int) -> Tuple[bool, str]:
+    """
+    Validate that a Google Drive folder exists, is accessible, and contains files.
+    
+    Args:
+        drive_folder_url: The Google Drive folder URL or ID
+        user_id: The user's ID (to get their OAuth credentials)
+        
+    Returns:
+        Tuple of (is_valid, error_message). If valid, error_message is empty.
+    """
+    # Extract folder ID from URL
+    folder_id = file_id_from_url_or_id(drive_folder_url)
+    if not folder_id:
+        return False, "Invalid Google Drive folder URL. Please provide a valid folder link."
+    
+    # Get user credentials
+    token_file = _user_token_path(user_id)
+    if not token_file.exists():
+        return False, "Google Drive not connected. Please connect your Google Drive first."
+    
+    try:
+        creds = Credentials.from_authorized_user_file(
+            str(token_file),
+            ["https://www.googleapis.com/auth/drive.readonly"]
+        )
+        service = build("drive", "v3", credentials=creds)
+        
+        # First, check if the folder itself exists and is accessible
+        try:
+            folder_meta = service.files().get(
+                fileId=folder_id,
+                fields="id, name, mimeType"
+            ).execute()
+            
+            # Verify it's actually a folder
+            if folder_meta.get("mimeType") != "application/vnd.google-apps.folder":
+                return False, "The provided link is not a folder. Please provide a Google Drive folder link."
+                
+        except Exception as e:
+            error_str = str(e).lower()
+            if "404" in error_str or "not found" in error_str:
+                return False, "Google Drive folder not found. Please check the folder link and ensure it's shared with your Google account."
+            elif "403" in error_str or "forbidden" in error_str or "permission" in error_str:
+                return False, "Access denied to the Google Drive folder. Please ensure the folder is shared with your Google account."
+            else:
+                log.error(f"[validate_drive_folder] Error checking folder: {e}")
+                return False, f"Could not access Google Drive folder: {str(e)}"
+        
+        # Check if the folder contains any files
+        response = service.files().list(
+            q=f"'{folder_id}' in parents and trashed = false",
+            fields="files(id, name, mimeType)",
+            pageSize=10,  # We only need to know if there's at least one file
+            includeItemsFromAllDrives=False,
+            supportsAllDrives=True
+        ).execute()
+        
+        files = response.get("files", [])
+        if not files:
+            return False, "The Google Drive folder is empty. Please add course materials to the folder before creating an agent."
+        
+        # Success! Folder exists, is accessible, and has files
+        log.info(f"[validate_drive_folder] Folder '{folder_meta.get('name')}' validated: {len(files)}+ files found")
+        return True, ""
+        
+    except Exception as e:
+        log.error(f"[validate_drive_folder] Unexpected error: {e}")
+        return False, f"Error validating Google Drive folder: {str(e)}"
+
+
 def _load_drive_docs_raw(folder_id: str, loader_auth_kwargs: Dict):
     """Try to load everything; if pypdf is missing, retry without PDFs."""
     loader = GoogleDriveLoader(

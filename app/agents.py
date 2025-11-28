@@ -6,6 +6,7 @@ from .models import Agent, Conversation, GoogleToken, AgentFile
 from .security import get_current_user_id
 from .rag import reindex_agent
 from .rag import provider_from
+from .rag import validate_drive_folder as validate_drive_folder_with_api
 from .scheduler import _creds_path_for_user
 from fastapi.templating import Jinja2Templates
 from .models import QueryLog
@@ -142,6 +143,12 @@ def create_agent(request: Request,
             detail="Google Drive not connected. Please connect your Google Drive before creating an agent."
         )
     
+    # ============ VALIDATE GOOGLE DRIVE FOLDER ============
+    # Check that the folder exists, is accessible, and contains files
+    drive_valid, drive_error = validate_drive_folder_with_api(drive_folder, uid)
+    if not drive_valid:
+        raise HTTPException(status_code=400, detail=drive_error)
+    
     slug = str(uuid.uuid4())
     a = Agent(owner_id=uid, name=name, slug=slug, drive_folder_id=drive_folder, persona=persona,
               provider=provider, model=final_model, embed_model=final_embed_model, api_key=api_key)
@@ -276,6 +283,13 @@ def update_agent(request: Request, agent_id: int,
     
     # Also check if drive folder changed - this requires re-indexing
     drive_folder_changed = (a.drive_folder_id != drive_folder)
+    
+    # ============ VALIDATE GOOGLE DRIVE FOLDER ============
+    # If drive folder changed and a new one is provided, validate it
+    if drive_folder_changed and drive_folder and drive_folder.strip():
+        drive_valid, drive_error = validate_drive_folder_with_api(drive_folder, uid)
+        if not drive_valid:
+            raise HTTPException(status_code=400, detail=drive_error)
     
     a.name, a.persona, a.drive_folder_id = name, persona, drive_folder
     a.announcement = announcement.strip() if announcement else None
