@@ -45,3 +45,7 @@ pdf2image
 pytesseract
 pypdf2
 wand
+
+# Testing
+pytest>=7.0.0
+pytest-cov>=4.0.0
