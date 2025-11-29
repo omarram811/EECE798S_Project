@@ -1,10 +1,19 @@
 # 🎓 Course TA Agent Studio
 
+## EECE 798S - Agentic Systems - American University of Beirut
+
+*Developed by: Omar Ramadan, Rasha Malaeb & Zaynab Al Haj*
+
 A multi-tenant platform for creating, hosting, and chatting with course-specific **Teaching Assistant AI agents**. Professors can create TA agents that connect to their **Google Drive folders** containing course materials (syllabi, slides, homework, etc.), automatically index the content using RAG (Retrieval-Augmented Generation), and provide students with an intelligent chat interface.
 
-![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
+![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-green.svg)
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+---
+
+## ⚠️ Very Important Notice
+Please note that during the last week of the project, the commits were mostly pushed at branch "Omar". Nevertheless, these commits do not define the activity of the students, because all members of the group were working equally and actively. 
+To better explain the situation, we simply decided to manually merge all code implementations on one branch instead of working parallelly during the last few days so that we avoid struggling with merge conflicts between branches.
 
 ---
 
@@ -232,6 +241,141 @@ pytest tests/test_providers.py -v
 
 ---
 
+## 📊 RAG Evaluation
+
+The `eval/` folder contains a comprehensive evaluation harness for benchmarking RAG performance across different LLM providers and models.
+
+### Evaluation Overview
+
+The evaluation system:
+1. Uses a **golden set** of 50 question-answer pairs from EECE 798S course materials
+2. Builds a separate document index from PDFs in `eval/docs/`
+3. Tests retrieval quality and answer generation across multiple models
+4. Computes metrics: semantic similarity, F1 score, latency, token usage, and cost
+
+### Directory Structure
+
+```
+eval/
+├── eval_rag_models.py          # Main evaluation script
+├── summarize_eval_results.py   # Aggregate results into summary
+├── golden_set.json             # 50 Q&A pairs for evaluation
+├── docs/                       # Place course PDFs here for indexing
+└── results/                    # Generated evaluation results
+    ├── gemini_gemini-2.5-flash_results.json
+    ├── openai_gpt-4o-mini_results.json
+    └── summary_metrics.csv
+```
+
+### Running the Evaluation
+
+#### Step 1: Configure Environment Variables
+
+The `.env` file serves **two purposes** depending on what you're doing:
+
+**For normal run/deployment**, the `.env` looks like this:
+
+```env
+# FOR BETTER SEPARATION OF CONCERNS, PLEASE UNCOMMENT EITHER THE RUN/DEPLOYMENT VARIABLES OR THE EVALUATION VARIABLES.
+
+
+# ENVIRONMENT VARIABLES FOR RUN/DEPLOYMENT:
+
+SECRET_KEY=771d8688b4405d93c1eebfeec88b1f1c334a15c1131f82546fe98b79d832030e
+GOOGLE_API_CLIENT_ID=your-google-client-id
+GOOGLE_API_CLIENT_SECRET=your-google-client-secret
+SCHED_CRON=0 3 * * *
+BASE_URL=http://127.0.0.1:8000
+```
+
+**For running evaluations**, temporarily modify `.env` to:
+
+```env
+# FOR BETTER SEPARATION OF CONCERNS, PLEASE UNCOMMENT EITHER THE RUN/DEPLOYMENT VARIABLES OR THE EVALUATION VARIABLES.
+
+
+# ENVIRONMENT VARIABLES FOR EVALUATION:
+
+OPENAI_API_KEY=sk-proj-your-openai-key-here
+GEMINI_API_KEY=AIzaSy-your-gemini-key-here
+
+# Optional: Cost estimation (USD per 1K tokens) - adjust based on model pricing
+# Check provider documentation for current pricing of the models you're testing
+OPENAI_INPUT_COST_PER_1K=0.00005
+OPENAI_OUTPUT_COST_PER_1K=0.0004
+GEMINI_INPUT_COST_PER_1K=0.00125
+GEMINI_OUTPUT_COST_PER_1K=0.01
+
+# Models to evaluate - change these to test different models
+OPENAI_CHAT_MODEL=gpt-4o-mini
+OPENAI_EMBED_MODEL=text-embedding-3-small
+GEMINI_CHAT_MODEL=gemini-2.5-flash
+GEMINI_EMBED_MODEL=models/text-embedding-004
+```
+
+> **Important**: Remember to restore the deployment configuration after running evaluations!
+
+#### Step 2: Prepare Evaluation Documents
+
+Place PDF files in the `eval/docs/` folder. These should be the course materials referenced in `golden_set.json`.
+
+#### Step 3: Run the Evaluation
+
+```bash
+# Run evaluation for configured models
+python eval/eval_rag_models.py
+
+# Results are saved to eval/results/<provider>_<model>_results.json
+```
+
+#### Step 4: Summarize Results
+
+```bash
+# Generate summary metrics across all result files
+python eval/summarize_eval_results.py
+
+# Creates eval/results/summary_metrics.csv
+```
+
+### Configuring Models to Evaluate
+
+Edit `eval/eval_rag_models.py` to change which providers to run:
+
+```python
+# Evaluate both providers
+providers_to_run = ["openai", "gemini"]
+
+# Or evaluate just one
+providers_to_run = ["gemini"]
+```
+
+### Evaluation Metrics
+
+| Metric | Description |
+|--------|-------------|
+| `retrieval_top1_accuracy` | Does the top retrieved document match the expected source? |
+| `retrieval_topk_recall` | Does any top-K document match the expected source? |
+| `avg_f1` | Token-level F1 score between generated and golden answers |
+| `avg_semantic_similarity` | Cosine similarity of answer embeddings |
+| `avg_latency_seconds` | Mean response time |
+| `total_tokens` | Total tokens consumed across all questions |
+| `avg_cost_per_question` | Estimated cost per question (if pricing configured) |
+
+### Sample Results
+
+From our evaluation of 9 models on 45 questions:
+
+| Model | Semantic Similarity | Latency (s) | Cost/Question |
+|-------|---------------------|-------------|---------------|
+| gemini-2.5-flash | 0.71 | 2.16 | $0.00067 |
+| gemini-2.0-flash | 0.69 | 0.89 | $0.00020 |
+| gpt-5 | 0.65 | 8.75 | $0.00592 |
+| gpt-4o-mini | 0.58 | 1.91 | $0.0000003 |
+
+See `eval/results/summary_metrics.csv` for complete results.
+
+---
+
 ## 📖 Usage Guide
 
 ### Creating an Agent (Professor)
@@ -320,24 +464,7 @@ docker-compose logs -f app
 
 ---
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Run tests: `pytest`
-4. Commit changes: `git commit -m 'Add amazing feature'`
-5. Push to branch: `git push origin feature/amazing-feature`
-6. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [FastAPI](https://fastapi.tiangolo.com/) - Modern web framework
 - [LangChain](https://langchain.com/) - LLM application framework
@@ -345,11 +472,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [OpenAI](https://openai.com/) & [Google Gemini](https://deepmind.google/technologies/gemini/) - LLM providers
 
 ---
-
-## 📧 Support
-
-For questions or issues, please open a GitHub issue or contact the course instructor.
-
----
-
-*Built as a course project for EECE 798S at the American University of Beirut.*

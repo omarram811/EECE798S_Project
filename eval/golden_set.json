@@ -1,0 +1,235 @@
+[
+  {
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "What is the main difference between discriminative and generative AI?",
+    "answer": "Discriminative AI predicts labels or class boundaries, while generative AI models the data distribution to generate new content."
+  },
+  {
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "What was the technological shift that enabled modern AI agents?",
+    "answer": "The shift was the emergence of powerful generative models—especially transformers and LLMs—that provided agents with strong reasoning and language abilities."
+  },
+  {
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "Name two real-world applications of generative AI discussed in the document.",
+    "answer": "Image generation and visual question answering."
+  },
+  {
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "What role do transformers play in modern GenAI?",
+    "answer": "Transformers enable models to understand contextual relationships through attention mechanisms."
+  },
+  {
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "What is the definition of Generative AI according to the slides?",
+    "answer": "Generative AI is a field where models create new content such as text, images, audio, or video based on training data."
+  },
+
+  {
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "What makes a language model 'large'?",
+    "answer": "A model is considered large when it contains millions to billions of parameters stacked across many transformer layers."
+  },
+  {
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "What were LLMs originally designed to do?",
+    "answer": "They were designed to perform text modeling tasks with high accuracy by predicting the next token."
+  },
+  {
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "Name one emergent behavior of LLMs shown in the slides.",
+    "answer": "Chain-of-thought reasoning."
+  },
+  {
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "Why are long context windows not equivalent to real memory?",
+    "answer": "Long contexts only retain information within a single session and do not create persistent knowledge across tasks."
+  },
+  {
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "What is the purpose of tokenization in an LLM pipeline?",
+    "answer": "Tokenization converts input text into tokens that the model can embed and process."
+  },
+
+  {
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "What distinguishes an agent from a chatbot?",
+    "answer": "Agents take actions using tools and pursue goals, while chatbots mainly produce text responses."
+  },
+  {
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "What are the five key components of an AI agent listed in the chapter?",
+    "answer": "Multiple LLM calls, tool use, environment interaction, a planner, and autonomy."
+  },
+  {
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "How does reinforcement learning relate to agents?",
+    "answer": "RL models agents by having them interact with an environment and learn through rewards."
+  },
+  {
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "Why did modern LLMs enable advanced agentic systems?",
+    "answer": "Because LLMs provide reasoning, planning, generalization, and natural language understanding capabilities."
+  },
+  {
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "What does it mean for an agent to be goal-oriented?",
+    "answer": "It means the agent selects actions not just to respond but to achieve a defined outcome."
+  },
+
+  {
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "What are the two major components that define an agent's mind?",
+    "answer": "Agent persona and thinking mechanism."
+  },
+  {
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "What does temperature control in model configuration?",
+    "answer": "Temperature controls randomness in token selection and influences creativity versus determinism."
+  },
+  {
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "What is a Chain-of-Thought reasoning mechanism?",
+    "answer": "A reasoning method where the model generates step-by-step explanations before answering."
+  },
+  {
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "What does a high frequency penalty encourage?",
+    "answer": "It encourages reduced repetition by penalizing tokens already used frequently."
+  },
+  {
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "Why do different prompts create different agent personas?",
+    "answer": "Because the LLM conditions its behavior on the instructions, shaping style, tone, and reasoning patterns."
+  },
+
+  {
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "What are agent tools?",
+    "answer": "Functions provided to an LLM that enable actions or computations beyond the model’s internal capabilities."
+  },
+  {
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "Why do agents need tools for real-time information?",
+    "answer": "LLMs lack up-to-date knowledge and can hallucinate without retrieving external information."
+  },
+  {
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "What are the three main characteristics of a good tool?",
+    "answer": "A well-defined API, isolated functionality, and deterministic behavior."
+  },
+  {
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "What protocol standardizes how tools communicate with LLMs?",
+    "answer": "The Model Context Protocol (MCP)."
+  },
+  {
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "Why do tools reduce token usage?",
+    "answer": "Because they return structured, concise data instead of requiring the LLM to process raw text."
+  },
+
+  {
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "Why do agents need memory?",
+    "answer": "To maintain context across interactions, enabling continuity and personalized behavior."
+  },
+  {
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "What is short-term memory in an agent?",
+    "answer": "It stores the current conversation or task context within a single session."
+  },
+  {
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "What is semantic long-term memory?",
+    "answer": "Memory that stores general facts, concepts, and stable user preferences."
+  },
+  {
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "Why don’t large context windows replace memory?",
+    "answer": "Because context windows are per-session and do not enable persistence across tasks or time."
+  },
+  {
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "What is the role of a retriever in RAG?",
+    "answer": "The retriever finds semantically relevant information from external sources based on embeddings."
+  },
+
+  {
+    "document": "C7+-+Finetuning.pdf",
+    "question": "What is the main purpose of fine-tuning?",
+    "answer": "To adapt a general LLM to specific tasks, domains, or behaviors using specialized training data."
+  },
+  {
+    "document": "C7+-+Finetuning.pdf",
+    "question": "Why is full fine-tuning expensive?",
+    "answer": "Because it updates all model parameters, requiring significant compute and memory."
+  },
+  {
+    "document": "C7+-+Finetuning.pdf",
+    "question": "What does LoRA modify during fine-tuning?",
+    "answer": "LoRA inserts low-rank adapters to modify only a small subset of parameters efficiently."
+  },
+  {
+    "document": "C7+-+Finetuning.pdf",
+    "question": "What is one reason to prefer RAG over fine-tuning?",
+    "answer": "RAG integrates real-time external knowledge without updating model weights."
+  },
+  {
+    "document": "C7+-+Finetuning.pdf",
+    "question": "What is the objective of evaluation after fine-tuning?",
+    "answer": "To ensure the fine-tuned model performs well on technical metrics and practical use cases."
+  },
+
+  {
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "Why are multi-agent systems needed for complex tasks?",
+    "answer": "Because complex tasks require decomposition into specialized subtasks handled by different agents."
+  },
+  {
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "What is an example of a natural pipeline that benefits from MAS?",
+    "answer": "ETL → analyze → generate → verify → publish."
+  },
+  {
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "What is a reason to avoid multi-agent systems?",
+    "answer": "When orchestration complexity outweighs the benefits."
+  },
+  {
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "What is agent-to-agent communication used for?",
+    "answer": "To coordinate tasks and exchange intermediate results between agents."
+  },
+  {
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "Why might redundancy be used in MAS?",
+    "answer": "To improve reliability by having multiple agents independently produce or verify results."
+  },
+
+  {
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "What problem arises if one agent tries to do everything?",
+    "answer": "Performance drops due to cognitive overload and lack of specialization."
+  },
+  {
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "How do tools enhance safety in agent systems?",
+    "answer": "By constraining outputs and validating inputs, ensuring predictable and secure operations."
+  },
+  {
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "What is episodic memory?",
+    "answer": "Memory of specific events or interactions that happened previously, including when and where they occurred."
+  },
+  {
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "How does top-p sampling work?",
+    "answer": "It restricts token selection to a subset of tokens whose cumulative probability mass is below a threshold p."
+  },
+  {
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "What is one task LLMs can perform using only prompting without parameter updates?",
+    "answer": "In-context learning."
+  }
+]
