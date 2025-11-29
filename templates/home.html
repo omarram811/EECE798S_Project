@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Course TA Agent Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .btn-custom {
+      background-color: #840032;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+    .btn-custom:hover {
+      background-color: #a5004c;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen font-sans">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center p-4 bg-white shadow-md">
+    <h1 class="text-3xl font-bold text-gray-800">Course TA Agent Studio</h1>
+    <img src="/static/logos.png" alt="Logo" class="h-20 w-auto">
+  </header>
+
+  <!-- Main -->
+  <div class="max-w-4xl mx-auto p-6">
+
+    <p class="text-gray-600 mb-6">Create and host course-specific TA agents powered by your Google Drive.</p>
+
+    {% if not user_id %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Login Form -->
+      <form action="/login" method="post" class="bg-white shadow rounded p-6">
+        <h2 class="font-semibold mb-4 text-gray-700">Login</h2>
+        <input class="border p-2 w-full mb-3 rounded" type="email" name="email" placeholder="Email" required />
+        <input class="border p-2 w-full mb-3 rounded" type="password" name="password" placeholder="Password" required />
+        
+        <!-- Error message for invalid credentials -->
+        {% if error == 'invalid_credentials' %}
+        <div class="mb-3 p-2 bg-red-50 border border-red-300 rounded text-red-700 text-sm">
+          Invalid email or password. Please try again.
+        </div>
+        {% endif %}
+        
+        <button class="btn-custom w-full">Login</button>
+      </form>
+
+      <!-- Register Form -->
+      <form action="/register" method="post" class="bg-white shadow rounded p-6">
+        <h2 class="font-semibold mb-4 text-gray-700">Register</h2>
+        <input class="border p-2 w-full mb-3 rounded" type="email" name="email" placeholder="Email" required />
+        <input class="border p-2 w-full mb-3 rounded" type="password" name="password" placeholder="Password" required />
+        
+        <!-- Error message for email exists -->
+        {% if error == 'email_exists' %}
+        <div class="mb-3 p-2 bg-red-50 border border-red-300 rounded text-red-700 text-sm">
+          An account with this email already exists.
+        </div>
+        {% endif %}
+        
+        <button class="btn-custom w-full">Create Account</button>
+      </form>
+
+    </div>
+    {% endif %}   <!-- 🔥 YOU WERE MISSING THIS -->
+
+  </div>
+
+</body>
+</html>

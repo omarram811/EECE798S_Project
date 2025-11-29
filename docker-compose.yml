@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: course-ta-agent
+    restart: unless-stopped
+
+    # Host:Container
+    # For local dev: 8000:8000
+    # For Hetzner prod you might change to 80:8000
+    ports:
+      - "8000:8000"
+
+    # Load variables from .env (SECRET_KEY, API keys, etc.)
+    env_file:
+      - .env
+
+    # Extra environment (or override)
+    environment:
+      DATA_DIR: /app/data
+      TESSERACT_CMD: /usr/bin/tesseract
+
+    # Persist data (DB, Google tokens, vector store)
+    volumes:
+      - ./data:/app/data
+
+    # Health check for container monitoring
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # Production settings
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2

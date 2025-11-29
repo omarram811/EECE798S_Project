@@ -1,0 +1,2612 @@
+[
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "What is the main difference between discriminative and generative AI?",
+    "gold_answer": "Discriminative AI predicts labels or class boundaries, while generative AI models the data distribution to generate new content.",
+    "answer": "Based on the course materials, the main difference is that generative AI creates new content by learning data patterns, while discriminative AI focuses on classifying or labeling existing data. Discriminative AI learns the boundaries between classes to predict outputs from given inputs, whereas generative AI models the data distribution itself to produce novel instances.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf"
+      ],
+      "top1_doc": "C1+-+Introduction+to+GenAI.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 8
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.4406779661016949,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.8884036540985107,
+      "latency_seconds": 6.676567000002251,
+      "input_tokens": 1581,
+      "output_tokens": 61,
+      "total_tokens": 1642,
+      "input_cost": 0.00197625,
+      "output_cost": 0.00061,
+      "total_cost": 0.00258625
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "What was the technological shift that enabled modern AI agents?",
+    "gold_answer": "The shift was the emergence of powerful generative models—especially transformers and LLMs—that provided agents with strong reasoning and language abilities.",
+    "answer": "Based on the course materials, the technological shift that enabled modern AI agents was the increased size, power, and capability of underlying generative AI models. Specifically, modern Large Language Models (LLMs) unlocked true agentic behavior. These LLMs equipped agents with a much more powerful 'brain' capable of language understanding, generalization, and multi-step planning with feedback.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": false,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 5
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.3225806451612903,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.8065550327301025,
+      "latency_seconds": 7.737962400002289,
+      "input_tokens": 1762,
+      "output_tokens": 73,
+      "total_tokens": 1835,
+      "input_cost": 0.0022025,
+      "output_cost": 0.00073,
+      "total_cost": 0.0029325
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "Name two real-world applications of generative AI discussed in the document.",
+    "gold_answer": "Image generation and visual question answering.",
+    "answer": "Based on the course materials, two real-world applications of generative AI are Agentforce by Salesforce and Cursor. Agentforce is an AI-powered platform that creates and manages autonomous agents for business operations. Cursor has an \"Agent\" mode that can autonomously explore a codebase, read documentation, and run commands to complete tasks.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf"
+      ],
+      "top1_doc": "C1+-+Introduction+to+GenAI.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 8
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 0
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.04,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.44790878891944885,
+      "latency_seconds": 5.495320399990305,
+      "input_tokens": 1710,
+      "output_tokens": 64,
+      "total_tokens": 1774,
+      "input_cost": 0.0021375,
+      "output_cost": 0.00064,
+      "total_cost": 0.0027775
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "What role do transformers play in modern GenAI?",
+    "gold_answer": "Transformers enable models to understand contextual relationships through attention mechanisms.",
+    "answer": "According to the course materials, the Transformer architecture was the breakthrough that enabled generative models to achieve their current level of power. It revolutionized natural language understanding and generation by solving problems with processing long sequences. Stacking many transformer blocks is what makes a language model \"large.\"",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf"
+      ],
+      "top1_doc": "C1+-+Introduction+to+GenAI.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 16
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 15
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 18
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.07692307692307693,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6844091415405273,
+      "latency_seconds": 7.777042900008382,
+      "input_tokens": 1722,
+      "output_tokens": 53,
+      "total_tokens": 1775,
+      "input_cost": 0.0021525,
+      "output_cost": 0.00053,
+      "total_cost": 0.0026825
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "What is the definition of Generative AI according to the slides?",
+    "gold_answer": "Generative AI is a field where models create new content such as text, images, audio, or video based on training data.",
+    "answer": "According to the course materials, Generative AI is a field of artificial intelligence where models can create new content, such as text, images, audio, or video, based on the data it has been trained on.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf"
+      ],
+      "top1_doc": "C1+-+Introduction+to+GenAI.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 8
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.7407407407407407,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.8688185214996338,
+      "latency_seconds": 3.5145636000088416,
+      "input_tokens": 1680,
+      "output_tokens": 43,
+      "total_tokens": 1723,
+      "input_cost": 0.0021,
+      "output_cost": 0.00043,
+      "total_cost": 0.0025299999999999997
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "What makes a language model 'large'?",
+    "gold_answer": "A model is considered large when it contains millions to billions of parameters stacked across many transformer layers.",
+    "answer": "According to the course materials, a model is considered “large” based on its parameters, the data it is trained on, and the compute required. To hold a lot of information, a model needs a large number of parameters. As models get larger in size and architecture, they also use bigger training datasets.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C2+-+Large+Language+Models.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 19
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 31
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 32
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.3103448275862069,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.8525707721710205,
+      "latency_seconds": 9.968121899990365,
+      "input_tokens": 1740,
+      "output_tokens": 62,
+      "total_tokens": 1802,
+      "input_cost": 0.002175,
+      "output_cost": 0.00062,
+      "total_cost": 0.0027949999999999997
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "What were LLMs originally designed to do?",
+    "gold_answer": "They were designed to perform text modeling tasks with high accuracy by predicting the next token.",
+    "answer": "According to the course materials, the original purpose of large language models was to perform traditional text tasks with high accuracy. They were trained purely to predict text and were not originally trained to follow commands.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C2+-+Large+Language+Models.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 4
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.4444444444444445,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6653293967247009,
+      "latency_seconds": 6.7614066999958595,
+      "input_tokens": 1779,
+      "output_tokens": 39,
+      "total_tokens": 1818,
+      "input_cost": 0.00222375,
+      "output_cost": 0.00039,
+      "total_cost": 0.00261375
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "Name one emergent behavior of LLMs shown in the slides.",
+    "gold_answer": "Chain-of-thought reasoning.",
+    "answer": "Based on the course materials, one emergent behavior of LLMs is writing syntactically correct and functional code. Other examples mentioned include solving new tasks from prompts without gradient updates, using tools like APIs or calculators, and inferring others' beliefs.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C2+-+Large+Language+Models.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 2
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.0,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.42253559827804565,
+      "latency_seconds": 10.599539899994852,
+      "input_tokens": 1782,
+      "output_tokens": 49,
+      "total_tokens": 1831,
+      "input_cost": 0.0022275,
+      "output_cost": 0.00049,
+      "total_cost": 0.0027175
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "Why are long context windows not equivalent to real memory?",
+    "gold_answer": "Long contexts only retain information within a single session and do not create persistent knowledge across tasks.",
+    "answer": "According to the course materials, a large context window only provides an \"illusion of memory\" because it is limited to a single session. Once a conversation or task ends, all that context is lost. True agent memory is a persistent internal state that allows an agent to retain and recall information across multiple interactions over time.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C6+-+Agent+Memory.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C6+-+Agent+Memory.pdf",
+      "top1_matches_gold": false,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 27
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 20
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 28
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.29508196721311475,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7464566230773926,
+      "latency_seconds": 6.8915723000100115,
+      "input_tokens": 1739,
+      "output_tokens": 63,
+      "total_tokens": 1802,
+      "input_cost": 0.0021737500000000003,
+      "output_cost": 0.00063,
+      "total_cost": 0.0028037500000000003
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "What is the purpose of tokenization in an LLM pipeline?",
+    "gold_answer": "Tokenization converts input text into tokens that the model can embed and process.",
+    "answer": "According to the course materials, tokenization is a data cleaning technique used for pre-training data pruning. The goal of LLM pre-training is to predict the next word or token, which can be as short as one character or as long as one word. Examples of tokenization methods mentioned include Byte Pair Encoding (BPE) and SentencePiece.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf"
+      ],
+      "top1_doc": "C2+-+Large+Language+Models.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 30
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 29
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 14
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 17
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 2
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.14814814814814817,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7553040981292725,
+      "latency_seconds": 10.118493100002524,
+      "input_tokens": 1836,
+      "output_tokens": 71,
+      "total_tokens": 1907,
+      "input_cost": 0.002295,
+      "output_cost": 0.0007099999999999999,
+      "total_cost": 0.003005
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "What distinguishes an agent from a chatbot?",
+    "gold_answer": "Agents take actions using tools and pursue goals, while chatbots mainly produce text responses.",
+    "answer": "Based on the course materials, an agent is distinguished from a chatbot because it is designed to take action, not just engage in conversation. While a chatbot focuses on conversation, an agent is defined by its goal-driven reasoning and ability to perform actions.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 7
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.16666666666666666,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.8139415979385376,
+      "latency_seconds": 4.118779299999005,
+      "input_tokens": 1833,
+      "output_tokens": 50,
+      "total_tokens": 1883,
+      "input_cost": 0.00229125,
+      "output_cost": 0.0005,
+      "total_cost": 0.00279125
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "What are the five key components of an AI agent listed in the chapter?",
+    "gold_answer": "Multiple LLM calls, tool use, environment interaction, a planner, and autonomy.",
+    "answer": "I don't know from the course materials.\n\nThe provided context does not list five key components of an AI agent. The lesson objectives mention a goal to break down the core components, giving \"tools, memory, planning, etc.\" as examples, but a full list of five is not provided.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C1+-+Introduction+to+GenAI.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 0
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.04081632653061224,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5366747975349426,
+      "latency_seconds": 11.387097099999664,
+      "input_tokens": 1879,
+      "output_tokens": 61,
+      "total_tokens": 1940,
+      "input_cost": 0.00234875,
+      "output_cost": 0.00061,
+      "total_cost": 0.00295875
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "How does reinforcement learning relate to agents?",
+    "gold_answer": "RL models agents by having them interact with an environment and learn through rewards.",
+    "answer": "Based on the course materials, reinforcement learning (RL) is a method for agents to learn what actions to take. The agent, a decision-making entity, interacts with an environment through trial and error. By trying actions and observing the resulting rewards, the agent learns to maximize its rewards over time.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.3773584905660377,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.8064330220222473,
+      "latency_seconds": 6.761588900000788,
+      "input_tokens": 1898,
+      "output_tokens": 60,
+      "total_tokens": 1958,
+      "input_cost": 0.0023725,
+      "output_cost": 0.0006,
+      "total_cost": 0.0029725
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "Why did modern LLMs enable advanced agentic systems?",
+    "gold_answer": "Because LLMs provide reasoning, planning, generalization, and natural language understanding capabilities.",
+    "answer": "According to the course materials, modern LLMs unlocked true agentic behavior by providing capabilities for language understanding and generation, chain-of-thought reasoning, generalization across domains, and multi-step planning with feedback. These abilities allowed researchers to embed LLMs into agent loops, transitioning them from passive responders to adaptive cognitive engines.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C3+-+Introduction+to+Agents.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 0
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.2909090909090909,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7157591581344604,
+      "latency_seconds": 7.660202800005209,
+      "input_tokens": 1855,
+      "output_tokens": 64,
+      "total_tokens": 1919,
+      "input_cost": 0.00231875,
+      "output_cost": 0.00064,
+      "total_cost": 0.00295875
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "What does it mean for an agent to be goal-oriented?",
+    "gold_answer": "It means the agent selects actions not just to respond but to achieve a defined outcome.",
+    "answer": "Based on the course materials, for an agent to be goal-oriented means it is a decision-making entity that acts to achieve a specific objective, such as \"Find the treasure.\" In Reinforcement Learning, this goal is to maximize cumulative rewards over time through trial and error. This goal-driven reasoning is a key characteristic that distinguishes an agent from a simple script.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 3
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.22222222222222224,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6817023158073425,
+      "latency_seconds": 8.10980410000775,
+      "input_tokens": 1887,
+      "output_tokens": 74,
+      "total_tokens": 1961,
+      "input_cost": 0.00235875,
+      "output_cost": 0.00074,
+      "total_cost": 0.00309875
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "What are the two major components that define an agent's mind?",
+    "gold_answer": "Agent persona and thinking mechanism.",
+    "answer": "I don't know from the course materials.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": false,
+      "any_match_in_topk": false,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.0,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.34534451365470886,
+      "latency_seconds": 8.068687399994815,
+      "input_tokens": 1860,
+      "output_tokens": 10,
+      "total_tokens": 1870,
+      "input_cost": 0.0023250000000000002,
+      "output_cost": 0.0001,
+      "total_cost": 0.002425
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "What does temperature control in model configuration?",
+    "gold_answer": "Temperature controls randomness in token selection and influences creativity versus determinism.",
+    "answer": "Based on the course materials, temperature controls the balance between safe, predictable answers and creative, novel responses. It adjusts the randomness in token selection, with a low temperature leading to more deterministic and focused outputs and a high temperature producing more creative and surprising results. This parameter effectively shapes the model's style and personality.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf"
+      ],
+      "top1_doc": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 5
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.2641509433962264,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6713888645172119,
+      "latency_seconds": 5.658598699999857,
+      "input_tokens": 1733,
+      "output_tokens": 63,
+      "total_tokens": 1796,
+      "input_cost": 0.00216625,
+      "output_cost": 0.00063,
+      "total_cost": 0.00279625
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "What is a Chain-of-Thought reasoning mechanism?",
+    "gold_answer": "A reasoning method where the model generates step-by-step explanations before answering.",
+    "answer": "Based on the course materials, Chain of Thoughts is a reasoning mechanism that breaks complex problems into smaller, logical steps to solve them more clearly. This \"Step-by-Step Thinking\" mimics how people reason through problems gradually rather than jumping directly to an answer.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf"
+      ],
+      "top1_doc": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 12
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 13
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 11
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 14
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.15686274509803924,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6098507642745972,
+      "latency_seconds": 6.093688999986625,
+      "input_tokens": 1818,
+      "output_tokens": 52,
+      "total_tokens": 1870,
+      "input_cost": 0.0022725,
+      "output_cost": 0.00052,
+      "total_cost": 0.0027925000000000003
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "What does a high frequency penalty encourage?",
+    "gold_answer": "It encourages reduced repetition by penalizing tokens already used frequently.",
+    "answer": "Based on the course materials, a high frequency penalty encourages the model to avoid repetition and promote diversity in its output. It is particularly useful for tasks like writing essays, articles, and research. This is achieved by applying a penalty to words that have already been used.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 27
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 32
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 33
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.23529411764705882,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6081796288490295,
+      "latency_seconds": 4.231906500004698,
+      "input_tokens": 1672,
+      "output_tokens": 53,
+      "total_tokens": 1725,
+      "input_cost": 0.00209,
+      "output_cost": 0.00053,
+      "total_cost": 0.00262
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "Why do different prompts create different agent personas?",
+    "gold_answer": "Because the LLM conditions its behavior on the instructions, shaping style, tone, and reasoning patterns.",
+    "answer": "According to the course materials, prompts are a method used to define an agent's persona by specifying key traits. Different prompts create different personas because they can explicitly set the agent's tone, vocabulary, response style, and values. By changing these instructions, you alter the agent's resulting identity and behavior.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf"
+      ],
+      "top1_doc": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 5
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 0
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.25925925925925924,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6210939288139343,
+      "latency_seconds": 8.007089999999152,
+      "input_tokens": 1725,
+      "output_tokens": 63,
+      "total_tokens": 1788,
+      "input_cost": 0.00215625,
+      "output_cost": 0.00063,
+      "total_cost": 0.00278625
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "What are agent tools?",
+    "gold_answer": "Functions provided to an LLM that enable actions or computations beyond the model’s internal capabilities.",
+    "answer": "According to the course materials, agent tools are functions that perform actions on behalf of the AI model. These are typically operations that can have effects or require computation beyond the AI’s own capabilities. A good tool should be something that complements the power of an LLM and is designed to fulfill a clear objective.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C5+-+Agent+Tools.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C5+-+Agent+Tools.pdf"
+      ],
+      "top1_doc": "C5+-+Agent+Tools.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 15
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 13
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 11
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.32786885245901637,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7089563012123108,
+      "latency_seconds": 6.1551585999986855,
+      "input_tokens": 1862,
+      "output_tokens": 62,
+      "total_tokens": 1924,
+      "input_cost": 0.0023275,
+      "output_cost": 0.00062,
+      "total_cost": 0.0029475
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "Why do agents need tools for real-time information?",
+    "gold_answer": "LLMs lack up-to-date knowledge and can hallucinate without retrieving external information.",
+    "answer": "According to the course materials, agents need tools for real-time information because LLMs' internal knowledge is limited to events that occurred before their training. Therefore, to get up-to-date data, it must be provided through a tool. Without a tool, the LLM may hallucinate information, such as providing random weather for a current-day query.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C5+-+Agent+Tools.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C5+-+Agent+Tools.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.2142857142857143,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7266334295272827,
+      "latency_seconds": 6.558180299995001,
+      "input_tokens": 1820,
+      "output_tokens": 73,
+      "total_tokens": 1893,
+      "input_cost": 0.002275,
+      "output_cost": 0.00073,
+      "total_cost": 0.003005
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "What are the three main characteristics of a good tool?",
+    "gold_answer": "A well-defined API, isolated functionality, and deterministic behavior.",
+    "answer": "Based on the course materials, the three key characteristics of an agent's tool are a well-defined API with clear input parameters and output schema, isolated functionality with a single responsibility, and deterministic behavior that produces predictable results for valid inputs.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf"
+      ],
+      "top1_doc": "C5+-+Agent+Tools.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 9
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 0
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.3636363636363636,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.697098970413208,
+      "latency_seconds": 4.80173529998865,
+      "input_tokens": 1819,
+      "output_tokens": 48,
+      "total_tokens": 1867,
+      "input_cost": 0.00227375,
+      "output_cost": 0.00048,
+      "total_cost": 0.00275375
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "What protocol standardizes how tools communicate with LLMs?",
+    "gold_answer": "The Model Context Protocol (MCP).",
+    "answer": "Based on the course materials, the Model Context Protocol (MCP) is a standard interface that standardizes how LLMs call tools. It defines how models declare, request, and execute actions using standard JSON schemas. This helps avoid ambiguous or inconsistent tool calls and allows tools to be reused across different agents or platforms.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C5+-+Agent+Tools.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C3+-+Introduction+to+Agents.pdf"
+      ],
+      "top1_doc": "C5+-+Agent+Tools.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 12
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 11
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 13
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.19607843137254902,
+      "exact_match_normalized": false,
+      "contains_match": true,
+      "is_correct": true,
+      "semantic_similarity": 0.7504521012306213,
+      "latency_seconds": 5.904416899997159,
+      "input_tokens": 1787,
+      "output_tokens": 62,
+      "total_tokens": 1849,
+      "input_cost": 0.00223375,
+      "output_cost": 0.00062,
+      "total_cost": 0.00285375
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "Why do tools reduce token usage?",
+    "gold_answer": "Because they return structured, concise data instead of requiring the LLM to process raw text.",
+    "answer": "I don't know from the course materials. The provided text indicates that tool use can actually increase token usage, stating that \"Tool use = more LLM calls = more tokens\" and can lead to unexpected cost spikes.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C5+-+Agent+Tools.pdf"
+      ],
+      "top1_doc": "C5+-+Agent+Tools.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 9
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 11
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 15
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 0
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.18181818181818182,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5249731540679932,
+      "latency_seconds": 8.868240499999956,
+      "input_tokens": 1830,
+      "output_tokens": 45,
+      "total_tokens": 1875,
+      "input_cost": 0.0022875,
+      "output_cost": 0.00045,
+      "total_cost": 0.0027375
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "Why do agents need memory?",
+    "gold_answer": "To maintain context across interactions, enabling continuity and personalized behavior.",
+    "answer": "Based on the course materials, agents need memory to move from being stateless tools to truly intelligent, stateful agents. By default, LLMs do not remember past interactions, but memory allows them to retain and recall information across time and tasks. This enables agents to use past experiences to improve their behavior in the future.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C6+-+Agent+Memory.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 29
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 26
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 7
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.18518518518518517,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5819036364555359,
+      "latency_seconds": 8.045493899990106,
+      "input_tokens": 1838,
+      "output_tokens": 63,
+      "total_tokens": 1901,
+      "input_cost": 0.0022975,
+      "output_cost": 0.00063,
+      "total_cost": 0.0029275
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "What is short-term memory in an agent?",
+    "gold_answer": "It stores the current conversation or task context within a single session.",
+    "answer": "According to the course materials, short-term memory, also called working memory, is analogous to a computer's RAM or a conversation thread. It ensures local coherence by letting the agent remember what was just said or done so it can respond fluently within a single session. Once the session ends, this data is gone unless it is explicitly saved.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C6+-+Agent+Memory.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 5
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.27586206896551724,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6592199802398682,
+      "latency_seconds": 4.914191499992739,
+      "input_tokens": 1828,
+      "output_tokens": 70,
+      "total_tokens": 1898,
+      "input_cost": 0.002285,
+      "output_cost": 0.0007000000000000001,
+      "total_cost": 0.0029850000000000002
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "What is semantic long-term memory?",
+    "gold_answer": "Memory that stores general facts, concepts, and stable user preferences.",
+    "answer": "I don't know from the course materials.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C6+-+Agent+Memory.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 5
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 3
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.0,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.35460367798805237,
+      "latency_seconds": 6.142704900004901,
+      "input_tokens": 1815,
+      "output_tokens": 10,
+      "total_tokens": 1825,
+      "input_cost": 0.00226875,
+      "output_cost": 0.0001,
+      "total_cost": 0.0023687499999999998
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "Why don’t large context windows replace memory?",
+    "gold_answer": "Because context windows are per-session and do not enable persistence across tasks or time.",
+    "answer": "According to the course materials, large context windows do not replace memory because they only carry over data within a single session, providing an \"illusion of memory\" but lacking true long-term understanding. Memory, in contrast, is about building a persistent internal state that evolves and informs interactions over time, even weeks or months apart. Additionally, the materials state that the longer the context, the \"dumber\" the LLM can become, leading to slower responses and hallucinations.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C6+-+Agent+Memory.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C6+-+Agent+Memory.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 27
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 20
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 28
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.21621621621621623,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6394562721252441,
+      "latency_seconds": 8.466103300001123,
+      "input_tokens": 1738,
+      "output_tokens": 94,
+      "total_tokens": 1832,
+      "input_cost": 0.0021725,
+      "output_cost": 0.00094,
+      "total_cost": 0.0031125
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "What is the role of a retriever in RAG?",
+    "gold_answer": "The retriever finds semantically relevant information from external sources based on embeddings.",
+    "answer": "Based on the course materials, the role of retrieval in RAG is to fetch relevant documents or facts from an external knowledge base or the agent's memory. This retrieved information is then injected into the prompt to supply the LLM with relevant context before it generates a response. This process is also an effective method for filtering an agent's memory to extract what is relevant.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C7+-+Finetuning.pdf",
+        "C3+-+Introduction+to+Agents.pdf"
+      ],
+      "top1_doc": "C6+-+Agent+Memory.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 8
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 9
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 4
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.23333333333333336,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.643958568572998,
+      "latency_seconds": 7.68793650000589,
+      "input_tokens": 1913,
+      "output_tokens": 75,
+      "total_tokens": 1988,
+      "input_cost": 0.00239125,
+      "output_cost": 0.00075,
+      "total_cost": 0.00314125
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C7+-+Finetuning.pdf",
+    "question": "What is the main purpose of fine-tuning?",
+    "gold_answer": "To adapt a general LLM to specific tasks, domains, or behaviors using specialized training data.",
+    "answer": "Based on the course materials, the main purpose of fine-tuning is to adapt a pre-trained general model for a specific task or domain. While foundation models have broad knowledge, fine-tuning on a smaller, task-specific dataset makes the model better at a particular problem. This process bridges the gap when a model's generic knowledge is not sufficient for specialized workflows, goals, or safety requirements.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C7+-+Finetuning.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C7+-+Finetuning.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C7+-+Finetuning.pdf"
+      ],
+      "top1_doc": "C7+-+Finetuning.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 33
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 32
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 2
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.22580645161290322,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7236617803573608,
+      "latency_seconds": 7.609136099999887,
+      "input_tokens": 1832,
+      "output_tokens": 81,
+      "total_tokens": 1913,
+      "input_cost": 0.00229,
+      "output_cost": 0.0008100000000000001,
+      "total_cost": 0.0031
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C7+-+Finetuning.pdf",
+    "question": "Why is full fine-tuning expensive?",
+    "gold_answer": "Because it updates all model parameters, requiring significant compute and memory.",
+    "answer": "According to the course materials, full fine-tuning is expensive because it involves updating all of the model's parameters, which can be in the billions. This process has a \"very high\" typical GPU need.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C7+-+Finetuning.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 8
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 33
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.19047619047619047,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6807417273521423,
+      "latency_seconds": 5.905146300006891,
+      "input_tokens": 1926,
+      "output_tokens": 43,
+      "total_tokens": 1969,
+      "input_cost": 0.0024075,
+      "output_cost": 0.00043,
+      "total_cost": 0.0028374999999999997
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C7+-+Finetuning.pdf",
+    "question": "What does LoRA modify during fine-tuning?",
+    "gold_answer": "LoRA inserts low-rank adapters to modify only a small subset of parameters efficiently.",
+    "answer": "Based on the course materials, LoRA freezes the original model weights so they are not optimized. Instead, it creates new, small \"adaptor\" matrices with fewer parameters that are applied to specific layers. Only these new adaptors get trained and updated during the fine-tuning process.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf"
+      ],
+      "top1_doc": "C7+-+Finetuning.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 8
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 9
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.18867924528301888,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7860519886016846,
+      "latency_seconds": 6.91624839999713,
+      "input_tokens": 1945,
+      "output_tokens": 57,
+      "total_tokens": 2002,
+      "input_cost": 0.0024312500000000003,
+      "output_cost": 0.0005700000000000001,
+      "total_cost": 0.0030012500000000004
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C7+-+Finetuning.pdf",
+    "question": "What is one reason to prefer RAG over fine-tuning?",
+    "gold_answer": "RAG integrates real-time external knowledge without updating model weights.",
+    "answer": "Based on the course materials, one reason to prefer RAG over fine-tuning is to address the challenges of hallucinations and outdated knowledge. It is not feasible to retrain a fine-tuned model for every change in a knowledge base, like a customer service manual. RAG allows the knowledge source to be updated without needing to retrain the model.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C7+-+Finetuning.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C7+-+Finetuning.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 8
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 9
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.1568627450980392,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7155875563621521,
+      "latency_seconds": 11.86407060000056,
+      "input_tokens": 1714,
+      "output_tokens": 70,
+      "total_tokens": 1784,
+      "input_cost": 0.0021425,
+      "output_cost": 0.0007000000000000001,
+      "total_cost": 0.0028425
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C7+-+Finetuning.pdf",
+    "question": "What is the objective of evaluation after fine-tuning?",
+    "gold_answer": "To ensure the fine-tuned model performs well on technical metrics and practical use cases.",
+    "answer": "Based on the lesson objectives, the goal of evaluation is to assess the fine-tuned model using both technical and business metrics. This ensures the model meets the specific business requirements and key performance indicators identified for the project.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C7+-+Finetuning.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C7+-+Finetuning.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C7+-+Finetuning.pdf"
+      ],
+      "top1_doc": "C7+-+Finetuning.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 33
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 32
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 2
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.36363636363636365,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7607037425041199,
+      "latency_seconds": 6.077255999989575,
+      "input_tokens": 1872,
+      "output_tokens": 43,
+      "total_tokens": 1915,
+      "input_cost": 0.00234,
+      "output_cost": 0.00043,
+      "total_cost": 0.00277
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "Why are multi-agent systems needed for complex tasks?",
+    "gold_answer": "Because complex tasks require decomposition into specialized subtasks handled by different agents.",
+    "answer": "According to the course materials, multi-agent systems are needed for complex tasks because a single \"helpful assistant\" agent is insufficient to accurately execute them. Multi-agent design breaks complex tasks into manageable subtasks, which improves performance by guiding the model to handle one subtask at a time. This is necessary because LLMs struggle with complex inputs, and giving all the tools for a complex task to one agent would cause the quality of the output to plummet.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C8+-+Multi-Agent+Systems.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 9
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.17647058823529413,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7347701191902161,
+      "latency_seconds": 10.642021999999997,
+      "input_tokens": 1781,
+      "output_tokens": 91,
+      "total_tokens": 1872,
+      "input_cost": 0.00222625,
+      "output_cost": 0.00091,
+      "total_cost": 0.00313625
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "What is an example of a natural pipeline that benefits from MAS?",
+    "gold_answer": "ETL → analyze → generate → verify → publish.",
+    "answer": "According to the course materials, an example of a natural pipeline that benefits from Multi-Agent Systems is a task sequence of ETL → analyze → generate → verify → publish.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C1+-+Introduction+to+GenAI.pdf",
+      "top1_matches_gold": false,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 23
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 16
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 0
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.3870967741935484,
+      "exact_match_normalized": false,
+      "contains_match": true,
+      "is_correct": true,
+      "semantic_similarity": 0.701733410358429,
+      "latency_seconds": 3.3578458999982104,
+      "input_tokens": 1789,
+      "output_tokens": 34,
+      "total_tokens": 1823,
+      "input_cost": 0.00223625,
+      "output_cost": 0.00034,
+      "total_cost": 0.00257625
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "What is a reason to avoid multi-agent systems?",
+    "gold_answer": "When orchestration complexity outweighs the benefits.",
+    "answer": "According to the course materials, you should avoid multi-agent systems when the orchestration complexity outweighs the benefits. Another reason to avoid them is when latency or cost budgets are tight.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C8+-+Multi-Agent+Systems.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 9
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.3870967741935484,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6486507058143616,
+      "latency_seconds": 5.061218300004839,
+      "input_tokens": 1781,
+      "output_tokens": 35,
+      "total_tokens": 1816,
+      "input_cost": 0.00222625,
+      "output_cost": 0.00035000000000000005,
+      "total_cost": 0.00257625
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "What is agent-to-agent communication used for?",
+    "gold_answer": "To coordinate tasks and exchange intermediate results between agents.",
+    "answer": "Based on the course materials, the Agent-to-Agent (A2A) protocol is designed to enable seamless interoperability within multi-agent systems. It allows a user-facing \"client\" agent to orchestrate and delegate tasks to specialized \"remote\" agents. The protocol is built on standard web technologies like HTTP, JSON-RPC, and Server-Sent Events (SSE).",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C8+-+Multi-Agent+Systems.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 8
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.163265306122449,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5961187481880188,
+      "latency_seconds": 6.621744900010526,
+      "input_tokens": 1844,
+      "output_tokens": 77,
+      "total_tokens": 1921,
+      "input_cost": 0.002305,
+      "output_cost": 0.00077,
+      "total_cost": 0.003075
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "Why might redundancy be used in MAS?",
+    "gold_answer": "To improve reliability by having multiple agents independently produce or verify results.",
+    "answer": "According to the course materials, Multi-Agent Systems should be used when there is a need for redundancy, such as for creating ensembles.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C8+-+Multi-Agent+Systems.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 4
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.060606060606060615,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6351727247238159,
+      "latency_seconds": 7.566398499999195,
+      "input_tokens": 1793,
+      "output_tokens": 27,
+      "total_tokens": 1820,
+      "input_cost": 0.0022412499999999998,
+      "output_cost": 0.00027,
+      "total_cost": 0.0025112499999999996
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "What problem arises if one agent tries to do everything?",
+    "gold_answer": "Performance drops due to cognitive overload and lack of specialization.",
+    "answer": "According to the course materials, the quality of the output would plummet if one agent is given all the tools for a complex task. This is because LLMs struggle with complex inputs, and combining multiple functionalities confuses the agent’s sequential logic. Agentic workflows improve performance by guiding the model to handle one subtask at a time.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C8+-+Multi-Agent+Systems.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 9
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 2
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.14285714285714285,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5772796869277954,
+      "latency_seconds": 6.724712700000964,
+      "input_tokens": 1748,
+      "output_tokens": 66,
+      "total_tokens": 1814,
+      "input_cost": 0.002185,
+      "output_cost": 0.00066,
+      "total_cost": 0.002845
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "How do tools enhance safety in agent systems?",
+    "gold_answer": "By constraining outputs and validating inputs, ensuring predictable and secure operations.",
+    "answer": "Based on the course materials, one of the primary reasons we need tools is to enhance the reliability and safety of agentic systems. Agents can misuse tools or their parameters, which can cause failure cascades. Safety is improved by implementing solutions like tool schema validation, fallback options, and retries to handle these potential errors.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C5+-+Agent+Tools.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C3+-+Introduction+to+Agents.pdf"
+      ],
+      "top1_doc": "C5+-+Agent+Tools.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 15
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 11
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 11
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.07272727272727272,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5162732601165771,
+      "latency_seconds": 8.327885399994557,
+      "input_tokens": 1844,
+      "output_tokens": 63,
+      "total_tokens": 1907,
+      "input_cost": 0.002305,
+      "output_cost": 0.00063,
+      "total_cost": 0.002935
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "What is episodic memory?",
+    "gold_answer": "Memory of specific events or interactions that happened previously, including when and where they occurred.",
+    "answer": "Based on the course materials, episodic memory is a subdivision of long-term memory. It is the component where an agent's experiences are written and stored. This information can later be retrieved back into working memory when needed for decision-making.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C6+-+Agent+Memory.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 5
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 26
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.2,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6505014896392822,
+      "latency_seconds": 6.484349500009557,
+      "input_tokens": 1741,
+      "output_tokens": 49,
+      "total_tokens": 1790,
+      "input_cost": 0.0021762500000000002,
+      "output_cost": 0.00049,
+      "total_cost": 0.0026662500000000002
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "How does top-p sampling work?",
+    "gold_answer": "It restricts token selection to a subset of tokens whose cumulative probability mass is below a threshold p.",
+    "answer": "Based on the course materials, top-p (or nucleus sampling) controls the diversity of responses by setting a threshold for the cumulative probability distribution of token choices. The model chooses from the most likely words until their probabilities add up to the specified 'p' value. A low value for 'p' results in a focused, less diverse output, whereas a high value allows for a more creative and varied response.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf"
+      ],
+      "top1_doc": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 34
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 11
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.2285714285714286,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6878657341003418,
+      "latency_seconds": 10.770550700006424,
+      "input_tokens": 1735,
+      "output_tokens": 82,
+      "total_tokens": 1817,
+      "input_cost": 0.00216875,
+      "output_cost": 0.0008200000000000001,
+      "total_cost": 0.00298875
+    }
+  },
+  {
+    "provider": "gemini",
+    "model": "gemini-2.5-pro",
+    "repeat_id": 0,
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "What is one task LLMs can perform using only prompting without parameter updates?",
+    "gold_answer": "In-context learning.",
+    "answer": "Based on the course materials, one task LLMs can perform using only prompting without gradient updates is writing syntactically correct and functional code. This is considered an emergent capability. Other examples include following instructions to call APIs, use calculators, or browse.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C2+-+Large+Language+Models.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 5
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 33
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 3
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.0,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.4702247977256775,
+      "latency_seconds": 8.657261600004858,
+      "input_tokens": 1787,
+      "output_tokens": 50,
+      "total_tokens": 1837,
+      "input_cost": 0.00223375,
+      "output_cost": 0.0005,
+      "total_cost": 0.00273375
+    }
+  }
+]

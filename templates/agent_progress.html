@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setting up {{ agent.name }}...</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .btn-custom {
+      background-color: #840032;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .btn-custom:hover {
+      background-color: #a5004c;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+  <!-- Header with logo -->
+  <header class="flex justify-between items-center p-6 bg-white shadow-md">
+    <h1 class="text-3xl font-bold text-gray-800">Setting up your agent...</h1>
+    <img src="/static/logos.png" alt="Logo" class="h-20 w-auto">
+  </header>
+
+  <main class="max-w-4xl mx-auto p-6 mt-8">
+    
+    <!-- Progress Card -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">{{ agent.name }}</h2>
+      <p class="text-gray-600 mb-6">We're processing your Google Drive files and creating embeddings. This may take a few minutes depending on the number of files.</p>
+      
+      <div class="mb-6">
+        <div class="flex justify-between text-sm text-gray-600 mb-2">
+          <span>Processing files...</span>
+          <span id="progressText">0 / 0</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-6">
+          <div id="progressBar" class="bg-[#840032] h-6 rounded-full transition-all duration-300 flex items-center justify-center text-white text-sm font-semibold" style="width: 0%">
+            <span id="progressPercentage">0%</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mb-6">
+        <p class="text-xs text-gray-600 mb-1">Current file:</p>
+        <p id="currentFile" class="text-sm font-medium text-gray-800 break-words">Initializing...</p>
+      </div>
+      
+      <!-- Error message -->
+      <div id="progressError" class="hidden mb-6 p-4 bg-red-50 border border-red-300 rounded text-red-700">
+        <p class="font-semibold">Error occurred:</p>
+        <p id="errorMessage" class="text-sm mt-1"></p>
+        <div class="mt-4">
+          <a href="/dashboard" class="btn-custom inline-block">Return to Dashboard</a>
+        </div>
+      </div>
+      
+      <!-- Success message -->
+      <div id="progressComplete" class="hidden mb-6 p-4 bg-green-50 border border-green-300 rounded text-green-700">
+        <p class="font-semibold">✓ Agent setup completed successfully!</p>
+        <p class="text-sm mt-1">Redirecting to your agent...</p>
+      </div>
+      
+      <!-- Info box -->
+      <div class="bg-blue-50 border border-blue-200 rounded p-4 text-sm text-blue-800">
+        <p class="font-semibold mb-1">ℹ️ Please wait</p>
+        <p>This process only happens once when creating the agent. Future updates will happen automatically in the background.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let progressInterval = null;
+    const agentId = {{ agent.id }};
+    const agentSlug = "{{ agent.slug }}";
+
+    function checkProgress() {
+      fetch(`/agents/${agentId}/progress`)
+        .then(response => response.json())
+        .then(data => {
+          updateProgressDisplay(data);
+          
+          if (data.status === 'completed') {
+            // Stop polling and redirect after a short delay
+            clearInterval(progressInterval);
+            progressInterval = null;
+            setTimeout(() => {
+              window.location.href = `/a/${agentSlug}`;
+            }, 2000);
+          } else if (data.status === 'error') {
+            // Stop polling on error
+            clearInterval(progressInterval);
+            progressInterval = null;
+          }
+        })
+        .catch(err => {
+          console.error('Progress check error:', err);
+        });
+    }
+
+    function updateProgressDisplay(data) {
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+      const progressPercentage = document.getElementById('progressPercentage');
+      const currentFile = document.getElementById('currentFile');
+      const progressComplete = document.getElementById('progressComplete');
+      const progressError = document.getElementById('progressError');
+      const errorMessage = document.getElementById('errorMessage');
+
+      const percentage = Math.round(data.progress_percentage || 0);
+      progressBar.style.width = `${percentage}%`;
+      progressPercentage.textContent = `${percentage}%`;
+      progressText.textContent = `${data.processed_files || 0} / ${data.total_files || 0}`;
+      
+      if (data.current_file) {
+        currentFile.textContent = data.current_file;
+      } else if (data.status === 'processing') {
+        currentFile.textContent = 'Processing...';
+      }
+
+      if (data.status === 'completed') {
+        progressComplete.classList.remove('hidden');
+        currentFile.textContent = 'All files processed!';
+      } else if (data.status === 'error') {
+        progressError.classList.remove('hidden');
+        errorMessage.textContent = data.error_message || 'Unknown error occurred';
+      }
+    }
+
+    // Start polling immediately
+    checkProgress();
+    progressInterval = setInterval(checkProgress, 1000);
+  </script>
+
+</body>
+</html>

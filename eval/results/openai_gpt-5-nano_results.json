@@ -1,0 +1,2612 @@
+[
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "What is the main difference between discriminative and generative AI?",
+    "gold_answer": "Discriminative AI predicts labels or class boundaries, while generative AI models the data distribution to generate new content.",
+    "answer": "Discriminative AI focuses on classifying or labeling data and predicting outputs from given inputs, by learning the boundaries between classes. Generative AI learns the underlying data distribution and can create new content or data instances.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf"
+      ],
+      "top1_doc": "C1+-+Introduction+to+GenAI.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 8
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.4347826086956522,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.8970850706100464,
+      "latency_seconds": 5.550544499998068,
+      "input_tokens": 1446,
+      "output_tokens": 435,
+      "total_tokens": 1881,
+      "input_cost": 7.23e-05,
+      "output_cost": 0.000174,
+      "total_cost": 0.00024629999999999997
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "What was the technological shift that enabled modern AI agents?",
+    "gold_answer": "The shift was the emergence of powerful generative models—especially transformers and LLMs—that provided agents with strong reasoning and language abilities.",
+    "answer": "The shift was the underlying technology: generative AI models, especially large language models, grew in size, power, and capability, enabling AI agents to have a much more powerful “brain.”",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf"
+      ],
+      "top1_doc": "C1+-+Introduction+to+GenAI.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 2
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.3636363636363637,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7895972728729248,
+      "latency_seconds": 4.706847800000105,
+      "input_tokens": 1657,
+      "output_tokens": 431,
+      "total_tokens": 2088,
+      "input_cost": 8.285000000000001e-05,
+      "output_cost": 0.00017240000000000002,
+      "total_cost": 0.00025525000000000005
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "Name two real-world applications of generative AI discussed in the document.",
+    "gold_answer": "Image generation and visual question answering.",
+    "answer": "- Autonomous agents for business operations, as exemplified by Agentforce by Salesforce, which operate 24/7 and provide proactive support to employees and customers. \n- Content generation tasks, such as text generation (e.g., translation, summarization, question answering) and image generation.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf"
+      ],
+      "top1_doc": "C1+-+Introduction+to+GenAI.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 0
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.27027027027027023,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.4044943153858185,
+      "latency_seconds": 17.225951700002042,
+      "input_tokens": 1503,
+      "output_tokens": 1858,
+      "total_tokens": 3361,
+      "input_cost": 7.515e-05,
+      "output_cost": 0.0007432000000000001,
+      "total_cost": 0.00081835
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "What role do transformers play in modern GenAI?",
+    "gold_answer": "Transformers enable models to understand contextual relationships through attention mechanisms.",
+    "answer": "Transformers, with their attention mechanism, provide scalable, context-aware modeling that underpins modern GenAI. Although not originally designed for generation, they became the breakthrough that enabled generative models to achieve their current level of power, revolutionizing natural language understanding and generation.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf"
+      ],
+      "top1_doc": "C1+-+Introduction+to+GenAI.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 16
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 15
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 4
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.1702127659574468,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7538104057312012,
+      "latency_seconds": 5.314722499999334,
+      "input_tokens": 1528,
+      "output_tokens": 574,
+      "total_tokens": 2102,
+      "input_cost": 7.64e-05,
+      "output_cost": 0.0002296,
+      "total_cost": 0.000306
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C1+-+Introduction+to+GenAI.pdf",
+    "question": "What is the definition of Generative AI according to the slides?",
+    "gold_answer": "Generative AI is a field where models create new content such as text, images, audio, or video based on training data.",
+    "answer": "Generative AI is a field of artificial intelligence where models can create new content—such as text, images, audio, or video—based on the data they have been trained on.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C1+-+Introduction+to+GenAI.pdf"
+      ],
+      "top1_doc": "C1+-+Introduction+to+GenAI.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 0
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.6666666666666666,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.9757832288742065,
+      "latency_seconds": 3.5729084000013245,
+      "input_tokens": 1502,
+      "output_tokens": 302,
+      "total_tokens": 1804,
+      "input_cost": 7.510000000000001e-05,
+      "output_cost": 0.0001208,
+      "total_cost": 0.0001959
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "What makes a language model 'large'?",
+    "gold_answer": "A model is considered large when it contains millions to billions of parameters stacked across many transformer layers.",
+    "answer": "A language model is considered large when you stack hundreds of encoder blocks and hundreds of decoder blocks to reach millions or even billions of training parameters. The original transformer architecture alone is not large.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C2+-+Large+Language+Models.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 30
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 32
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 19
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.5106382978723404,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.8211364150047302,
+      "latency_seconds": 3.648989999997866,
+      "input_tokens": 1543,
+      "output_tokens": 302,
+      "total_tokens": 1845,
+      "input_cost": 7.715e-05,
+      "output_cost": 0.0001208,
+      "total_cost": 0.00019795000000000001
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "What were LLMs originally designed to do?",
+    "gold_answer": "They were designed to perform text modeling tasks with high accuracy by predicting the next token.",
+    "answer": "They were originally designed to perform traditional text tasks with high accuracy, such as text generation, translation, summarization, and question answering.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": false,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 9
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 2
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.5555555555555556,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7091867327690125,
+      "latency_seconds": 8.166025599999557,
+      "input_tokens": 1591,
+      "output_tokens": 740,
+      "total_tokens": 2331,
+      "input_cost": 7.955e-05,
+      "output_cost": 0.000296,
+      "total_cost": 0.00037555
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "Name one emergent behavior of LLMs shown in the slides.",
+    "gold_answer": "Chain-of-thought reasoning.",
+    "answer": "One emergent behavior is that LLMs can solve new tasks without gradient updates, just from prompts. This shows that prompting can unlock capabilities beyond their original training.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C2+-+Large+Language+Models.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 33
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.0,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.22287824749946594,
+      "latency_seconds": 4.7426774999985355,
+      "input_tokens": 1607,
+      "output_tokens": 426,
+      "total_tokens": 2033,
+      "input_cost": 8.035e-05,
+      "output_cost": 0.0001704,
+      "total_cost": 0.00025075
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "Why are long context windows not equivalent to real memory?",
+    "gold_answer": "Long contexts only retain information within a single session and do not create persistent knowledge across tasks.",
+    "answer": "Long context windows are still just a fixed-size prompt; they don’t persist information beyond the current window. They can store a lot of data temporarily, but the model remains effectively stateless between interactions, so earlier info can be forgotten once it falls outside the window. True memory requires a persistent internal state that evolves over time and across tasks, informing behavior weeks or months apart.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C2+-+Large+Language+Models.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C2+-+Large+Language+Models.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 27
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 28
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 20
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.18666666666666668,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7075119018554688,
+      "latency_seconds": 6.304384999999456,
+      "input_tokens": 1546,
+      "output_tokens": 660,
+      "total_tokens": 2206,
+      "input_cost": 7.730000000000001e-05,
+      "output_cost": 0.000264,
+      "total_cost": 0.0003413
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "What is the purpose of tokenization in an LLM pipeline?",
+    "gold_answer": "Tokenization converts input text into tokens that the model can embed and process.",
+    "answer": "I don't know from the course materials.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C2+-+Large+Language+Models.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 31
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 30
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 28
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 3
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.1,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.1035107746720314,
+      "latency_seconds": 9.061633500001335,
+      "input_tokens": 1559,
+      "output_tokens": 849,
+      "total_tokens": 2408,
+      "input_cost": 7.795e-05,
+      "output_cost": 0.0003396,
+      "total_cost": 0.00041755000000000004
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "What distinguishes an agent from a chatbot?",
+    "gold_answer": "Agents take actions using tools and pursue goals, while chatbots mainly produce text responses.",
+    "answer": "An agent is an autonomous system that does more than chat or simple automation: it acts and uses goal-driven reasoning to achieve objectives, with varying levels of autonomy from tool usage to planning. In contrast, a chatbot is primarily conversational and not inherently action- or goal-oriented.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 15
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 6
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.03636363636363637,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6758264303207397,
+      "latency_seconds": 5.3148069999988365,
+      "input_tokens": 1595,
+      "output_tokens": 575,
+      "total_tokens": 2170,
+      "input_cost": 7.975e-05,
+      "output_cost": 0.00022999999999999998,
+      "total_cost": 0.00030974999999999997
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "What are the five key components of an AI agent listed in the chapter?",
+    "gold_answer": "Multiple LLM calls, tool use, environment interaction, a planner, and autonomy.",
+    "answer": "The five key components are: (1) multiple calls to LLMs, (2) LLMs with the ability to use tools, (3) an environment where LLMs interact, (4) a planner coordinating activities, and (5) autonomy.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C1+-+Introduction+to+GenAI.pdf",
+        "C3+-+Introduction+to+Agents.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 15
+        },
+        {
+          "document": "C1+-+Introduction+to+GenAI.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 3
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.4102564102564102,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7965055108070374,
+      "latency_seconds": 4.47790669999813,
+      "input_tokens": 1681,
+      "output_tokens": 447,
+      "total_tokens": 2128,
+      "input_cost": 8.405000000000001e-05,
+      "output_cost": 0.0001788,
+      "total_cost": 0.00026285
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "How does reinforcement learning relate to agents?",
+    "gold_answer": "RL models agents by having them interact with an environment and learn through rewards.",
+    "answer": "Reinforcement learning is a learning framework for agents. An agent interacts with an environment through trial and error, taking actions, observing rewards, and updating its policy to maximize cumulative rewards over time (the agent–environment loop).",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 5
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.3111111111111111,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6615024209022522,
+      "latency_seconds": 5.089047699999355,
+      "input_tokens": 1633,
+      "output_tokens": 438,
+      "total_tokens": 2071,
+      "input_cost": 8.165e-05,
+      "output_cost": 0.0001752,
+      "total_cost": 0.00025685
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "Why did modern LLMs enable advanced agentic systems?",
+    "gold_answer": "Because LLMs provide reasoning, planning, generalization, and natural language understanding capabilities.",
+    "answer": "Modern LLMs unlock true agentic behavior by providing language understanding and generation, chain-of-thought reasoning, generalization across domains, and multi-step planning with feedback. This enables embedding LLMs into agent loops as adaptive cognitive engines, turning agents from passive responders into autonomous, goal-driven systems.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 9
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 7
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.28,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7132070660591125,
+      "latency_seconds": 4.764054100000067,
+      "input_tokens": 1661,
+      "output_tokens": 517,
+      "total_tokens": 2178,
+      "input_cost": 8.305e-05,
+      "output_cost": 0.0002068,
+      "total_cost": 0.00028985
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C3+-+Introduction+to+Agents.pdf",
+    "question": "What does it mean for an agent to be goal-oriented?",
+    "gold_answer": "It means the agent selects actions not just to respond but to achieve a defined outcome.",
+    "answer": "Being goal-oriented means the agent has a defined objective it aims to achieve and uses planning and decision-making to act toward that goal (not just respond or follow scripts). It may decompose the goal into subgoals and autonomously choose actions and tools to pursue them.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 11
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.46153846153846156,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6609111428260803,
+      "latency_seconds": 6.49837689999913,
+      "input_tokens": 1697,
+      "output_tokens": 639,
+      "total_tokens": 2336,
+      "input_cost": 8.485e-05,
+      "output_cost": 0.00025560000000000003,
+      "total_cost": 0.00034045000000000006
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "What are the two major components that define an agent's mind?",
+    "gold_answer": "Agent persona and thinking mechanism.",
+    "answer": "The two major components are the Agent Persona and the Thinking Mechanism.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C3+-+Introduction+to+Agents.pdf"
+      ],
+      "top1_doc": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 5
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.6666666666666666,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7991852164268494,
+      "latency_seconds": 3.525996899999882,
+      "input_tokens": 1700,
+      "output_tokens": 215,
+      "total_tokens": 1915,
+      "input_cost": 8.5e-05,
+      "output_cost": 8.6e-05,
+      "total_cost": 0.000171
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "What does temperature control in model configuration?",
+    "gold_answer": "Temperature controls randomness in token selection and influences creativity versus determinism.",
+    "answer": "Temperature controls the model’s creativity or randomness in token selection. Lower values produce deterministic, safe, and focused responses, while higher values yield more creative, diverse, and potentially unpredictable outputs (e.g., 0.0–0.3 vs 0.7–1.0).",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 19
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 25
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.38095238095238093,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7898175120353699,
+      "latency_seconds": 4.489122400002088,
+      "input_tokens": 1570,
+      "output_tokens": 387,
+      "total_tokens": 1957,
+      "input_cost": 7.850000000000001e-05,
+      "output_cost": 0.00015480000000000002,
+      "total_cost": 0.00023330000000000003
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "What is a Chain-of-Thought reasoning mechanism?",
+    "gold_answer": "A reasoning method where the model generates step-by-step explanations before answering.",
+    "answer": "Chain-of-Thought (CoT) is a prompting approach where the model generates a sequence of intermediate, logical steps (a chain of thoughts) to solve a problem step by step. It mirrors human step-by-step reasoning and can be used in few-shot, zero-shot, or automatic CoT settings to produce more reliable answers.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 12
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 13
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 11
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 19
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.2692307692307692,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.519652247428894,
+      "latency_seconds": 7.935272099999565,
+      "input_tokens": 1615,
+      "output_tokens": 779,
+      "total_tokens": 2394,
+      "input_cost": 8.075e-05,
+      "output_cost": 0.00031160000000000004,
+      "total_cost": 0.00039235
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "What does a high frequency penalty encourage?",
+    "gold_answer": "It encourages reduced repetition by penalizing tokens already used frequently.",
+    "answer": "A high frequency penalty discourages reusing the same words, encouraging the model to vary its vocabulary and produce more diverse output. It’s especially useful for essays, articles, and research.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C7+-+Finetuning.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C7+-+Finetuning.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf"
+      ],
+      "top1_doc": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 4
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.0,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5884103775024414,
+      "latency_seconds": 4.157828399998834,
+      "input_tokens": 1595,
+      "output_tokens": 302,
+      "total_tokens": 1897,
+      "input_cost": 7.975e-05,
+      "output_cost": 0.0001208,
+      "total_cost": 0.00020055
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "Why do different prompts create different agent personas?",
+    "gold_answer": "Because the LLM conditions its behavior on the instructions, shaping style, tone, and reasoning patterns.",
+    "answer": "Different prompts specify the agent’s tone, vocabulary, response style, and values, effectively acting as behavior blueprints. Together with model configurations (e.g., temperature, presence/frequency penalties) these prompts shape how the agent thinks, responds, and interacts, producing distinct personas (e.g., formal expert vs. friendly helper).",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf"
+      ],
+      "top1_doc": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 5
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 13
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 15
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.18867924528301885,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.3630691170692444,
+      "latency_seconds": 4.189668700000766,
+      "input_tokens": 1497,
+      "output_tokens": 394,
+      "total_tokens": 1891,
+      "input_cost": 7.485e-05,
+      "output_cost": 0.0001576,
+      "total_cost": 0.00023245
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "What are agent tools?",
+    "gold_answer": "Functions provided to an LLM that enable actions or computations beyond the model’s internal capabilities.",
+    "answer": "Agent tools are functions that perform actions on behalf of the AI model. They provide operations with effects or computations beyond the model’s native capabilities, such as accessing up-to-date data. A tool typically includes a textual description, a callable action, and arguments (with typings), and optionally outputs (with typings).",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C5+-+Agent+Tools.pdf"
+      ],
+      "top1_doc": "C5+-+Agent+Tools.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 11
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 15
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.3157894736842105,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.4690926969051361,
+      "latency_seconds": 4.295710899998085,
+      "input_tokens": 1591,
+      "output_tokens": 454,
+      "total_tokens": 2045,
+      "input_cost": 7.955e-05,
+      "output_cost": 0.00018160000000000002,
+      "total_cost": 0.00026115000000000003
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "Why do agents need tools for real-time information?",
+    "gold_answer": "LLMs lack up-to-date knowledge and can hallucinate without retrieving external information.",
+    "answer": "LLMs rely on their training data and have outdated knowledge beyond that scope, so they can hallucinate or be incorrect for real-time information. Tools supply live data and perform current computations, improving reliability, safety, and overall efficiency.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C3+-+Introduction+to+Agents.pdf"
+      ],
+      "top1_doc": "C5+-+Agent+Tools.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 11
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 15
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.26666666666666666,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7434385418891907,
+      "latency_seconds": 5.496530600001279,
+      "input_tokens": 1612,
+      "output_tokens": 439,
+      "total_tokens": 2051,
+      "input_cost": 8.060000000000001e-05,
+      "output_cost": 0.0001756,
+      "total_cost": 0.00025620000000000005
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "What are the three main characteristics of a good tool?",
+    "gold_answer": "A well-defined API, isolated functionality, and deterministic behavior.",
+    "answer": "Three main characteristics are: (1) a clear objective for the tool, (2) a textual description of what it does, and (3) a callable action with properly typed arguments (with optional typed outputs).",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf"
+      ],
+      "top1_doc": "C5+-+Agent+Tools.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 9
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 11
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.11111111111111112,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5185641646385193,
+      "latency_seconds": 9.194780300000275,
+      "input_tokens": 1602,
+      "output_tokens": 948,
+      "total_tokens": 2550,
+      "input_cost": 8.010000000000001e-05,
+      "output_cost": 0.0003792,
+      "total_cost": 0.0004593
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "What protocol standardizes how tools communicate with LLMs?",
+    "gold_answer": "The Model Context Protocol (MCP).",
+    "answer": "Model Context Protocol (MCP) is the standard interface that standardizes how LLMs call tools, defining how models declare, request, and execute actions. It specifies tool schemas, parameters, and expected output formats to ensure unambiguous, validated tool calls.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C3+-+Introduction+to+Agents.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf"
+      ],
+      "top1_doc": "C3+-+Introduction+to+Agents.pdf",
+      "top1_matches_gold": false,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 12
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 12
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 8
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.25641025641025644,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.8336756825447083,
+      "latency_seconds": 3.6901719000015873,
+      "input_tokens": 1584,
+      "output_tokens": 318,
+      "total_tokens": 1902,
+      "input_cost": 7.920000000000001e-05,
+      "output_cost": 0.0001272,
+      "total_cost": 0.00020640000000000003
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "Why do tools reduce token usage?",
+    "gold_answer": "Because they return structured, concise data instead of requiring the LLM to process raw text.",
+    "answer": "I don't know from the course materials.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C5+-+Agent+Tools.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf"
+      ],
+      "top1_doc": "C5+-+Agent+Tools.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 9
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 11
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.09090909090909091,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.1625647097826004,
+      "latency_seconds": 8.524072399999568,
+      "input_tokens": 1588,
+      "output_tokens": 849,
+      "total_tokens": 2437,
+      "input_cost": 7.94e-05,
+      "output_cost": 0.0003396,
+      "total_cost": 0.000419
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "Why do agents need memory?",
+    "gold_answer": "To maintain context across interactions, enabling continuity and personalized behavior.",
+    "answer": "Because LLMs are stateless and forget past interactions, memory lets agents retain and recall information across time and tasks. This enables continuity and personalization, and provides a persistent internal state that informs future interactions and improves behavior over time.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C6+-+Agent+Memory.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 30
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 28
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.23809523809523808,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5419706702232361,
+      "latency_seconds": 3.7902790999978606,
+      "input_tokens": 1334,
+      "output_tokens": 311,
+      "total_tokens": 1645,
+      "input_cost": 6.670000000000001e-05,
+      "output_cost": 0.00012440000000000002,
+      "total_cost": 0.00019110000000000004
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "What is short-term memory in an agent?",
+    "gold_answer": "It stores the current conversation or task context within a single session.",
+    "answer": "Short-term memory is the temporary, in-memory store of recent interactions and context used to maintain conversation continuity within a task. It is often implemented as in-memory buffers (and can be summarized) and is distinct from long-term memory, which persists across sessions. Frameworks like LangChain provide short-term memory options such as simple buffers and summarization-based memory.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C6+-+Agent+Memory.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 28
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 5
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 27
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.2545454545454546,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5566303730010986,
+      "latency_seconds": 6.887250900002982,
+      "input_tokens": 1542,
+      "output_tokens": 720,
+      "total_tokens": 2262,
+      "input_cost": 7.71e-05,
+      "output_cost": 0.000288,
+      "total_cost": 0.00036510000000000004
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "What is semantic long-term memory?",
+    "gold_answer": "Memory that stores general facts, concepts, and stable user preferences.",
+    "answer": "Semantic long-term memory is the semantic memory component of long-term memory in agentic systems; it is one of the subtypes of long-term memory (along with episodic, declarative, and procedural memory).",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C6+-+Agent+Memory.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 5
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 6
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.13793103448275862,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.42115283012390137,
+      "latency_seconds": 7.703106199998729,
+      "input_tokens": 1604,
+      "output_tokens": 819,
+      "total_tokens": 2423,
+      "input_cost": 8.020000000000001e-05,
+      "output_cost": 0.0003276,
+      "total_cost": 0.0004078
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "Why don’t large context windows replace memory?",
+    "gold_answer": "Because context windows are per-session and do not enable persistence across tasks or time.",
+    "answer": "No. Even with large context windows, LLMs remain largely stateless; memory requires a persistent internal state that persists across time and interactions, not just within a single session. Long contexts can help within one session but don’t provide true long-term recall across tasks or weeks/months.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C2+-+Large+Language+Models.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C2+-+Large+Language+Models.pdf",
+      "top1_matches_gold": false,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 27
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 28
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 20
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.29090909090909095,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6607452034950256,
+      "latency_seconds": 4.512719500002277,
+      "input_tokens": 1544,
+      "output_tokens": 451,
+      "total_tokens": 1995,
+      "input_cost": 7.72e-05,
+      "output_cost": 0.00018040000000000002,
+      "total_cost": 0.00025760000000000003
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "What is the role of a retriever in RAG?",
+    "gold_answer": "The retriever finds semantically relevant information from external sources based on embeddings.",
+    "answer": "In RAG, the retriever finds and fetches relevant documents or facts from the knowledge base and injects them into the prompt to augment the LLM's response.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C6+-+Agent+Memory.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 9
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 8
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 17
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 10
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.29411764705882354,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5645942687988281,
+      "latency_seconds": 3.9991057999977784,
+      "input_tokens": 1661,
+      "output_tokens": 299,
+      "total_tokens": 1960,
+      "input_cost": 8.305e-05,
+      "output_cost": 0.00011960000000000001,
+      "total_cost": 0.00020265000000000002
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C7+-+Finetuning.pdf",
+    "question": "What is the main purpose of fine-tuning?",
+    "gold_answer": "To adapt a general LLM to specific tasks, domains, or behaviors using specialized training data.",
+    "answer": "The main purpose of fine-tuning is to adapt a general foundation model to your specific domain, workflows, and goals by training it on your own task-specific data, thereby making it perform better on your particular problem. It bridges the gap between generic knowledge and domain-specific needs.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf"
+      ],
+      "top1_doc": "C7+-+Finetuning.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 10
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.2692307692307692,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5302864909172058,
+      "latency_seconds": 3.71434120000049,
+      "input_tokens": 1448,
+      "output_tokens": 384,
+      "total_tokens": 1832,
+      "input_cost": 7.24e-05,
+      "output_cost": 0.00015360000000000002,
+      "total_cost": 0.00022600000000000002
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C7+-+Finetuning.pdf",
+    "question": "Why is full fine-tuning expensive?",
+    "gold_answer": "Because it updates all model parameters, requiring significant compute and memory.",
+    "answer": "Because full fine-tuning updates all model parameters (billions of them), it requires enormous compute and memory resources and longer training time, making it very high-cost in practice. The course materials label it as “Very high” resource usage.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf"
+      ],
+      "top1_doc": "C7+-+Finetuning.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 8
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.39999999999999997,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6971423625946045,
+      "latency_seconds": 6.310424200000853,
+      "input_tokens": 1669,
+      "output_tokens": 505,
+      "total_tokens": 2174,
+      "input_cost": 8.345000000000001e-05,
+      "output_cost": 0.000202,
+      "total_cost": 0.00028545
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C7+-+Finetuning.pdf",
+    "question": "What does LoRA modify during fine-tuning?",
+    "gold_answer": "LoRA inserts low-rank adapters to modify only a small subset of parameters efficiently.",
+    "answer": "LoRA keeps the base model weights frozen, selects target modules, and inserts small, low-rank adapter matrices into those modules. During fine-tuning, only these adapters are trained to adjust the targeted layers.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C7+-+Finetuning.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 8
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 33
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.3333333333333333,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6770516633987427,
+      "latency_seconds": 4.843668200002867,
+      "input_tokens": 1701,
+      "output_tokens": 435,
+      "total_tokens": 2136,
+      "input_cost": 8.505000000000001e-05,
+      "output_cost": 0.000174,
+      "total_cost": 0.00025905000000000004
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C7+-+Finetuning.pdf",
+    "question": "What is one reason to prefer RAG over fine-tuning?",
+    "gold_answer": "RAG integrates real-time external knowledge without updating model weights.",
+    "answer": "One reason is that RAG lets you leverage retrieval from an external knowledge base for up-to-date or very large information without requiring full fine-tuning of the model.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf"
+      ],
+      "top1_doc": "C7+-+Finetuning.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 10
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 3
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.2777777777777778,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7444774508476257,
+      "latency_seconds": 6.484879500003444,
+      "input_tokens": 1451,
+      "output_tokens": 746,
+      "total_tokens": 2197,
+      "input_cost": 7.255e-05,
+      "output_cost": 0.0002984,
+      "total_cost": 0.00037095
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C7+-+Finetuning.pdf",
+    "question": "What is the objective of evaluation after fine-tuning?",
+    "gold_answer": "To ensure the fine-tuned model performs well on technical metrics and practical use cases.",
+    "answer": "The objective is to evaluate the fine-tuned model using both technical metrics and business metrics (KPIs) to ensure it meets performance goals and aligns with business requirements. This helps verify effectiveness from both a technical and business perspective.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C7+-+Finetuning.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C7+-+Finetuning.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 33
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.37209302325581395,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.697980523109436,
+      "latency_seconds": 4.993070600001374,
+      "input_tokens": 1639,
+      "output_tokens": 502,
+      "total_tokens": 2141,
+      "input_cost": 8.195e-05,
+      "output_cost": 0.0002008,
+      "total_cost": 0.00028275
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "Why are multi-agent systems needed for complex tasks?",
+    "gold_answer": "Because complex tasks require decomposition into specialized subtasks handled by different agents.",
+    "answer": "Because as tasks become more complex, a single agent cannot accurately handle all subtasks. Multi-agent systems break the task into manageable subtasks with specialized roles (e.g., planner, designer, programmer, QA, devops), improving performance and reliability by distributing responsibilities.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C8+-+Multi-Agent+Systems.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 9
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.28571428571428575,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.7769753336906433,
+      "latency_seconds": 4.728823699999339,
+      "input_tokens": 1533,
+      "output_tokens": 510,
+      "total_tokens": 2043,
+      "input_cost": 7.664999999999999e-05,
+      "output_cost": 0.00020400000000000003,
+      "total_cost": 0.00028065
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "What is an example of a natural pipeline that benefits from MAS?",
+    "gold_answer": "ETL → analyze → generate → verify → publish.",
+    "answer": "An example is the ETL → analyze → generate → verify → publish pipeline.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C8+-+Multi-Agent+Systems.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 18
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 17
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.7058823529411764,
+      "exact_match_normalized": false,
+      "contains_match": true,
+      "is_correct": true,
+      "semantic_similarity": 0.8284533619880676,
+      "latency_seconds": 5.018049499998597,
+      "input_tokens": 1585,
+      "output_tokens": 281,
+      "total_tokens": 1866,
+      "input_cost": 7.925e-05,
+      "output_cost": 0.00011240000000000002,
+      "total_cost": 0.00019165000000000002
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "What is a reason to avoid multi-agent systems?",
+    "gold_answer": "When orchestration complexity outweighs the benefits.",
+    "answer": "When the orchestration complexity outweighs the benefits or when latency and cost budgets are tight, you should not use multi-agent systems.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C8+-+Multi-Agent+Systems.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 9
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 0
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.4799999999999999,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6951757669448853,
+      "latency_seconds": 3.838990299998841,
+      "input_tokens": 1533,
+      "output_tokens": 355,
+      "total_tokens": 1888,
+      "input_cost": 7.664999999999999e-05,
+      "output_cost": 0.000142,
+      "total_cost": 0.00021865
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "What is agent-to-agent communication used for?",
+    "gold_answer": "To coordinate tasks and exchange intermediate results between agents.",
+    "answer": "Agent-to-Agent communication is used to enable seamless interoperability within multi-agent systems by letting a user-facing client agent orchestrate and delegate tasks to specialized remote agents. It relies on web technologies (HTTP, JSON-RPC, SSE) and uses components like Agent Cards for discovery, task lifecycles, messaging, and artifacts as outputs.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C8+-+Multi-Agent+Systems.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 7
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 12
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.1509433962264151,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6103247404098511,
+      "latency_seconds": 5.846117799999774,
+      "input_tokens": 1590,
+      "output_tokens": 459,
+      "total_tokens": 2049,
+      "input_cost": 7.950000000000001e-05,
+      "output_cost": 0.00018360000000000002,
+      "total_cost": 0.00026310000000000005
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "Why might redundancy be used in MAS?",
+    "gold_answer": "To improve reliability by having multiple agents independently produce or verify results.",
+    "answer": "Redundancy in MAS is used to form ensembles of agents that can cross-check and validate outputs, improving reliability and robustness (through debate/critique and fault tolerance).",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C5+-+Agent+Tools.pdf"
+      ],
+      "top1_doc": "C8+-+Multi-Agent+Systems.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 8
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 9
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.1714285714285714,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5366150736808777,
+      "latency_seconds": 4.013910300000134,
+      "input_tokens": 1577,
+      "output_tokens": 363,
+      "total_tokens": 1940,
+      "input_cost": 7.885e-05,
+      "output_cost": 0.0001452,
+      "total_cost": 0.00022405
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C8+-+Multi-Agent+Systems.pdf",
+    "question": "What problem arises if one agent tries to do everything?",
+    "gold_answer": "Performance drops due to cognitive overload and lack of specialization.",
+    "answer": "Because a single agent handling design, programming, and deployment tools would be overwhelmed, causing the output quality to plummet. Splitting the task into specialized subtasks with multiple agents improves performance and manageability.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C8+-+Multi-Agent+Systems.pdf"
+      ],
+      "top1_doc": "C8+-+Multi-Agent+Systems.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 9
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 4
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.15,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.4644725024700165,
+      "latency_seconds": 6.709633100002975,
+      "input_tokens": 1486,
+      "output_tokens": 563,
+      "total_tokens": 2049,
+      "input_cost": 7.43e-05,
+      "output_cost": 0.0002252,
+      "total_cost": 0.0002995
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C5+-+Agent+Tools.pdf",
+    "question": "How do tools enhance safety in agent systems?",
+    "gold_answer": "By constraining outputs and validating inputs, ensuring predictable and secure operations.",
+    "answer": "Tools enhance safety by providing up-to-date, externally validated data instead of relying on the LLM’s training, reducing hallucinations. They also enable safety-focused mechanisms—tool schema validation, fallback options, and retries—to handle failures gracefully and improve reliability.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C5+-+Agent+Tools.pdf",
+        "C5+-+Agent+Tools.pdf",
+        "C3+-+Introduction+to+Agents.pdf",
+        "C8+-+Multi-Agent+Systems.pdf",
+        "C5+-+Agent+Tools.pdf"
+      ],
+      "top1_doc": "C5+-+Agent+Tools.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C3+-+Introduction+to+Agents.pdf",
+          "chunk_id": 15
+        },
+        {
+          "document": "C8+-+Multi-Agent+Systems.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C5+-+Agent+Tools.pdf",
+          "chunk_id": 11
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.0909090909090909,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.38786154985427856,
+      "latency_seconds": 7.134617599997,
+      "input_tokens": 1611,
+      "output_tokens": 699,
+      "total_tokens": 2310,
+      "input_cost": 8.055e-05,
+      "output_cost": 0.0002796,
+      "total_cost": 0.00036015000000000005
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C6+-+Agent+Memory.pdf",
+    "question": "What is episodic memory?",
+    "gold_answer": "Memory of specific events or interactions that happened previously, including when and where they occurred.",
+    "answer": "Episodic memory is a form of long-term memory in agent memory, one of the subdivisions of long-term memory (along with semantic, declarative, and procedural).",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf",
+        "C6+-+Agent+Memory.pdf"
+      ],
+      "top1_doc": "C6+-+Agent+Memory.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 1
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 0
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C6+-+Agent+Memory.pdf",
+          "chunk_id": 6
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.1818181818181818,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.5038117170333862,
+      "latency_seconds": 8.178849699997954,
+      "input_tokens": 1579,
+      "output_tokens": 748,
+      "total_tokens": 2327,
+      "input_cost": 7.895000000000001e-05,
+      "output_cost": 0.0002992,
+      "total_cost": 0.00037815
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+    "question": "How does top-p sampling work?",
+    "gold_answer": "It restricts token selection to a subset of tokens whose cumulative probability mass is below a threshold p.",
+    "answer": "Top-p sampling (nucleus sampling) constrains the model to consider only the smallest set of tokens whose cumulative probability reaches the chosen p. You rank tokens by probability, accumulate until the total is at least p, and sample from that nucleus; lower p yields more focused output, while higher p yields more diverse, creative output.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+        "C7+-+Finetuning.pdf",
+        "C4+-+Agent+Personas++Thinking+Mechanisms.pdf"
+      ],
+      "top1_doc": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C7+-+Finetuning.pdf",
+          "chunk_id": 2
+        },
+        {
+          "document": "C4+-+Agent+Personas++Thinking+Mechanisms.pdf",
+          "chunk_id": 11
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.27586206896551724,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.6485180854797363,
+      "latency_seconds": 9.712463500000013,
+      "input_tokens": 1575,
+      "output_tokens": 843,
+      "total_tokens": 2418,
+      "input_cost": 7.875e-05,
+      "output_cost": 0.0003372,
+      "total_cost": 0.00041595
+    }
+  },
+  {
+    "provider": "openai",
+    "model": "gpt-5-nano",
+    "repeat_id": 0,
+    "document": "C2+-+Large+Language+Models.pdf",
+    "question": "What is one task LLMs can perform using only prompting without parameter updates?",
+    "gold_answer": "In-context learning.",
+    "answer": "Solving new tasks without gradient updates, using only prompts.",
+    "retrieval": {
+      "top_k": 5,
+      "retrieved_docs": [
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf",
+        "C2+-+Large+Language+Models.pdf"
+      ],
+      "top1_doc": "C2+-+Large+Language+Models.pdf",
+      "top1_matches_gold": true,
+      "any_match_in_topk": true,
+      "chunks_used": [
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 4
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 5
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 6
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 3
+        },
+        {
+          "document": "C2+-+Large+Language+Models.pdf",
+          "chunk_id": 33
+        }
+      ]
+    },
+    "metrics": {
+      "f1": 0.0,
+      "exact_match_normalized": false,
+      "contains_match": false,
+      "is_correct": false,
+      "semantic_similarity": 0.32134294509887695,
+      "latency_seconds": 4.55615349999789,
+      "input_tokens": 1639,
+      "output_tokens": 341,
+      "total_tokens": 1980,
+      "input_cost": 8.195e-05,
+      "output_cost": 0.0001364,
+      "total_cost": 0.00021835000000000002
+    }
+  }
+]
