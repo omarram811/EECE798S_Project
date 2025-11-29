@@ -13,7 +13,7 @@ A multi-tenant platform for creating, hosting, and chatting with course-specific
 
 ## ⚠️ Very Important Notice
 Please note that during the last week of the project, the commits were mostly pushed at branch "Omar". Nevertheless, these commits do not define the activity of the students, because all members of the group were working equally and actively. 
-To better explain the situation, we simply decided to manually merge all code implementations on one branch instead of working parallelly during the last few days so that we avoid struggling with merge conflicts between branches.Also note that work appearing on the rasha branch represents contributions from both Rasha and Zaynab, though these were merged locally before being pushed
+To better explain the situation, we simply decided to manually merge all code implementations on one branch instead of working parallelly during the last few days so that we avoid struggling with merge conflicts between branches. Also note that work appearing on the "rasha" branch represents contributions from both Rasha and Zaynab, though these were merged locally before being pushed.
 
 ---
 
