@@ -17,6 +17,17 @@ To better explain the situation, we simply decided to manually merge all code im
 
 ---
 
+## 🌐 Hosted Application
+
+If you would like to explore the deployed application, please visit the following link:
+
+🔗 **https://eece798s-ta-agent-project.duckdns.org/**
+
+More details about the hosted web application can be found in the project report (see **Section 7: “Deployment”**).
+
+
+---
+
 ## ✨ Features
 
 ### For Professors
